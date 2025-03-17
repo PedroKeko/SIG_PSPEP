@@ -1,0 +1,132 @@
+﻿
+<style>
+    .footer {
+        background: linear-gradient(to right, #000033, #CC0000) !important; /* Azul bem escuro para Vermelho */
+        position: relative;
+        color: white;
+        padding: 15px 10px;
+        font-size: 14px;
+        width: 100%;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+        /* Estrela maior (central) */
+        .footer::before {
+            content: "★";
+            position: absolute;
+            font-size: 85px;
+            color: #FFD700; /* Cor dourada */
+            opacity: 0.2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(15deg);
+            z-index: 0;
+        }
+
+        /* Estrela média (à esquerda da maior) */
+        .footer::after {
+            content: "★";
+            position: absolute;
+            font-size: 55px;
+            color: #FFD700;
+            opacity: 0.2;
+            top: 50%;
+            left: calc(50% - 80px); /* 30px à esquerda */
+            transform: translate(-50%, -50%) rotate(-10deg);
+            z-index: 0;
+        }
+
+        /* Estrela menor (à direita da maior) */
+        .footer .small-star {
+            position: absolute;
+            font-size: 35px;
+            color: #FFD700;
+            opacity: 0.2;
+            top: 50%;
+            left: calc(50% + 80px); /* 30px à direita */
+            transform: translate(-50%, -50%) rotate(5deg);
+            z-index: 0;
+        }
+
+    .search-box .app-search {
+        z-index: 110;
+        width: 100%;
+        top: -1px;
+        box-shadow: 1px 0px 20px rgba(0,0,0,0.08);
+        display: none;
+        left: 0px
+    }
+
+    .back-to-top {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(45deg, #000c4f, #8b0000); 
+        color: yellow;
+        border-radius: 10%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        text-decoration: none;
+        opacity: 0.4;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+        z-index: 1000;
+    }
+
+        .back-to-top:hover {
+            background: linear-gradient(45deg, #8b0000, #000c4f); /* Azul escuro para Vermelho escuro */
+            color: #18da41;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(2);
+        }
+
+</style>
+<footer class="footer text-center">
+    <span class="small-star">★</span>
+    Polícia de Segurança Pessoal e de Entidades Protocolares - PNA <br> 
+    <span class="font-10">Ministério do Interior &copy; @DateTime.Now.Year - Todos os direitos reservados.</span>
+
+</footer>
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+    <i class="fas fa-arrow-up"></i>
+</a>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+        let backToTop = document.querySelector(".back-to-top");
+
+        window.addEventListener("scroll", function () {
+            if (window.scrollY > 400) {
+                backToTop.classList.add("show");
+            } else {
+                backToTop.classList.remove("show");
+            }
+        });
+
+        backToTop.addEventListener("click", function (e) {
+            e.preventDefault();
+            smoothScrollToTop();
+        });
+
+        function smoothScrollToTop() {
+            let scrollStep = -window.scrollY / 30; // Define a velocidade da rolagem
+            let scrollInterval = setInterval(function () {
+                if (window.scrollY !== 0) {
+                    window.scrollBy(0, scrollStep);
+                } else {
+                    clearInterval(scrollInterval); // Para quando chegar ao topo
+                }
+            }, 15); // Ajuste para uma rolagem mais fluida
+        }
+    });
+
+</script>

@@ -1,0 +1,28 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper<dynamic> HtmlHelper
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Home";
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+}
+
+<style>
+    .page-breadcrumb {
+        margin-top: 60px;
+        z-index: 999; /* Para garantir que fique abaixo do header */
+    }
+</style>
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">@ViewData["Title"]</h4>
+            <div class="ms-auto text-end">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" asp-area="">@controller</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">@action</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SIG_PSPEP.Models;
+using SIG_PSPEP.Areas.Admin.Models;
 
 namespace SIG_PSPEP.Controllers;
 

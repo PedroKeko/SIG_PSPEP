@@ -1,4 +1,4 @@
-namespace SIG_PSPEP.Models
+namespace SIG_PSPEP.Areas.Admin.Models
 {
     public class ErrorViewModel
     {
