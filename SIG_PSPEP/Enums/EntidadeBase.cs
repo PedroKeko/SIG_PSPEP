@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
-namespace Projeto_ADREC.Enums
+namespace SIG_PSPEP.Enums
 {
     public class EntidadeBase
     {
