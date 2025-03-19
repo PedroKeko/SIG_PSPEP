@@ -1,0 +1,86 @@
+﻿@using SIG_PSPEP.Models
+@model LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt=pt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - SIG-PSPEP</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="~/assets/images/favicon.png" />
+    <link href="~/login/css/style.css" rel="stylesheet" />
+    <link href="~/login/css/media.css" rel="stylesheet" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="stars"></div>
+    <div id="container">
+        <div class="banner">
+            <img src="~/login/img/login.png" alt="imagem-login" class="logo">
+            <div style="
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            max-width: 90%;
+            color: #f7eded;
+        ">
+                <p style="
+    font-weight: 400;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    color: #eee9e9;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7),
+                 0px 0px 10px rgba(255, 255, 255, 0.3);
+">
+                    POLÍCIA DE SEGURANÇA PESSOAL E DE ENTIDADES PROTOCOLARES
+                </p>
+            </div>
+
+        </div>
+         <form method="post">
+        <div class="box-login">
+            <div class="box">
+                <h2>SGI-PSPEP</h2>
+              
+                    <input class="form-control" type="email" name="Email" id="username" asp-for="Email" placeholder="Digite o seu email" required>
+                    <input class="form-control" type="password" name="password" id="password" asp-for="Password" placeholder="Digite a sua senha" required>
+                    <a href="password.html">
+                        <p>Esqueceu a sua senha?</p>
+                    </a>
+                    <button type="submit">Entrar</button>
+                    <a href="account.html">
+                        <p style="font-size: 12px;">Contactar o Administrador</p>
+                    </a>
+           
+            </div>
+        </div>
+           </form>
+    </div>
+    <script src="~/login/js/script.js"></script>
+    <script>
+               document.addEventListener("DOMContentLoaded", function() {
+            const starContainer = document.querySelector(".stars");
+
+            for (let i = 0; i < 50; i++) {
+                let star = document.createElement("span");
+                star.innerHTML = "★";
+                star.style.position = "absolute";
+                star.style.left = Math.random() * 100 + "vw"; /* Usa viewport para garantir que fique dentro da tela */
+                star.style.top = Math.random() * 100 + "vh";
+                star.style.fontSize = Math.random() * 2 + "rem";
+
+                starContainer.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

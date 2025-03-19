@@ -11444,7 +11444,7 @@ select.form-select.form-control-line {
         color: #FFD700;
         opacity: 0.2;
         top: 50%;
-        left: calc(50% - 80px); /* 30px à esquerda */
+        left: calc(50% - 80px);
         transform: translate(-50%, -50%) rotate(-10deg);
         z-index: 0;
     }

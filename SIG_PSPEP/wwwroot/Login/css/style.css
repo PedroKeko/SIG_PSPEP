@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #fff;
+}
+
+p {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(52, 37, 148);
+}
+
+h1 {
+    font-size: 1.8em;
+    color: slateblue;
+    padding: 0px 0px 35px 15px;
+}
+
+h2 {
+    font-size: 22px; /* Tamanho ajustável */
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    color: rgb(52, 37, 148); /* Cor principal */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+
+    /* Efeito 3D simples */
+    text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3), 
+                 6px 6px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+input {
+    width: 80%;
+    height: 30px;
+    border: none;
+    border-bottom: 1px solid silver;
+    outline: none;
+    font-weight: 400;
+    color: #1c1c1c;
+    padding-left: 3px;
+}
+
+button {
+    cursor: pointer;
+    width: 120px;
+    height: 35px;
+    border: none;
+    border-radius: 5px;
+    background: rgb(28, 15, 114);
+}
+
+
+body {
+    width: 100%;
+    background: linear-gradient(to bottom, #180d5e, #ff0000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Estilização do fundo estrelado */
+.stars {
+    position: fixed; /* Mantém as estrelas fixas na tela */
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* Evita que clique nas estrelas interfira */
+    z-index: -1; /* Mantém o fundo atrás de tudo */
+}
+
+/* Estrelas individuais */
+.stars span {
+    position: absolute;
+    color: rgb(95, 249, 0);
+    opacity: 0.4;
+    animation: twinkle 2s infinite alternate ease-in-out;
+}
+
+/* Animação para efeito de brilho */
+@keyframes twinkle {
+    0% { opacity: 0.2; }
+    100% { opacity: 0.6; }
+}
+
+#container {
+    width: 320px;
+    height: 440px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px 6px -1px #000000; 
+    box-shadow: 0px 0px 6px -1px #000000;
+    position: relative; /* Importante para o pseudo-elemento funcionar */
+    display: flex;
+    align-items: center;
+    overflow: hidden; /* Garante que o pseudo-elemento não ultrapasse os limites */
+}
+
+#container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../img/ugh.jpg') no-repeat center center;
+    background-size: cover;
+    opacity: 0.5; /* Define a opacidade da imagem */
+    z-index: -1; /* Mantém o fundo atrás do conteúdo do container */
+}
+
+        #container .banner {
+            width: 520px;
+            height: 440px;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            display: none;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        #container .box-login {
+            width: 320px;
+            height: 440px;
+            border-radius: 10px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .box-login .box {
+                width: 80%;
+                height: 320px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                align-items: center;
+            }
+            .box-login .box-account {
+                width: 80%;
+                height: 360px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                align-items: center;
+            }
+    
+    #bubble {
+        cursor: pointer;
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        right: 15px;
+        bottom: 15px;
+        border-radius: 50%;
+        border: 1px solid #483D8B;
+        background: slateblue;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+/* Animação de rotação da esquerda para a direita */
+@keyframes horizontalRotate {
+    0% {
+        transform: rotateY(0deg);
+    }
+    50% {
+        transform: rotateY(180deg);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+/* Aplicação da animação ao logotipo */
+.logo {
+    width: 160px; /* Ajuste conforme necessário */
+    height: 160px; /* Ajuste conforme necessário */
+    animation: horizontalRotate 9s infinite linear; /* Movimento suave e lento */
+    transform-origin: center; /* Mantém a rotação no centro do elemento */
+}
+

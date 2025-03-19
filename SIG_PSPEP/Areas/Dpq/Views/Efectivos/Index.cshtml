@@ -1,0 +1,394 @@
+﻿@model IEnumerable<SIG_PSPEP.Entidades.Efectivo>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#efectivoModal">
+    Cadastrar Efectivo
+</button>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Num_Processo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NIP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.N_Agente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NomeCompleto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apelido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genero)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataNasc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoCivil)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GSanguineo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumBI)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BIValidade)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BIEmitido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumCartaConducao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CartaValidade)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CartaEmitido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumPassaporte)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PassapValidade)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PassapEmitido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nacionalidade)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Naturalidade)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MunicipioRes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Destrito_BairroRes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rua)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CasaNum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Habilitacao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CursoHabilitado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InstitAcademica)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefone1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefone2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataIngresso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipoVinculo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Carreira)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnidadeOrigem)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OutrasInfo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FuncaoCargo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SituacaoEfectivo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrgaoUnidade)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Patente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataRegisto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataUltimaAlterecao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Num_Processo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NIP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.N_Agente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomeCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apelido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataNasc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoCivil)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GSanguineo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumBI)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BIValidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BIEmitido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumCartaConducao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CartaValidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CartaEmitido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumPassaporte)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PassapValidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PassapEmitido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nacionalidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Naturalidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MunicipioRes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Destrito_BairroRes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rua)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CasaNum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Habilitacao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CursoHabilitado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InstitAcademica)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefone1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefone2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataIngresso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TipoVinculo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Carreira)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnidadeOrigem)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OutrasInfo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FuncaoCargo.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SituacaoEfectivo.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrgaoUnidade.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Patente.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataRegisto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataUltimaAlterecao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="efectivoModal" tabindex="-1" aria-labelledby="efectivoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="efectivoModalLabel">Cadastrar Efectivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="efectivoForm" asp-action="Create" enctype="multipart/form-data">
+                    <!-- Steps -->
+                    <div class="step step-1">
+                        <h5>Dados Pessoais</h5>
+                        <div class="mb-3">
+                            <label asp-for="NomeCompleto" class="form-label"></label>
+                            <input asp-for="NomeCompleto" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Apelido" class="form-label"></label>
+                            <input asp-for="Apelido" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Genero" class="form-label"></label>
+                            <select asp-for="Genero" class="form-control">
+                                <option value="M">Masculino</option>
+                                <option value="F">Feminino</option>
+                            </select>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-primary next-step">Próximo</button>
+                        </div>
+                    </div>
+
+                    <div class="step step-2 d-none">
+                        <h5>Documentos</h5>
+                        <div class="mb-3">
+                            <label asp-for="NumBI" class="form-label"></label>
+                            <input asp-for="NumBI" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="NumCartaConducao" class="form-label"></label>
+                            <input asp-for="NumCartaConducao" class="form-control" />
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary prev-step">Anterior</button>
+                            <button type="button" class="btn btn-primary next-step">Próximo</button>
+                        </div>
+                    </div>
+
+                    <div class="step step-3 d-none">
+                        <h5>Contato</h5>
+                        <div class="mb-3">
+                            <label asp-for="Telefone1" class="form-label"></label>
+                            <input asp-for="Telefone1" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary prev-step">Anterior</button>
+                            <button type="submit" class="btn btn-success">Cadastrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let currentStep = 1;
+        const steps = document.querySelectorAll(".step");
+        const nextButtons = document.querySelectorAll(".next-step");
+        const prevButtons = document.querySelectorAll(".prev-step");
+
+        function showStep(step) {
+            steps.forEach((s, index) => {
+                s.classList.toggle("d-none", index + 1 !== step);
+            });
+        }
+
+        nextButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                if (currentStep < steps.length) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            });
+        });
+
+        prevButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                if (currentStep > 1) {
+                    currentStep--;
+                    showStep(currentStep);
+                }
+            });
+        });
+    });
+</script>
+

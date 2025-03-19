@@ -80,10 +80,10 @@ public class SeedUserRoleInitial : ISeedUserRoleInitial
         if (await _userManager.FindByEmailAsync("admin@pna.co") == null)
         {
             IdentityUser user = new IdentityUser();
-            user.UserName = "pspep@dtser.pna.co.ao";
-            user.Email = "admin@pspep.pna.co.ao";
-            user.NormalizedUserName = "ADMIN@PSPEP.PNA.CO.AO";
-            user.NormalizedEmail = "ADMIN@PSPEP.PNA.CO.AO";
+            user.UserName = "admin@pspep.pn.gov.ao";
+            user.Email = "admin@pspep.pn.gov.ao";
+            user.NormalizedUserName = "ADMIN@PSPEP.PN.GOV.AO";
+            user.NormalizedEmail = "ADMIN@PSPEP.PN.GOV.AO";
             user.EmailConfirmed = true;
             user.LockoutEnabled = false;
             user.SecurityStamp = Guid.NewGuid().ToString();

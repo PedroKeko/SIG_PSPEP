@@ -79,6 +79,10 @@ builder.Services.AddAuthorization(options =>
 //builder.Services.AddScoped<IAuthorizationHandler, TempoCadastroHandler>();
 builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 builder.Services.AddScoped<ISeedUserClaimsInitial, SeedUserClaimsInitial>();
+builder.Services.AddScoped<ISeedAreaInitial, SeedAreaInitial>();
+builder.Services.AddScoped<ISeedPatenteInitial, SeedPatenteInitial>();
+
+
 
 ////Registando Sql Connection para o Fast Report
 FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
@@ -86,6 +90,17 @@ builder.Services.AddFastReport(); // Adicione esta linha
 
 
 var app = builder.Build();
+
+// Criar escopo para rodar a Seed automaticamente ao iniciar a aplicação
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var seedAreaService = services.GetRequiredService<ISeedAreaInitial>();
+    await seedAreaService.SeedAreasAsync();
+    var seedPatenteService = services.GetRequiredService<ISeedPatenteInitial>();
+    await seedPatenteService.SeedPatentesAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
