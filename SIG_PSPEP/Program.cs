@@ -81,6 +81,9 @@ builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 builder.Services.AddScoped<ISeedUserClaimsInitial, SeedUserClaimsInitial>();
 builder.Services.AddScoped<ISeedAreaInitial, SeedAreaInitial>();
 builder.Services.AddScoped<ISeedPatenteInitial, SeedPatenteInitial>();
+builder.Services.AddScoped<ISeedOrgaoUnidadeInitial, SeedOrgaoUnidadeInitial>();
+builder.Services.AddScoped<ISeedSituacaoEfectivoInitial, SeedSituacaoEfectivoInitial>();
+builder.Services.AddScoped<ISeedFuncaoCargoInitial, SeedFuncaoCargoInitial>();
 
 
 
@@ -100,6 +103,12 @@ using (var scope = app.Services.CreateScope())
     await seedAreaService.SeedAreasAsync();
     var seedPatenteService = services.GetRequiredService<ISeedPatenteInitial>();
     await seedPatenteService.SeedPatentesAsync();
+    var seedOrgaoUnidadeService = services.GetRequiredService<ISeedOrgaoUnidadeInitial>();
+    await seedOrgaoUnidadeService.SeedOrgaoUnidadesAsync(); 
+    var seedSituacaoEfectivoService = services.GetRequiredService<ISeedSituacaoEfectivoInitial>();
+    await seedSituacaoEfectivoService.SeedSituacoesEfectivoAsync();
+    var seedFuncaoCargoService = services.GetRequiredService<ISeedFuncaoCargoInitial>();
+    await seedFuncaoCargoService.SeedFuncoesCargosAsync();
 }
 
 // Configure the HTTP request pipeline.

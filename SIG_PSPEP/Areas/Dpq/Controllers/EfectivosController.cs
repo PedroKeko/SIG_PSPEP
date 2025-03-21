@@ -53,17 +53,14 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         // GET: Dpq/Efectivos/Create
         public IActionResult Create()
         {
-            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "Id");
-            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "Id");
-            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Id");
-            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "NomeFuncaoCargo");
+            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade");
+            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto");
+            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
 
-        // POST: Dpq/Efectivos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("SituacaoEfectivoId,OrgaoUnidadeId,FuncaoCargoId,PatenteId,Num_Processo,NIP,N_Agente,NomeCompleto,Apelido,Genero,DataNasc,EstadoCivil,GSanguineo,NumBI,BIValidade,BIEmitido,NumCartaConducao,CartaValidade,CartaEmitido,NumPassaporte,PassapValidade,PassapEmitido,Nacionalidade,Naturalidade,MunicipioRes,Destrito_BairroRes,Rua,CasaNum,Habilitacao,CursoHabilitado,InstitAcademica,Telefone1,Telefone2,Email,DataIngresso,TipoVinculo,Carreira,UnidadeOrigem,OutrasInfo,Id,Estado,DataRegisto,DataUltimaAlterecao,UserId")]
@@ -92,11 +89,11 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "Id", efectivo.FuncaoCargoId);
-            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "Id", efectivo.OrgaoUnidadeId);
-            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Id", efectivo.PatenteId);
-            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "Id", efectivo.SituacaoEfectivoId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", efectivo.UserId);
+            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "NomeFuncaoCargo", efectivo.FuncaoCargoId);
+            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade", efectivo.OrgaoUnidadeId);
+            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto", efectivo.PatenteId);
+            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao", efectivo.SituacaoEfectivoId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", efectivo.UserId);
 
             return View(efectivo);
         }
@@ -114,11 +111,11 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
             {
                 return NotFound();
             }
-            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "Id", efectivo.FuncaoCargoId);
-            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "Id", efectivo.OrgaoUnidadeId);
-            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Id", efectivo.PatenteId);
-            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "Id", efectivo.SituacaoEfectivoId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", efectivo.UserId);
+            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "NomeFuncaoCargo", efectivo.FuncaoCargoId);
+            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade", efectivo.OrgaoUnidadeId);
+            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto", efectivo.PatenteId);
+            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao", efectivo.SituacaoEfectivoId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", efectivo.UserId);
             return View(efectivo);
         }
 
@@ -154,11 +151,11 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "Id", efectivo.FuncaoCargoId);
-            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "Id", efectivo.OrgaoUnidadeId);
-            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Id", efectivo.PatenteId);
-            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "Id", efectivo.SituacaoEfectivoId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", efectivo.UserId);
+            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "NomeFuncaoCargo", efectivo.FuncaoCargoId);
+            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade", efectivo.OrgaoUnidadeId);
+            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto", efectivo.PatenteId);
+            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao", efectivo.SituacaoEfectivoId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", efectivo.UserId);
             return View(efectivo);
         }
 

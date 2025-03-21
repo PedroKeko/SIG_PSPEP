@@ -1,0 +1,368 @@
+
+.icon-edit {
+    fill: blue;
+}
+
+.icon-eye {
+    fill: green;
+}
+
+.icon-trash {
+    fill: red;
+}
+
+
+table td,
+table th {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+thead th {
+    color: #fff;
+}
+
+
+.table-scroll {
+    border-radius: .5rem;
+}
+
+table thead {
+    background: rgb(0,41,103);
+    background: linear-gradient(0deg, rgba(0,41,103,1) 0%, rgba(12,25,180,1) 100%);
+    top: 0;
+    position: sticky;
+}
+
+
+tbody tr {
+    height: auto; /* Permite altura dinâmica baseada no conteúdo */
+    font-size: 13px;
+}
+
+/* Opcional: Para tabelas compactas no Bootstrap */
+.table-compact tbody td {
+    padding: 10px 8px !important; /* Sobrescreve padding padrão */
+    line-height: 1 !important; /* Reduz a altura ao mínimo */
+}
+
+
+.table-compact thead th {
+    padding: 14px 10px; /* Aumenta o espaçamento interno */
+    line-height: 1.4; /* Ajusta a altura mínima das células */
+}
+
+.table-compact tbody td {
+    padding: 6px 10px; /* Aumenta o espaçamento interno */
+    line-height: 1.4; /* Ajusta a altura mínima das células */
+}
+
+/* Adaptação para telas muito pequenas (opcional) */
+@media (max-width: 576px) {
+    .table-compact {
+        font-size: 12px; /* Reduz levemente a fonte em telas pequenas */
+    }
+
+        .table-compact tbody td {
+            padding: 4px 8px; /* Reduz o espaçamento interno em telas pequenas */
+        }
+
+        .table-compact thead th {
+            padding: 8px 8px; /* Reduz o espaçamento interno em telas pequenas */
+        }
+}
+
+@import url('https://fonts.googleapis.com/css?family=Lato:100&display=swap');
+
+
+.btn1 {
+    width: 180px;
+    height: 60px;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid #91C9FF;
+    outline: none;
+    transition: 1s ease-in-out;
+}
+
+    .btn1:hover {
+        transition: 1s ease-in-out;
+        background: #4F95DA;
+    }
+
+        .btn1:hover svg {
+            stroke-dashoffset: -480;
+        }
+
+    .btn1 span {
+        color: white;
+        font-size: 18px;
+        font-weight: 100;
+    }
+
+
+/* Altera o estilo do campo de pesquisa do DataTable */
+.dataTables_filter input {
+    height: 40px; /* Aumenta a altura do campo de pesquisa */
+    width: 300px; /* Aumenta a largura do campo de pesquisa */
+    font-size: 16px; /* Ajusta o tamanho da fonte */
+    padding-bottom: 40px;
+}
+
+/* Reduzir o tamanho dos botões de paginação */
+.dataTables_paginate .paginate_button {
+    padding: 0px 0px; /* Reduz o preenchimento interno dos botões */
+    font-size: 12px; /* Reduz o tamanho da fonte */
+    height: 30px; /* Reduz a altura dos botões */
+    width: auto; /* Ajusta a largura automaticamente */
+}
+
+    /* Ajustar o tamanho do botão ativo */
+    .dataTables_paginate .paginate_button.active {
+        font-size: 12px; /* Reduz o tamanho da fonte no botão ativo */
+        padding: 0px 0px; /* Ajuste do padding */
+    }
+
+.dataTables_info {
+    font-size: 14px; /* Reduz o tamanho da fonte para 16px */
+}
+
+/* Opcional: Ajuste de largura dos botões em telas pequenas */
+@media (max-width: 768px) {
+    .dataTables_paginate .paginate_button {
+        padding: 0px 0px; /* Menos padding em dispositivos menores */
+        font-size: 10px; /* Menor tamanho de fonte */
+    }
+
+        .dataTables_paginate .paginate_button.active {
+            font-size: 10px; /* Reduz o tamanho da fonte no botão ativo */
+            padding: 0px 0px; /* Ajuste do padding */
+        }
+}
+
+/* Centraliza o select list dentro do container da DataTable */
+.dataTables_length {
+    display: flex;
+    justify-content: left; /* Centraliza o select list */
+    width: 100%; /* Garante que ocupe toda a largura */
+    padding: 0; /* Remove qualquer espaçamento interno */
+}
+
+    /* Opcional: Ajusta o tamanho do select list se necessário */
+    .dataTables_length select {
+        margin-left: 0; /* Centraliza o select dentro do seu container */
+    }
+
+
+.modal-content {
+    background: linear-gradient(180deg, #fafafa 0%, #eaeaea 100%); /* Gradiente de cinza bem claro */
+    border-radius: 8px; /* Arredondar os cantos */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Sombra mais leve */
+}
+
+
+.input-1 {
+    padding: 6px 12px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    appearance: none;
+    border-radius: 4px;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+    .input-1 :focus {
+        color: #212529;
+        background-color: #fff;
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+    }
+
+.input-2 {
+    background-color: rgb(250, 251, 252);
+    border-color: rgb(223, 225, 230);
+    color: rgb(9, 30, 66);
+    cursor: text;
+    border-radius: 3px;
+    border-width: 2px;
+    border-style: solid;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: background-color 0.2s ease-in-out 0s, border-color 0.2s ease-in-out 0s;
+    line-height: 1.42857;
+    padding: 8px 6px;
+    height: 36px;
+}
+
+
+
+    .input-2:hover {
+        background-color: rgb(235, 236, 240);
+    }
+
+    .input-2:focus {
+        background-color: rgb(255, 255, 255);
+        border-color: rgb(76, 154, 255);
+    }
+
+/*TESTE*/
+.stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+
+.stepwizard-row {
+    display: table-row;
+}
+
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+
+.setup-content {
+    display: none;
+}
+
+    .setup-content.active {
+        display: block;
+    }
+
+/* Estilo padrão para telas médias e grandes */
+.small-label {
+    font-size: 11px; /* Tamanho inicial */
+    padding: 2px; /* Espaçamento interno */
+    margin: 2px; /* Espaçamento externo */
+}
+
+/* Para telas pequenas (como smartphones) */
+@media (max-width: 768px) {
+    .small-label {
+        font-size: 12px; /* Reduz o tamanho da fonte */
+        padding: 1px; /* Reduz o espaçamento interno */
+        margin: 1px; /* Reduz o espaçamento externo */
+    }
+}
+
+/* Para telas muito pequenas (como celulares antigos ou interfaces minimalistas) */
+@media (max-width: 480px) {
+    .small-label {
+        font-size: 11px; /* Ainda menor para caber na tela */
+        padding: 0.5px; /* Espaçamento interno mínimo */
+        margin: 0.5px; /* Espaçamento externo mínimo */
+    }
+}
+
+/* Para telas grandes (como desktops ou telas maiores) */
+@media (min-width: 1200px) {
+    .small-label {
+        font-size: 14px; /* Aumenta para maior legibilidade */
+        padding: 4px; /* Mais espaçamento interno */
+        margin: 4px; /* Mais espaçamento externo */
+    }
+}
+
+.small-input {
+    font-size: 13px; /* Reduz o tamanho do texto do input */
+    padding: 2px 10px; /* Ajuste o espaçamento interno */
+}
+
+    .small-input::placeholder {
+        font-style: italic;
+    }
+
+input::placeholder {
+    font-style: italic;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.small-label-1 {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    text-align: center;
+}
+
+/* Ajuste personalizado para botões pequenos */
+.custom-btn {
+    height: 30px;
+    line-height: 1.5; /* Ajuste para alinhar o texto verticalmente */
+    padding: 0px 12px; /* Garantir espaçamento interno consistente */
+    font-size: 0.875rem; /* Tamanho da fonte do btn-sm */
+}
+.error {
+    border: 2px solid red; /* Adiciona uma borda vermelha */
+}
+
+a {
+    text-decoration: none !important;
+}
+
+    a:hover {
+        text-decoration: none !important;/* Adicione esta linha se quiser sublinhar apenas no hover */
+    }
+
+.iq-footer {
+    font-size: 13px;
+}
+
+    .iq-footer p {
+        margin-top: 12px; /* Ajusta o espaçamento entre os textos */
+    }
+
+
+
+
+
+
+
+
+
+
+
+.d-flex {
+    display: flex;
+    justify-content: space-between; /* Mantém o título à esquerda e o botão à direita */
+    align-items: center;
+}
