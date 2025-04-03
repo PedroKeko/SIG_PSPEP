@@ -78,7 +78,7 @@ namespace SIG_PSPEP.Services
         public async Task<byte[]> GetDefaultImageAsync()
         {
             // Caminho da imagem padrão (estática) no wwwroot
-            var caminhoImagemPadrao = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "user", "1.jpg");
+            var caminhoImagemPadrao = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "users", "user-police.png");
 
             if (!File.Exists(caminhoImagemPadrao))
             {

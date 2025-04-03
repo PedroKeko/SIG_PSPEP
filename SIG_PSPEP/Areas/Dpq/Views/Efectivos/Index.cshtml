@@ -1,52 +1,46 @@
 ﻿@model IEnumerable<SIG_PSPEP.Entidades.Efectivo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Efectividade Geral";
 }
 <link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
 <!-- Estilos do DataTables -->
 <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet">
 
-<!-- jQuery e DataTables -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-
 <div class="container-fluid">
-
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5>Lista de Registros</h5>
-                <button id="novoRegistro" class="btn btn-success">Criar Novo</button>
+                <button class="custom2-btn btn-1" data-bs-toggle="modal" data-bs-target="#createModal">Criar Novo</button>
             </div>
             <div class="table-responsive">
-                <table id="minhaTabela" class="DataTable table table-striped table-bordered display">
-                    <thead>
-                        <tr>
+                <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                    <thead> 
+                        <tr class="maiuscula">
                             <th class="text-center">
                                 Nº
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Patente)
+                            <th class="text-center">
+                               Posto
                             </th>
-                            <th class="w-25">
-                                @Html.DisplayNameFor(model => model.NomeCompleto)
+                            <th class="text-center w-25">
+                                Nome
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.FuncaoCargo)
+                            <th class="text-center">
+                                Função / Cargo
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.SituacaoEfectivo)
+                            <th class="text-center">
+                                Situação
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.OrgaoUnidade)
+                            <th class="text-center">
+                                Orgão / Unidade
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.NIP)
+                            <th class="text-center">
+                                NIP
                             </th>
-                            <th class="w-25"></th>
+                            <th class="text-center w-10">Acções</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,21 +57,21 @@
                                     <td class="w-25">
                                         @Html.DisplayFor(modelItem => item.NomeCompleto)
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         @Html.DisplayFor(modelItem => item.FuncaoCargo.NomeFuncaoCargo)
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         @Html.DisplayFor(modelItem => item.SituacaoEfectivo.TipoSituacao)
                                     </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.OrgaoUnidade.NomeOrgaoUnidade)
+                                    <td class="text-center">
+                                        @Html.DisplayFor(modelItem => item.OrgaoUnidade.Sigla)
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         @Html.DisplayFor(modelItem => item.NIP)
                                     </td>
 
-                                    <td class="text-center w-25">
-                                        <a id="openEditModal_@item.Id" asp-action="Edit" asp-route-id="@item.Id">
+                                    <td class="text-center w-10">
+                                        <a class="btn-edit" href="#" data-id="@item.Id">
                                             <i class="fas fa-pencil-alt" style="color: #007BFF;"></i>
                                         </a>
                                         <a id="openDetalheModal_@item.Id" asp-action="Details" asp-route-id="@item.Id">
@@ -102,14 +96,18 @@
     </div>
 </div>
 
+<!-- jQuery e DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
 <script>
-    $(document).ready(function () {
+       $(document).ready(function () {
         $('#minhaTabela').DataTable({
             "language": {
                 "decimal": ",",
                 "thousands": ".",
-                "search": "Buscar:",
-                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "search": "", /* Buscar esta nullo */
+                "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
                 "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
                 "infoEmpty": "Nenhum registro disponível",
                 "infoFiltered": "(filtrado de _MAX_ registros no total)",
@@ -127,10 +125,153 @@
                     "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
                     "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
                 }
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
             }
         });
     });
+
 </script>
+
+
+<!-- Modal para Inserir -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Cadastrar Efectivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent">
+                    <p class="text-muted">Carregando formulário...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Editar -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Efectivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="editModalContent">
+                    <p class="text-muted">Carregando formulário...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+       $(document).ready(function () {
+        // Quando a modal for aberta, carregar o formulário via AJAX
+        $('#createModal').on('shown.bs.modal', function () {
+            $.ajax({
+                url: '@Url.Action("Create", "Efectivos", new { area = "Dpq" })',
+                type: 'GET',
+                success: function (data) {
+                    $('#modalContent').html(data);
+                },
+                error: function (xhr) {
+                    console.error("Erro ao carregar formulário:", xhr.responseText);
+                    $('#modalContent').html('<p class="text-danger">Erro ao carregar o formulário.</p>');
+                }
+            });
+        });
+
+        // Enviar o formulário via AJAX, incluindo upload de arquivos
+        $(document).on("submit", "#createForm", function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this); // Criar FormData para suportar arquivos
+
+            $.ajax({
+                url: '@Url.Action("Create", "Efectivos", new { area = "Dpq" })',
+                type: 'POST',
+                data: formData,
+                processData: false, // Importante para uploads
+                contentType: false, // Importante para uploads
+                success: function (response) {
+                    if (response.success) {
+                        alert("Cadastro realizado com sucesso!");
+                        $("#createModal").modal("hide");
+                        location.reload(); // Recarrega a página
+                    } else {
+                        $("#alert-errors").removeClass("d-none").html(response.errors.join("<br>"));
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Erro ao enviar:", xhr.responseText);
+                    $("#alert-errors").removeClass("d-none").html("Erro ao enviar os dados.");
+                }
+            });
+        });
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Abrir o modal de edição ao clicar no link
+        $(document).on("click", ".btn-edit", function (e) {
+            e.preventDefault();
+
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '@Url.Action("Edit", "Efectivos", new { area = "Dpq" })' + "?id=" + id,
+                type: 'GET',
+                success: function (data) {
+                    $('#editModalContent').html(data);
+                    $('#editModal').modal('show');
+                },
+                error: function (xhr) {
+                    console.error("Erro ao carregar formulário:", xhr.responseText);
+                    $('#editModalContent').html('<p class="text-danger">Erro ao carregar o formulário.</p>');
+                }
+            });
+        });
+
+        // Submeter o formulário via AJAX
+        $(document).on("submit", "#editForm", function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: '@Url.Action("Edit", "Efectivos", new { area = "Dpq" })',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        alert("Efectivo atualizado com sucesso!");
+                        $("#editModal").modal("hide");
+                        location.reload();
+                    } else {
+                        alert("Erro: " + response.errors.join("\n"));
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Erro ao atualizar:", xhr.responseText);
+                    alert("Erro ao atualizar os dados.");
+                }
+            });
+        });
+    });
+</script>
+
+
+
 
 
 

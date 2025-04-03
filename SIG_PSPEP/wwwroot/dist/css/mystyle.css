@@ -1,4 +1,4 @@
-
+Ôªø
 .icon-edit {
     fill: blue;
 }
@@ -11,6 +11,13 @@
     fill: red;
 }
 
+.card {
+    border-radius: 5px;
+    background: #fff; /* Fundo branco padr√£o */
+    padding: 5px; /* Espa√ßamento interno */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border: 0.5px solid #ddd; /* Borda sutil */
+}
 
 table td,
 table th {
@@ -20,7 +27,7 @@ table th {
 }
 
 thead th {
-    color: #fff;
+    color: #fff !important;
 }
 
 
@@ -29,47 +36,52 @@ thead th {
 }
 
 table thead {
-    background: rgb(0,41,103);
-    background: linear-gradient(0deg, rgba(0,41,103,1) 0%, rgba(12,25,180,1) 100%);
+    background: rgb(0, 20, 60); /* Azul profundo */
+    background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
     top: 0;
     position: sticky;
 }
 
 
 tbody tr {
-    height: auto; /* Permite altura din‚mica baseada no conte˙do */
-    font-size: 13px;
+    height: auto; /* Permite altura din√¢mica baseada no conte√∫do */
+    font-size: 12px;
+}
+
+thead .maiuscula {
+    text-transform: uppercase !important; /* Transforma o texto em mai√∫sculas */
+    font-size: 12px;
 }
 
 /* Opcional: Para tabelas compactas no Bootstrap */
 .table-compact tbody td {
-    padding: 10px 8px !important; /* Sobrescreve padding padr„o */
-    line-height: 1 !important; /* Reduz a altura ao mÌnimo */
+    padding: 8px 8px !important; /* Sobrescreve padding padr√£o */
+    line-height: 1 !important; /* Reduz a altura ao m√≠nimo */
 }
 
 
 .table-compact thead th {
-    padding: 14px 10px; /* Aumenta o espaÁamento interno */
-    line-height: 1.4; /* Ajusta a altura mÌnima das cÈlulas */
+    padding: 14px 10px; /* Aumenta o espa√ßamento interno */
+    line-height: 1.4; /* Ajusta a altura m√≠nima das c√©lulas */
 }
 
 .table-compact tbody td {
-    padding: 6px 10px; /* Aumenta o espaÁamento interno */
-    line-height: 1.4; /* Ajusta a altura mÌnima das cÈlulas */
+    padding: 6px 10px; /* Aumenta o espa√ßamento interno */
+    line-height: 1.4; /* Ajusta a altura m√≠nima das c√©lulas */
 }
 
-/* AdaptaÁ„o para telas muito pequenas (opcional) */
+/* Adapta√ß√£o para telas muito pequenas (opcional) */
 @media (max-width: 576px) {
     .table-compact {
         font-size: 12px; /* Reduz levemente a fonte em telas pequenas */
     }
 
         .table-compact tbody td {
-            padding: 4px 8px; /* Reduz o espaÁamento interno em telas pequenas */
+            padding: 4px 8px; /* Reduz o espa√ßamento interno em telas pequenas */
         }
 
         .table-compact thead th {
-            padding: 8px 8px; /* Reduz o espaÁamento interno em telas pequenas */
+            padding: 8px 8px; /* Reduz o espa√ßamento interno em telas pequenas */
         }
 }
 
@@ -104,55 +116,125 @@ tbody tr {
 
 /* Altera o estilo do campo de pesquisa do DataTable */
 .dataTables_filter input {
-    height: 40px; /* Aumenta a altura do campo de pesquisa */
+    height: 30px; /* Aumenta a altura do campo de pesquisa */
     width: 300px; /* Aumenta a largura do campo de pesquisa */
-    font-size: 16px; /* Ajusta o tamanho da fonte */
-    padding-bottom: 40px;
-}
-
-/* Reduzir o tamanho dos botıes de paginaÁ„o */
-.dataTables_paginate .paginate_button {
-    padding: 0px 0px; /* Reduz o preenchimento interno dos botıes */
-    font-size: 12px; /* Reduz o tamanho da fonte */
-    height: 30px; /* Reduz a altura dos botıes */
-    width: auto; /* Ajusta a largura automaticamente */
-}
-
-    /* Ajustar o tamanho do bot„o ativo */
-    .dataTables_paginate .paginate_button.active {
-        font-size: 12px; /* Reduz o tamanho da fonte no bot„o ativo */
-        padding: 0px 0px; /* Ajuste do padding */
-    }
-
-.dataTables_info {
-    font-size: 14px; /* Reduz o tamanho da fonte para 16px */
-}
-
-/* Opcional: Ajuste de largura dos botıes em telas pequenas */
-@media (max-width: 768px) {
-    .dataTables_paginate .paginate_button {
-        padding: 0px 0px; /* Menos padding em dispositivos menores */
-        font-size: 10px; /* Menor tamanho de fonte */
-    }
-
-        .dataTables_paginate .paginate_button.active {
-            font-size: 10px; /* Reduz o tamanho da fonte no bot„o ativo */
-            padding: 0px 0px; /* Ajuste do padding */
-        }
+    font-size: 14px; /* Ajusta o tamanho da fonte */
+    padding: 0px 15px !important;
 }
 
 /* Centraliza o select list dentro do container da DataTable */
 .dataTables_length {
     display: flex;
     justify-content: left; /* Centraliza o select list */
-    width: 100%; /* Garante que ocupe toda a largura */
-    padding: 0; /* Remove qualquer espaÁamento interno */
+    /*width: 100%;*/ /* Garante que ocupe toda a largura */
+    padding: 0; /* Remove qualquer espa√ßamento interno */
+    font-size: 12px; /* Ajusta o tamanho da fonte */
 }
 
-    /* Opcional: Ajusta o tamanho do select list se necess·rio */
+    /* Opcional: Ajusta o tamanho do select list se necess√°rio */
     .dataTables_length select {
         margin-left: 0; /* Centraliza o select dentro do seu container */
+        height: 30px !important;
+        text-align: center; /* Centraliza o texto dentro do select */
+        font-size: 12px; /* Ajusta o tamanho da fonte */
     }
+
+/* Reduzir o tamanho dos bot√µes de pagina√ß√£o */
+.dataTables_paginate .paginate_button {
+    padding: 0px 0px; /* Reduz o preenchimento interno dos bot√µes */
+    font-size: 12px; /* Reduz o tamanho da fonte */
+    height: 30px; /* Reduz a altura dos bot√µes */
+    width: auto; /* Ajusta a largura automaticamente */
+}
+
+    /* Ajustar o tamanho do bot√£o ativo */
+    .dataTables_paginate .paginate_button.active {
+        font-size: 12px; /* Reduz o tamanho da fonte no bot√£o ativo */
+        padding: 0px 0px; /* Ajuste do padding */
+    }
+
+.dataTables_info {
+    font-size: 12px; /* Reduz o tamanho da fonte para 16px */
+}
+
+
+@media (max-width: 768px) {
+    .dataTables_paginate .paginate_button {
+        padding: 0px 0px;
+        font-size: 10px;
+    }
+
+        .dataTables_paginate .paginate_button.active {
+            font-size: 10px;
+            padding: 0px 0px;
+        }
+    .dataTables_info {
+        font-size: 10px; /* Reduz o tamanho da fonte para 16px */
+    }
+   
+}
+
+@media screen and (max-width: 640px) {
+    /* Novo cont√™iner para alinhar os filtros */
+    .filters-container {
+        display: flex;
+        justify-content: space-between; /* Mant√©m os itens lado a lado */
+        align-items: center; /* Alinha verticalmente */
+        flex-wrap: nowrap; /* Evita que quebrem de linha */
+        margin-bottom: 10px; /* Espa√ßo abaixo para n√£o colar na tabela */
+    }
+
+        .dataTables_filter input {
+            height: 28px;
+            width: 200px;
+            font-size: 12px;
+            padding: 0px 10px !important;
+            align-items: flex-end;
+        }
+
+    /* Select de escolha de registros */
+    .dataTables_length {
+        display: flex;
+        align-items: center;
+    }
+
+        .dataTables_length select {
+            height: 28px !important;
+        }
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter {
+        float: left !important;
+    }
+}
+
+/* Estiliza o input de pesquisa */
+.dataTables_wrapper .dataTables_filter {
+    position: relative; /* Permite posicionar o √≠cone dentro do input */
+}
+
+    .dataTables_wrapper .dataTables_filter input {
+        height: 30px;
+        width: 220px;
+        font-size: 14px;
+        padding: 5px 10px 5px 35px !important; /* Espa√ßo √† esquerda para o √≠cone */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: #fff;
+        outline: none;
+    }
+
+    /* Adiciona o √≠cone de pesquisa */
+    .dataTables_wrapper .dataTables_filter::before {
+        content: "\1F50D"; /* C√≥digo Unicode da lupa üîç */
+        font-size: 16px;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #777;
+        pointer-events: none; /* Para n√£o interferir no input */
+    }
+
+
 
 
 .modal-content {
@@ -257,19 +339,19 @@ tbody tr {
         display: block;
     }
 
-/* Estilo padr„o para telas mÈdias e grandes */
+/* Estilo padr√£o para telas m√©dias e grandes */
 .small-label {
     font-size: 11px; /* Tamanho inicial */
-    padding: 2px; /* EspaÁamento interno */
-    margin: 2px; /* EspaÁamento externo */
+    padding: 2px; /* Espa√ßamento interno */
+    margin: 2px; /* Espa√ßamento externo */
 }
 
 /* Para telas pequenas (como smartphones) */
 @media (max-width: 768px) {
     .small-label {
         font-size: 12px; /* Reduz o tamanho da fonte */
-        padding: 1px; /* Reduz o espaÁamento interno */
-        margin: 1px; /* Reduz o espaÁamento externo */
+        padding: 1px; /* Reduz o espa√ßamento interno */
+        margin: 1px; /* Reduz o espa√ßamento externo */
     }
 }
 
@@ -277,8 +359,8 @@ tbody tr {
 @media (max-width: 480px) {
     .small-label {
         font-size: 11px; /* Ainda menor para caber na tela */
-        padding: 0.5px; /* EspaÁamento interno mÌnimo */
-        margin: 0.5px; /* EspaÁamento externo mÌnimo */
+        padding: 0.5px; /* Espa√ßamento interno m√≠nimo */
+        margin: 0.5px; /* Espa√ßamento externo m√≠nimo */
     }
 }
 
@@ -286,14 +368,14 @@ tbody tr {
 @media (min-width: 1200px) {
     .small-label {
         font-size: 14px; /* Aumenta para maior legibilidade */
-        padding: 4px; /* Mais espaÁamento interno */
-        margin: 4px; /* Mais espaÁamento externo */
+        padding: 4px; /* Mais espa√ßamento interno */
+        margin: 4px; /* Mais espa√ßamento externo */
     }
 }
 
 .small-input {
     font-size: 13px; /* Reduz o tamanho do texto do input */
-    padding: 2px 10px; /* Ajuste o espaÁamento interno */
+    padding: 2px 10px; /* Ajuste o espa√ßamento interno */
 }
 
     .small-input::placeholder {
@@ -324,13 +406,14 @@ input::placeholder {
     text-align: center;
 }
 
-/* Ajuste personalizado para botıes pequenos */
+/* Ajuste personalizado para bot√µes pequenos */
 .custom-btn {
     height: 30px;
     line-height: 1.5; /* Ajuste para alinhar o texto verticalmente */
-    padding: 0px 12px; /* Garantir espaÁamento interno consistente */
+    padding: 0px 12px; /* Garantir espa√ßamento interno consistente */
     font-size: 0.875rem; /* Tamanho da fonte do btn-sm */
 }
+
 .error {
     border: 2px solid red; /* Adiciona uma borda vermelha */
 }
@@ -340,7 +423,7 @@ a {
 }
 
     a:hover {
-        text-decoration: none !important;/* Adicione esta linha se quiser sublinhar apenas no hover */
+        text-decoration: none !important; /* Adicione esta linha se quiser sublinhar apenas no hover */
     }
 
 .iq-footer {
@@ -348,21 +431,102 @@ a {
 }
 
     .iq-footer p {
-        margin-top: 12px; /* Ajusta o espaÁamento entre os textos */
+        margin-top: 12px; /* Ajusta o espa√ßamento entre os textos */
     }
 
+/* Classes padr√£o */
+.w-5 {
+    width: 5% !important;
+}
 
+.w-10 {
+    width: 10% !important;
+}
 
+.w-15 {
+    width: 15% !important;
+}
 
+.w-20 {
+    width: 20% !important;
+}
 
+/* Responsividade */
+@media (max-width: 576px) { /* Extra pequeno (XS) */
+    .w-sm-5 {
+        width: 5% !important;
+    }
 
+    .w-sm-10 {
+        width: 10% !important;
+    }
 
+    .w-sm-15 {
+        width: 15% !important;
+    }
 
+    .w-sm-20 {
+        width: 20% !important;
+    }
+}
 
+@media (min-width: 576px) { /* Pequeno (SM) */
+    .w-md-5 {
+        width: 5% !important;
+    }
 
+    .w-md-10 {
+        width: 10% !important;
+    }
 
-.d-flex {
+    .w-md-15 {
+        width: 15% !important;
+    }
+
+    .w-md-20 {
+        width: 20% !important;
+    }
+}
+
+@media (min-width: 768px) { /* M√©dio (MD) */
+    .w-lg-5 {
+        width: 5% !important;
+    }
+
+    .w-lg-10 {
+        width: 10% !important;
+    }
+
+    .w-lg-15 {
+        width: 15% !important;
+    }
+
+    .w-lg-20 {
+        width: 20% !important;
+    }
+}
+
+@media (min-width: 992px) { /* Grande (LG) */
+    .w-xl-5 {
+        width: 5% !important;
+    }
+
+    .w-xl-10 {
+        width: 10% !important;
+    }
+
+    .w-xl-15 {
+        width: 15% !important;
+    }
+
+    .w-xl-20 {
+        width: 20% !important;
+    }
+}
+
+.d-flex-table {
     display: flex;
-    justify-content: space-between; /* MantÈm o tÌtulo ‡ esquerda e o bot„o ‡ direita */
+    flex-direction: row-reverse; /* Inverte a ordem dos elementos */
+    justify-content: space-between;
     align-items: center;
 }

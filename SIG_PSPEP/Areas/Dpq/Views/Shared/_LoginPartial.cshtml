@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using SIG_PSPEP.Context;
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject AppDbContext _context
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var _user = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(_user);
+
+    // Recupera os dados do usuário, incluindo a foto e o nome completo
+    var userNameFoto = await _context.UsuarioAutes
+     .Where(ua => ua.UserId == _user.Id)
+     .Include(ua => ua.Efectivo) // Garante que Efectivo está carregado
+     .Select(ua => new
+     {
+         NomeCompleto = ua.Efectivo != null ? ua.Efectivo.NomeCompleto : _user.UserName, // Evita erro de null
+         Foto = _context.FotoEfectivos
+             .Where(fe => fe.EfectivoId == ua.EfectivoId)
+             .Select(fe => fe.Foto)
+             .FirstOrDefault()
+     })
+     .FirstOrDefaultAsync();
+
+
+    // Converte a foto para Base64 ou usa a imagem padrão
+    var fotoPerfil = userNameFoto?.Foto != null
+        ? $"data:image/png;base64,{Convert.ToBase64String(userNameFoto.Foto)}"
+        : Url.Content("~/assets/images/users/user-police.png");
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
+           id="navbarDropdown" role="button"
+           data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="@fotoPerfil" alt="Profile" class="rounded-circle" width="31">
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end user-dd animated" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item"><i class="mdi mdi-account me-1"></i> @(userNameFoto?.NomeCompleto ?? "Usuário")</a></li>
+            <li><a class="dropdown-item"><i class="mdi mdi-email me-1"></i>@User.Identity?.Name</a></li>
+            <div class="dropdown-divider"></div>
+            <li><a class="dropdown-item" href="javascript:void(0)"><i class="mdi mdi-settings me-1"></i>@roles.FirstOrDefault()</a></li>
+            <div class="dropdown-divider"></div>
+            <li>
+                <form method="post" asp-controller="Conta" asp-action="Sair" asp-area="" class="m-0">
+                    <button type="submit" class="dropdown-item d-flex align-items-center">
+                        <i class="fa fa-power-off me-1"></i> Terminar Sessão
+                    </button>
+                </form>
+            </li>
+            <div class="dropdown-divider"></div>
+            <li class="ps-4 p-10">
+                <a href="javascript:void(0)" class="btn btn-sm btn-success btn-rounded text-white">Ver Perfil</a>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a asp-area="Identity" asp-page="/Conta/Login" class="nav-link text-muted waves-effect waves-dark pro-pic">
+            <img src="~/assets/images/users/polices.png" class="img-fluid avatar-rounded" alt="user">
+            <span class="ml-2 user-name">Entrar</span>
+        </a>
+    </li>
+}

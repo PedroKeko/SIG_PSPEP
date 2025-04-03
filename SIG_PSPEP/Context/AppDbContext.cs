@@ -13,7 +13,15 @@ public class AppDbContext : IdentityDbContext
     }
 
     public DbSet<AgregadoFam> AgregadoFams { get; set; }
+    public DbSet<Alimento> Alimentos { get; set; }
+    public DbSet<AlimentoCategoria> AlimentoCategorias { get; set; }
+    public DbSet<AlimentoControle> AlimentoControles { get; set; }
     public DbSet<Area> Areas { get; set; }
+    public DbSet<Armamento> Armamentos { get; set; }
+    public DbSet<ArmamentoCondicao> ArmamentoCondicaos { get; set; }
+    public DbSet<ArmamentoCondicaoTipo> ArmamentoCondicaoTipos { get; set; }
+    public DbSet<ArmamentoControlUtilidade> ArmamentoControlUtilidades { get; set; }
+    public DbSet<ArmamentoLocalizacao> ArmamentoLocalizacaos { get; set; }
     public DbSet<Banco> Bancos { get; set; }
     public DbSet<Efectivo> Efectivos { get; set; }
     public DbSet<EfectivoContaBancaria> EfectivoContaBancarias { get; set; }
@@ -28,6 +36,11 @@ public class AppDbContext : IdentityDbContext
     public DbSet<Patente> Patentes { get; set; }
     public DbSet<SituacaoEfectivo> SituacaoEfectivos { get; set; }
     public DbSet<UsuarioAute> UsuarioAutes { get; set; }
+    public DbSet<Utencilio> Utencilios { get; set; }
+    public DbSet<UtencilioTipo> UtencilioTipos { get; set; }
+    public DbSet<Vestuario> Vestuarios { get; set; }
+    public DbSet<VestuarioEntrada> VestuarioEntradas { get; set; }
+    public DbSet<VestuarioSaida> VestuarioSaidas { get; set; }
 
     #region
     protected override void OnModelCreating(ModelBuilder modelBuilder)

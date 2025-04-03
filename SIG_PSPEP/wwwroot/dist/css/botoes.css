@@ -21,16 +21,38 @@
     outline: none;
 }
 
-/* 1 */
+.custom2-btn {
+    height: 30px;
+    display: flex;
+    align-items: center; /* Centraliza verticalmente */
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 30px;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: inset 2px 2px 2px 0px rgba(255,255,255,.5), 7px 7px 20px 0px rgba(0,0,0,.1), 4px 4px 5px 0px rgba(0,0,0,.1);
+    outline: none;
+}
+
+
+/* Azul ainda mais escuro */
 .btn-1 {
-    background: rgb(0,41,103);
-    background: linear-gradient(0deg, rgba(0,41,103,1) 0%, rgba(12,25,180,1) 100%);
+    background: rgb(0, 20, 60); /* Azul profundo */
+    background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
     border: none;
 }
 
+    /* Hover com azul mais escuro */
     .btn-1:hover {
-        background: rgb(0,3,255);
-        background: linear-gradient(0deg, rgba(0,3,255,1) 0%, rgba(2,126,251,1) 100%);
+        background: rgb(0, 5, 150); /* Azul bem mais escuro */
+        background: linear-gradient(0deg, rgba(0, 5, 150, 1) 0%, rgba(2, 80, 180, 1) 100%);
+        color: #79c81e; /* Texto branco */
     }
 
 /* 2 */

@@ -1,10 +1,14 @@
-﻿using SIG_PSPEP.Enums;
+﻿using SIG_PSPEP.Entidades;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SIG_PSPEP.Entidades
+namespace SIG_PSPEP.Models
 {
-    public class Efectivo: EntidadeBase
+    public class EfectivoViewModel
     {
+        public int Id { get; set; }
+       
         public int SituacaoEfectivoId { get; set; }
         public int OrgaoUnidadeId { get; set; }
         public int FuncaoCargoId { get; set; }
@@ -18,7 +22,9 @@ namespace SIG_PSPEP.Entidades
         [MaxLength(20)]
         public string? N_Agente { get; set; }
 
-        [Required, MaxLength(500)]
+        [Required]
+        [DisplayName("Nome Completo")]
+        [StringLength(300)]
         public string? NomeCompleto { get; set; }
 
         [MaxLength(100)]
@@ -102,9 +108,14 @@ namespace SIG_PSPEP.Entidades
 
         [MaxLength(255)]
         public string? OutrasInfo { get; set; }
-        public FuncaoCargo? FuncaoCargo { get; set; }
-        public SituacaoEfectivo? SituacaoEfectivo { get; set; }
-        public OrgaoUnidade? OrgaoUnidade { get; set; }
-        public Patente? Patente { get; set; }
+
+        [DisplayName("Usuário")]
+        public string? UserId { get; set; }
+
+        // Propriedades para FotoCondutor
+        [NotMapped]
+        public IFormFile? FotoIF { get; set; }
+        public  byte[]? FotoByte { get; set; }
+        public int EfectivoId { get; set; }
     }
 }

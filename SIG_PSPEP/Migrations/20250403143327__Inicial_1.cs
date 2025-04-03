@@ -72,6 +72,28 @@ namespace SIG_PSPEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AlimentoCategorias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Categoria = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AlimentoCategorias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AlimentoCategorias_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Areas",
                 columns: table => new
                 {
@@ -89,6 +111,54 @@ namespace SIG_PSPEP.Migrations
                     table.PrimaryKey("PK_Areas", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Areas_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArmamentoCondicaoTipos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TipoCondicao = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArmamentoCondicaoTipos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArmamentoCondicaoTipos_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Armamentos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Marca = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Modelo = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Calibre = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Categoria = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Origem = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Armamentos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Armamentos_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
@@ -339,6 +409,120 @@ namespace SIG_PSPEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UtencilioTipos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TipoUtencilio = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UtencilioTipos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UtencilioTipos_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vestuarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Designação = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Classe = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Qtd = table.Column<int>(type: "int", nullable: false),
+                    EstadoVestuario = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vestuarios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Vestuarios_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Alimentos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AlimentoCategoriaId = table.Column<int>(type: "int", nullable: false),
+                    Designacao = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Alimentos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Alimentos_AlimentoCategorias_AlimentoCategoriaId",
+                        column: x => x.AlimentoCategoriaId,
+                        principalTable: "AlimentoCategorias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Alimentos_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArmamentoLocalizacaos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ArmamentoId = table.Column<int>(type: "int", nullable: false),
+                    UnidadeId = table.Column<int>(type: "int", nullable: false),
+                    NumeroArma = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    EstadoArma = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    OBS = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    OrgaoUnidadeId = table.Column<int>(type: "int", nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArmamentoLocalizacaos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArmamentoLocalizacaos_Armamentos_ArmamentoId",
+                        column: x => x.ArmamentoId,
+                        principalTable: "Armamentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ArmamentoLocalizacaos_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ArmamentoLocalizacaos_OrgaoUnidades_OrgaoUnidadeId",
+                        column: x => x.OrgaoUnidadeId,
+                        principalTable: "OrgaoUnidades",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Efectivos",
                 columns: table => new
                 {
@@ -351,7 +535,7 @@ namespace SIG_PSPEP.Migrations
                     Num_Processo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     NIP = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     N_Agente = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    NomeCompleto = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    NomeCompleto = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Apelido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Genero = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     DataNasc = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -423,6 +607,100 @@ namespace SIG_PSPEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Utencilios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UtencilioTipoId = table.Column<int>(type: "int", nullable: false),
+                    Designacao = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Qtd = table.Column<int>(type: "int", nullable: false),
+                    OBS = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    EstadoUtencilio = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Utencilios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Utencilios_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Utencilios_UtencilioTipos_UtencilioTipoId",
+                        column: x => x.UtencilioTipoId,
+                        principalTable: "UtencilioTipos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VestuarioEntradas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VestuarioId = table.Column<int>(type: "int", nullable: false),
+                    Qtd = table.Column<int>(type: "int", nullable: false),
+                    OBS = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VestuarioEntradas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VestuarioEntradas_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_VestuarioEntradas_Vestuarios_VestuarioId",
+                        column: x => x.VestuarioId,
+                        principalTable: "Vestuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AlimentoControles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AlimentoId = table.Column<int>(type: "int", nullable: false),
+                    Qtd = table.Column<int>(type: "int", nullable: false),
+                    Designacao = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    DataExpiracao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EstadoAlimento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AlimentoControles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AlimentoControles_Alimentos_AlimentoId",
+                        column: x => x.AlimentoId,
+                        principalTable: "Alimentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AlimentoControles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AgregadoFams",
                 columns: table => new
                 {
@@ -447,6 +725,82 @@ namespace SIG_PSPEP.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AgregadoFams_Efectivos_EfectivoId",
+                        column: x => x.EfectivoId,
+                        principalTable: "Efectivos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArmamentoCondicaos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EfectivoId = table.Column<int>(type: "int", nullable: false),
+                    ArmamentoCondicaoTipoId = table.Column<int>(type: "int", nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    OBS = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArmamentoCondicaos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArmamentoCondicaos_ArmamentoCondicaoTipos_ArmamentoCondicaoTipoId",
+                        column: x => x.ArmamentoCondicaoTipoId,
+                        principalTable: "ArmamentoCondicaoTipos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ArmamentoCondicaos_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ArmamentoCondicaos_Efectivos_EfectivoId",
+                        column: x => x.EfectivoId,
+                        principalTable: "Efectivos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArmamentoControlUtilidades",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ArmamentoLocalizacaoId = table.Column<int>(type: "int", nullable: false),
+                    EfectivoId = table.Column<int>(type: "int", nullable: false),
+                    EstadoResponsabilidade = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DataEntregua = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataDevolucao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MotivoEntrega = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArmamentoControlUtilidades", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArmamentoControlUtilidades_ArmamentoLocalizacaos_ArmamentoLocalizacaoId",
+                        column: x => x.ArmamentoLocalizacaoId,
+                        principalTable: "ArmamentoLocalizacaos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ArmamentoControlUtilidades_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ArmamentoControlUtilidades_Efectivos_EfectivoId",
                         column: x => x.EfectivoId,
                         principalTable: "Efectivos",
                         principalColumn: "Id",
@@ -666,6 +1020,43 @@ namespace SIG_PSPEP.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "VestuarioSaidas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VestuarioId = table.Column<int>(type: "int", nullable: false),
+                    EfectivoId = table.Column<int>(type: "int", nullable: false),
+                    Qtd = table.Column<int>(type: "int", nullable: false),
+                    OBS = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VestuarioSaidas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VestuarioSaidas_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_VestuarioSaidas_Efectivos_EfectivoId",
+                        column: x => x.EfectivoId,
+                        principalTable: "Efectivos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VestuarioSaidas_Vestuarios_VestuarioId",
+                        column: x => x.VestuarioId,
+                        principalTable: "Vestuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AgregadoFams_EfectivoId",
                 table: "AgregadoFams",
@@ -677,8 +1068,88 @@ namespace SIG_PSPEP.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AlimentoCategorias_UserId",
+                table: "AlimentoCategorias",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AlimentoControles_AlimentoId",
+                table: "AlimentoControles",
+                column: "AlimentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AlimentoControles_UserId",
+                table: "AlimentoControles",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Alimentos_AlimentoCategoriaId",
+                table: "Alimentos",
+                column: "AlimentoCategoriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Alimentos_UserId",
+                table: "Alimentos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Areas_UserId",
                 table: "Areas",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoCondicaos_ArmamentoCondicaoTipoId",
+                table: "ArmamentoCondicaos",
+                column: "ArmamentoCondicaoTipoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoCondicaos_EfectivoId",
+                table: "ArmamentoCondicaos",
+                column: "EfectivoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoCondicaos_UserId",
+                table: "ArmamentoCondicaos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoCondicaoTipos_UserId",
+                table: "ArmamentoCondicaoTipos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoControlUtilidades_ArmamentoLocalizacaoId",
+                table: "ArmamentoControlUtilidades",
+                column: "ArmamentoLocalizacaoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoControlUtilidades_EfectivoId",
+                table: "ArmamentoControlUtilidades",
+                column: "EfectivoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoControlUtilidades_UserId",
+                table: "ArmamentoControlUtilidades",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoLocalizacaos_ArmamentoId",
+                table: "ArmamentoLocalizacaos",
+                column: "ArmamentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoLocalizacaos_OrgaoUnidadeId",
+                table: "ArmamentoLocalizacaos",
+                column: "OrgaoUnidadeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArmamentoLocalizacaos_UserId",
+                table: "ArmamentoLocalizacaos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Armamentos_UserId",
+                table: "Armamentos",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -864,6 +1335,51 @@ namespace SIG_PSPEP.Migrations
                 name: "IX_UsuarioAutes_UserId",
                 table: "UsuarioAutes",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Utencilios_UserId",
+                table: "Utencilios",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Utencilios_UtencilioTipoId",
+                table: "Utencilios",
+                column: "UtencilioTipoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UtencilioTipos_UserId",
+                table: "UtencilioTipos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VestuarioEntradas_UserId",
+                table: "VestuarioEntradas",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VestuarioEntradas_VestuarioId",
+                table: "VestuarioEntradas",
+                column: "VestuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vestuarios_UserId",
+                table: "Vestuarios",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VestuarioSaidas_EfectivoId",
+                table: "VestuarioSaidas",
+                column: "EfectivoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VestuarioSaidas_UserId",
+                table: "VestuarioSaidas",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VestuarioSaidas_VestuarioId",
+                table: "VestuarioSaidas",
+                column: "VestuarioId");
         }
 
         /// <inheritdoc />
@@ -871,6 +1387,15 @@ namespace SIG_PSPEP.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AgregadoFams");
+
+            migrationBuilder.DropTable(
+                name: "AlimentoControles");
+
+            migrationBuilder.DropTable(
+                name: "ArmamentoCondicaos");
+
+            migrationBuilder.DropTable(
+                name: "ArmamentoControlUtilidades");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -909,6 +1434,24 @@ namespace SIG_PSPEP.Migrations
                 name: "UsuarioAutes");
 
             migrationBuilder.DropTable(
+                name: "Utencilios");
+
+            migrationBuilder.DropTable(
+                name: "VestuarioEntradas");
+
+            migrationBuilder.DropTable(
+                name: "VestuarioSaidas");
+
+            migrationBuilder.DropTable(
+                name: "Alimentos");
+
+            migrationBuilder.DropTable(
+                name: "ArmamentoCondicaoTipos");
+
+            migrationBuilder.DropTable(
+                name: "ArmamentoLocalizacaos");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -921,7 +1464,19 @@ namespace SIG_PSPEP.Migrations
                 name: "Areas");
 
             migrationBuilder.DropTable(
+                name: "UtencilioTipos");
+
+            migrationBuilder.DropTable(
                 name: "Efectivos");
+
+            migrationBuilder.DropTable(
+                name: "Vestuarios");
+
+            migrationBuilder.DropTable(
+                name: "AlimentoCategorias");
+
+            migrationBuilder.DropTable(
+                name: "Armamentos");
 
             migrationBuilder.DropTable(
                 name: "FuncaoCargos");
