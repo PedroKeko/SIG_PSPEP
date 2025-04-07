@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SIG_PSPEP.Entidade;
 using SIG_PSPEP.Entidades;
 
 namespace SIG_PSPEP.Context;
@@ -31,9 +32,11 @@ public class AppDbContext : IdentityDbContext
     public DbSet<Filiacao> Filiacaos { get; set; }
     public DbSet<FotoEfectivo> FotoEfectivos { get; set; }
     public DbSet<FuncaoCargo> FuncaoCargos { get; set; }
+    public DbSet<Municipio> Municipios { get; set; }
     public DbSet<OrdemServico> OrdemServicos { get; set; }
     public DbSet<OrgaoUnidade> OrgaoUnidades { get; set; }
     public DbSet<Patente> Patentes { get; set; }
+    public DbSet<Provincia> Provincias { get; set; }
     public DbSet<SituacaoEfectivo> SituacaoEfectivos { get; set; }
     public DbSet<UsuarioAute> UsuarioAutes { get; set; }
     public DbSet<Utencilio> Utencilios { get; set; }
@@ -52,9 +55,21 @@ public class AppDbContext : IdentityDbContext
             .WithMany()
             .HasForeignKey(e => e.PatenteId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Provincia de Nascimento
+        modelBuilder.Entity<Efectivo>()
+            .HasOne(c => c.ProvinciaNascimento)
+            .WithMany()
+            .HasForeignKey(c => c.ProvinciaNascId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Relacionamento com Provincia de Nascimento
+        modelBuilder.Entity<Efectivo>()
+            .HasOne(c => c.ProvinciaResidencia)
+            .WithMany()
+            .HasForeignKey(c => c.ProvinciaResId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
-
-
     #endregion
 
 }

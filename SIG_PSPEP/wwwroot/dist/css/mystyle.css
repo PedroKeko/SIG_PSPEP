@@ -344,6 +344,7 @@ thead .maiuscula {
     font-size: 11px; /* Tamanho inicial */
     padding: 2px; /* Espaçamento interno */
     margin: 2px; /* Espaçamento externo */
+    font-weight: 100 !important;
 }
 
 /* Para telas pequenas (como smartphones) */
@@ -367,7 +368,7 @@ thead .maiuscula {
 /* Para telas grandes (como desktops ou telas maiores) */
 @media (min-width: 1200px) {
     .small-label {
-        font-size: 14px; /* Aumenta para maior legibilidade */
+        font-size: 13px; /* Aumenta para maior legibilidade */
         padding: 4px; /* Mais espaçamento interno */
         margin: 4px; /* Mais espaçamento externo */
     }

@@ -126,7 +126,7 @@
                 <input asp-for="Nacionalidade" class="form-control" />
                 <span asp-validation-for="Nacionalidade" class="text-danger"></span>
             </div>
-            <div class="form-group">
+        @*     <div class="form-group">
                 <label asp-for="Naturalidade" class="control-label"></label>
                 <input asp-for="Naturalidade" class="form-control" />
                 <span asp-validation-for="Naturalidade" class="text-danger"></span>
@@ -135,7 +135,7 @@
                 <label asp-for="MunicipioRes" class="control-label"></label>
                 <input asp-for="MunicipioRes" class="form-control" />
                 <span asp-validation-for="MunicipioRes" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <label asp-for="Destrito_BairroRes" class="control-label"></label>
                 <input asp-for="Destrito_BairroRes" class="form-control" />
@@ -151,21 +151,7 @@
                 <input asp-for="CasaNum" class="form-control" />
                 <span asp-validation-for="CasaNum" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Habilitacao" class="control-label"></label>
-                <input asp-for="Habilitacao" class="form-control" />
-                <span asp-validation-for="Habilitacao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CursoHabilitado" class="control-label"></label>
-                <input asp-for="CursoHabilitado" class="form-control" />
-                <span asp-validation-for="CursoHabilitado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="InstitAcademica" class="control-label"></label>
-                <input asp-for="InstitAcademica" class="form-control" />
-                <span asp-validation-for="InstitAcademica" class="text-danger"></span>
-            </div>
+           
             <div class="form-group">
                 <label asp-for="Telefone1" class="control-label"></label>
                 <input asp-for="Telefone1" class="form-control" />
@@ -205,25 +191,6 @@
                 <label asp-for="OutrasInfo" class="control-label"></label>
                 <input asp-for="OutrasInfo" class="form-control" />
                 <span asp-validation-for="OutrasInfo" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataRegisto" class="control-label"></label>
-                <input asp-for="DataRegisto" class="form-control" />
-                <span asp-validation-for="DataRegisto" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataUltimaAlterecao" class="control-label"></label>
-                <input asp-for="DataUltimaAlterecao" class="form-control" />
-                <span asp-validation-for="DataUltimaAlterecao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -387,6 +387,28 @@ namespace SIG_PSPEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Provincias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provincias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Provincias_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SituacaoEfectivos",
                 columns: table => new
                 {
@@ -523,50 +545,13 @@ namespace SIG_PSPEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Efectivos",
+                name: "Municipios",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SituacaoEfectivoId = table.Column<int>(type: "int", nullable: false),
-                    OrgaoUnidadeId = table.Column<int>(type: "int", nullable: false),
-                    FuncaoCargoId = table.Column<int>(type: "int", nullable: false),
-                    PatenteId = table.Column<int>(type: "int", nullable: false),
-                    Num_Processo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    NIP = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    N_Agente = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    NomeCompleto = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Apelido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Genero = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    DataNasc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EstadoCivil = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    GSanguineo = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
-                    NumBI = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    BIValidade = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BIEmitido = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NumCartaConducao = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    CartaValidade = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CartaEmitido = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NumPassaporte = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    PassapValidade = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PassapEmitido = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Nacionalidade = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Naturalidade = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    MunicipioRes = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Destrito_BairroRes = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Rua = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    CasaNum = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
-                    Habilitacao = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    CursoHabilitado = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    InstitAcademica = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Telefone1 = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    Telefone2 = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    DataIngresso = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TipoVinculo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Carreira = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    UnidadeOrigem = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    OutrasInfo = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ProvinciaId = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false),
                     DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -574,34 +559,16 @@ namespace SIG_PSPEP.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Efectivos", x => x.Id);
+                    table.PrimaryKey("PK_Municipios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Efectivos_AspNetUsers_UserId",
+                        name: "FK_Municipios_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Efectivos_FuncaoCargos_FuncaoCargoId",
-                        column: x => x.FuncaoCargoId,
-                        principalTable: "FuncaoCargos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Efectivos_OrgaoUnidades_OrgaoUnidadeId",
-                        column: x => x.OrgaoUnidadeId,
-                        principalTable: "OrgaoUnidades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Efectivos_Patentes_PatenteId",
-                        column: x => x.PatenteId,
-                        principalTable: "Patentes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Efectivos_SituacaoEfectivos_SituacaoEfectivoId",
-                        column: x => x.SituacaoEfectivoId,
-                        principalTable: "SituacaoEfectivos",
+                        name: "FK_Municipios_Provincias_ProvinciaId",
+                        column: x => x.ProvinciaId,
+                        principalTable: "Provincias",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -698,6 +665,109 @@ namespace SIG_PSPEP.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Efectivos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SituacaoEfectivoId = table.Column<int>(type: "int", nullable: false),
+                    OrgaoUnidadeId = table.Column<int>(type: "int", nullable: false),
+                    FuncaoCargoId = table.Column<int>(type: "int", nullable: false),
+                    PatenteId = table.Column<int>(type: "int", nullable: false),
+                    MunicipioId = table.Column<int>(type: "int", nullable: false),
+                    ProvinciaNascId = table.Column<int>(type: "int", nullable: false),
+                    ProvinciaResId = table.Column<int>(type: "int", nullable: false),
+                    Num_Processo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    NIP = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    N_Agente = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    NomeCompleto = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Apelido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Genero = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    DataNasc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EstadoCivil = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    GSanguineo = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    NumBI = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BIValidade = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BIEmitido = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NumCartaConducao = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    CartaValidade = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CartaEmitido = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NumPassaporte = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    PassapValidade = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PassapEmitido = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Nacionalidade = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Destrito_BairroRes = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Rua = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CasaNum = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Habilitacao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CursoHabilitado = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    InstitAcademica = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Telefone1 = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Telefone2 = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataIngresso = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TipoVinculo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Carreira = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    UnidadeOrigem = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    OutrasInfo = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    DataRegisto = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataUltimaAlterecao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Efectivos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Efectivos_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Efectivos_FuncaoCargos_FuncaoCargoId",
+                        column: x => x.FuncaoCargoId,
+                        principalTable: "FuncaoCargos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Efectivos_Municipios_MunicipioId",
+                        column: x => x.MunicipioId,
+                        principalTable: "Municipios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Efectivos_OrgaoUnidades_OrgaoUnidadeId",
+                        column: x => x.OrgaoUnidadeId,
+                        principalTable: "OrgaoUnidades",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Efectivos_Patentes_PatenteId",
+                        column: x => x.PatenteId,
+                        principalTable: "Patentes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Efectivos_Provincias_ProvinciaNascId",
+                        column: x => x.ProvinciaNascId,
+                        principalTable: "Provincias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Efectivos_Provincias_ProvinciaResId",
+                        column: x => x.ProvinciaResId,
+                        principalTable: "Provincias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Efectivos_SituacaoEfectivos_SituacaoEfectivoId",
+                        column: x => x.SituacaoEfectivoId,
+                        principalTable: "SituacaoEfectivos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1252,6 +1322,11 @@ namespace SIG_PSPEP.Migrations
                 column: "FuncaoCargoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Efectivos_MunicipioId",
+                table: "Efectivos",
+                column: "MunicipioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Efectivos_OrgaoUnidadeId",
                 table: "Efectivos",
                 column: "OrgaoUnidadeId");
@@ -1260,6 +1335,16 @@ namespace SIG_PSPEP.Migrations
                 name: "IX_Efectivos_PatenteId",
                 table: "Efectivos",
                 column: "PatenteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Efectivos_ProvinciaNascId",
+                table: "Efectivos",
+                column: "ProvinciaNascId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Efectivos_ProvinciaResId",
+                table: "Efectivos",
+                column: "ProvinciaResId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Efectivos_SituacaoEfectivoId",
@@ -1302,6 +1387,16 @@ namespace SIG_PSPEP.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Municipios_ProvinciaId",
+                table: "Municipios",
+                column: "ProvinciaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Municipios_UserId",
+                table: "Municipios",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrdemServicos_UserId",
                 table: "OrdemServicos",
                 column: "UserId");
@@ -1314,6 +1409,11 @@ namespace SIG_PSPEP.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Patentes_UserId",
                 table: "Patentes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Provincias_UserId",
+                table: "Provincias",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -1482,6 +1582,9 @@ namespace SIG_PSPEP.Migrations
                 name: "FuncaoCargos");
 
             migrationBuilder.DropTable(
+                name: "Municipios");
+
+            migrationBuilder.DropTable(
                 name: "OrgaoUnidades");
 
             migrationBuilder.DropTable(
@@ -1489,6 +1592,9 @@ namespace SIG_PSPEP.Migrations
 
             migrationBuilder.DropTable(
                 name: "SituacaoEfectivos");
+
+            migrationBuilder.DropTable(
+                name: "Provincias");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

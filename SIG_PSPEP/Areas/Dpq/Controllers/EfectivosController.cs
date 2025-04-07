@@ -60,10 +60,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         // GET: Dpq/Efectivos/Create
         public IActionResult Create()
         {
-            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "NomeFuncaoCargo");
-            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade");
-            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto");
-            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao");
+            CarregarViewData();
 
             return PartialView("Create", new EfectivoViewModel());
         }
@@ -105,6 +102,9 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                     OrgaoUnidadeId = model.OrgaoUnidadeId,
                     FuncaoCargoId = model.FuncaoCargoId,
                     PatenteId = model.PatenteId,
+                    ProvinciaNascId = model.ProvinciaNascId,
+                    ProvinciaResId = model.ProvinciaResId,
+                    MunicipioId = model.MunicipioId,
                     Num_Processo = model.Num_Processo,
                     NIP = model.NIP,
                     N_Agente = model.N_Agente,
@@ -124,8 +124,6 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                     PassapValidade = model.PassapValidade,
                     PassapEmitido = model.PassapEmitido,
                     Nacionalidade = model.Nacionalidade,
-                    Naturalidade = model.Naturalidade,
-                    MunicipioRes = model.MunicipioRes,
                     Destrito_BairroRes = model.Destrito_BairroRes,
                     Rua = model.Rua,
                     CasaNum = model.CasaNum,
@@ -197,6 +195,9 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
             ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade", efectivo.OrgaoUnidadeId);
             ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto", efectivo.PatenteId);
             ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao", efectivo.SituacaoEfectivoId);
+            ViewData["ProvinciaNascId"] = new SelectList(_context.Provincias, "Id", "Nome", efectivo.ProvinciaNascId);
+            ViewData["ProvinciaResId"] = new SelectList(_context.Provincias, "Id", "Nome", efectivo.ProvinciaResId);
+            ViewData["MunicipioId"] = new SelectList(_context.Municipios, "Id", "Nome", efectivo.MunicipioId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", efectivo.UserId);
         }
 
@@ -234,8 +235,9 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 PassapValidade = efectivo.PassapValidade,
                 PassapEmitido = efectivo.PassapEmitido,
                 Nacionalidade = efectivo.Nacionalidade,
-                Naturalidade = efectivo.Naturalidade,
-                MunicipioRes = efectivo.MunicipioRes,
+                ProvinciaNascId = efectivo.ProvinciaNascId,
+                ProvinciaResId = efectivo.ProvinciaResId,
+                MunicipioId = efectivo.MunicipioId,
                 Destrito_BairroRes = efectivo.Destrito_BairroRes,
                 Rua = efectivo.Rua,
                 CasaNum = efectivo.CasaNum,
@@ -317,8 +319,9 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 efectivo.PassapValidade = model.PassapValidade;
                 efectivo.PassapEmitido = model.PassapEmitido;
                 efectivo.Nacionalidade = model.Nacionalidade;
-                efectivo.Naturalidade = model.Naturalidade;
-                efectivo.MunicipioRes = model.MunicipioRes;
+                efectivo.ProvinciaNascId = model.ProvinciaNascId;
+                efectivo.ProvinciaResId = model.ProvinciaResId;
+                efectivo.MunicipioId = model.MunicipioId;
                 efectivo.Destrito_BairroRes = model.Destrito_BairroRes;
                 efectivo.Rua = model.Rua;
                 efectivo.CasaNum = model.CasaNum;

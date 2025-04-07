@@ -84,6 +84,7 @@ builder.Services.AddScoped<ISeedPatenteInitial, SeedPatenteInitial>();
 builder.Services.AddScoped<ISeedOrgaoUnidadeInitial, SeedOrgaoUnidadeInitial>();
 builder.Services.AddScoped<ISeedSituacaoEfectivoInitial, SeedSituacaoEfectivoInitial>();
 builder.Services.AddScoped<ISeedFuncaoCargoInitial, SeedFuncaoCargoInitial>();
+builder.Services.AddScoped<ISeedProvinciaInitial, SeedProvinciaInitial>();
 
 
 
@@ -109,6 +110,8 @@ using (var scope = app.Services.CreateScope())
     await seedSituacaoEfectivoService.SeedSituacoesEfectivoAsync();
     var seedFuncaoCargoService = services.GetRequiredService<ISeedFuncaoCargoInitial>();
     await seedFuncaoCargoService.SeedFuncoesCargosAsync();
+    var seedProvinciaService = services.GetRequiredService<ISeedProvinciaInitial>();
+    await seedProvinciaService.SeedProvinciaAsync();
 }
 
 // Configure the HTTP request pipeline.

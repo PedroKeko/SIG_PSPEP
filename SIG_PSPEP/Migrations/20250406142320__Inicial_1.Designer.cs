@@ -12,7 +12,7 @@ using SIG_PSPEP.Context;
 namespace SIG_PSPEP.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250403143327__Inicial_1")]
+    [Migration("20250406142320__Inicial_1")]
     partial class _Inicial_1
     {
         /// <inheritdoc />
@@ -221,6 +221,73 @@ namespace SIG_PSPEP.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidade.Municipio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ProvinciaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinciaId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Municipios");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidade.Provincia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Provincias");
                 });
 
             modelBuilder.Entity("SIG_PSPEP.Entidades.AgregadoFam", b =>
@@ -701,8 +768,8 @@ namespace SIG_PSPEP.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Carreira")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CartaEmitido")
                         .HasColumnType("datetime2");
@@ -758,16 +825,15 @@ namespace SIG_PSPEP.Migrations
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Habilitacao")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("InstitAcademica")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("MunicipioRes")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("MunicipioId")
+                        .HasColumnType("int");
 
                     b.Property<string>("NIP")
                         .IsRequired()
@@ -782,10 +848,6 @@ namespace SIG_PSPEP.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Naturalidade")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NomeCompleto")
                         .IsRequired()
@@ -826,6 +888,12 @@ namespace SIG_PSPEP.Migrations
                     b.Property<int>("PatenteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProvinciaNascId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProvinciaResId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Rua")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -842,12 +910,12 @@ namespace SIG_PSPEP.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TipoVinculo")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("UnidadeOrigem")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UnidadeOrigem")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -856,9 +924,15 @@ namespace SIG_PSPEP.Migrations
 
                     b.HasIndex("FuncaoCargoId");
 
+                    b.HasIndex("MunicipioId");
+
                     b.HasIndex("OrgaoUnidadeId");
 
                     b.HasIndex("PatenteId");
+
+                    b.HasIndex("ProvinciaNascId");
+
+                    b.HasIndex("ProvinciaResId");
 
                     b.HasIndex("SituacaoEfectivoId");
 
@@ -1576,6 +1650,32 @@ namespace SIG_PSPEP.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SIG_PSPEP.Entidade.Municipio", b =>
+                {
+                    b.HasOne("SIG_PSPEP.Entidade.Provincia", "Provincia")
+                        .WithMany()
+                        .HasForeignKey("ProvinciaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Provincia");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidade.Provincia", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SIG_PSPEP.Entidades.AgregadoFam", b =>
                 {
                     b.HasOne("SIG_PSPEP.Entidades.Efectivo", "Efectivo")
@@ -1753,6 +1853,12 @@ namespace SIG_PSPEP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SIG_PSPEP.Entidade.Municipio", "Municipio")
+                        .WithMany()
+                        .HasForeignKey("MunicipioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SIG_PSPEP.Entidades.OrgaoUnidade", "OrgaoUnidade")
                         .WithMany()
                         .HasForeignKey("OrgaoUnidadeId")
@@ -1763,6 +1869,18 @@ namespace SIG_PSPEP.Migrations
                         .WithMany()
                         .HasForeignKey("PatenteId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SIG_PSPEP.Entidade.Provincia", "ProvinciaNascimento")
+                        .WithMany()
+                        .HasForeignKey("ProvinciaNascId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SIG_PSPEP.Entidade.Provincia", "ProvinciaResidencia")
+                        .WithMany()
+                        .HasForeignKey("ProvinciaResId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SIG_PSPEP.Entidades.SituacaoEfectivo", "SituacaoEfectivo")
@@ -1777,9 +1895,15 @@ namespace SIG_PSPEP.Migrations
 
                     b.Navigation("FuncaoCargo");
 
+                    b.Navigation("Municipio");
+
                     b.Navigation("OrgaoUnidade");
 
                     b.Navigation("Patente");
+
+                    b.Navigation("ProvinciaNascimento");
+
+                    b.Navigation("ProvinciaResidencia");
 
                     b.Navigation("SituacaoEfectivo");
 

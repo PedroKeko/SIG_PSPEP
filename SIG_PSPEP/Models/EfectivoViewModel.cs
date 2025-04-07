@@ -13,6 +13,9 @@ namespace SIG_PSPEP.Models
         public int OrgaoUnidadeId { get; set; }
         public int FuncaoCargoId { get; set; }
         public int PatenteId { get; set; }
+        public int MunicipioId { get; set; }
+        public int ProvinciaNascId { get; set; }
+        public int ProvinciaResId { get; set; }
 
         [Required, MaxLength(50)]
         public string? Num_Processo { get; set; }
@@ -61,12 +64,6 @@ namespace SIG_PSPEP.Models
 
         [Required, MaxLength(50)]
         public string? Nacionalidade { get; set; }
-
-        [MaxLength(100)]
-        public string? Naturalidade { get; set; }
-
-        [MaxLength(100)]
-        public string? MunicipioRes { get; set; }
 
         [MaxLength(100)]
         public string? Destrito_BairroRes { get; set; }

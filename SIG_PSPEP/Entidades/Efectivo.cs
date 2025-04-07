@@ -1,4 +1,5 @@
-﻿using SIG_PSPEP.Enums;
+﻿using SIG_PSPEP.Entidade;
+using SIG_PSPEP.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace SIG_PSPEP.Entidades
@@ -9,6 +10,9 @@ namespace SIG_PSPEP.Entidades
         public int OrgaoUnidadeId { get; set; }
         public int FuncaoCargoId { get; set; }
         public int PatenteId { get; set; }
+        public int MunicipioId { get; set; }
+        public int ProvinciaNascId { get; set; }
+        public int ProvinciaResId { get; set; }
 
         [Required, MaxLength(50)]
         public string? Num_Processo { get; set; }
@@ -57,12 +61,6 @@ namespace SIG_PSPEP.Entidades
         public string? Nacionalidade { get; set; }
 
         [MaxLength(100)]
-        public string? Naturalidade { get; set; }
-
-        [MaxLength(100)]
-        public string? MunicipioRes { get; set; }
-
-        [MaxLength(100)]
         public string? Destrito_BairroRes { get; set; }
 
         [MaxLength(100)]
@@ -71,7 +69,7 @@ namespace SIG_PSPEP.Entidades
         [MaxLength(10)]
         public string? CasaNum { get; set; }
 
-        [MaxLength(50)]
+        [MaxLength(100)]
         public string? Habilitacao { get; set; }
 
         [MaxLength(100)]
@@ -91,13 +89,13 @@ namespace SIG_PSPEP.Entidades
 
         public DateTime DataIngresso { get; set; }
 
-        [MaxLength(50)]
+        [MaxLength(100)]
         public string? TipoVinculo { get; set; }
 
-        [MaxLength(50)]
+        [MaxLength(100)]
         public string? Carreira { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(200)]
         public string? UnidadeOrigem { get; set; }
 
         [MaxLength(255)]
@@ -106,5 +104,8 @@ namespace SIG_PSPEP.Entidades
         public SituacaoEfectivo? SituacaoEfectivo { get; set; }
         public OrgaoUnidade? OrgaoUnidade { get; set; }
         public Patente? Patente { get; set; }
+        public Provincia? ProvinciaNascimento { get; set; }
+        public Provincia? ProvinciaResidencia { get; set; }
+        public Municipio? Municipio { get; set; }
     }
 }
