@@ -1,0 +1,132 @@
+﻿@model List<SIG_PSPEP.Areas.Admin.Models.UsuarioViewModel>
+
+@{
+    ViewData["Title"] = "Lista de Usuários";
+}
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <a class="custom2-btn btn-1" asp-action="Registro" asp-controller="AdminUsers" asp-area="Admin">Criar Novo</a>
+            </div>
+            <div class="table-responsive">
+                <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                    <thead>
+                        <tr class="maiuscula">
+                            <th class="text-center">
+                                Nº
+                            </th>
+                            <th class="text-center">Foto</th>
+                            <th class="text-center">Nome</th>
+                            <th class="text-center">Telefone</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Área</th>
+                            <th class="text-center">Funções</th>
+                            <th class="text-center w-10">Acções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         @{
+                        int index = 1;
+                        @foreach (var usuario in Model)
+                        {
+                                <tr class="align-middle">
+                                    <td class="text-center w-10">@index</td>
+                                    <td class="align-middle text-center">
+                                    <img src="@(usuario.FotoBase64 != null
+                                ? $"data:image/png;base64,{usuario.FotoBase64}"
+                                : Url.Content("~/assets/images/users/user-police.png"))"
+                                         alt="Foto"
+                                         class="rounded-circle"
+                                         width="50"
+                                         height="50" />
+                                </td>
+                                    <td class="align-middle">@usuario.NomeEfectivo</td>
+                                    <td class="align-middle text-center">@usuario.UserName</td>
+                                    <td class="align-middle text-center">@usuario.Email</td>
+                                    <td class="align-middle text-center">@usuario.Area</td>
+                                    <td class="align-middle text-center">
+                                        @if (usuario.Roles != null && usuario.Roles.Any())
+                                        {
+                                            var badgeColors = new[] { "primary", "secondary", "success", "danger", "warning", "info", "dark" };
+                                            var colorIndex = 0;
+
+                                            <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                                @foreach (var role in usuario.Roles)
+                                                {
+                                                    var color = badgeColors[colorIndex % badgeColors.Length];
+                                                    <span class="badge bg-@color">@role</span>
+                                                    colorIndex++;
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Nenhuma</span>
+                                        }
+                                    </td>
+                                    <td class="align-middle text-center w-10">
+                                        <a asp-action="EditUser" asp-route-id="@usuario?.UserId" class="btn-edit">
+                                            <i class="fas fa-pencil-alt" style="color: #007BFF;"></i>
+                                        </a>
+                                        <a asp-action="DeleteUser" asp-route-id="@usuario?.UserId">
+                                            <i class="fas fa-trash-alt" style="color: #DC3545;"></i>
+                                        </a>
+
+                                    </td>
+                            </tr>
+                                index++;
+                        }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/dist/css/backend-bundle.min.js"></script>
+    <script src="~/dist/js/jquery.datatables.min.js"></script>
+    <script src="~/dist/js/datatables.buttons.min.js"></script>
+    <script src="~/dist/js/sweetalert2@11.js"></script>
+    <script>
+           $(document).ready(function () {
+            $('#minhaTabela').DataTable({
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",
+                    "search": "", /* Buscar esta nullo */
+                    "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "Nenhum registro disponível",
+                    "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                    "loadingRecords": "Carregando...",
+                    "processing": "Processando...",
+                    "zeroRecords": "Nenhum registro encontrado",
+                    "emptyTable": "Nenhum dado disponível na tabela",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "previous": "Anterior",
+                        "next": "Próximo",
+                        "last": "Último"
+                    },
+                    "aria": {
+                        "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                        "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                    }
+                },
+                "initComplete": function () {
+                    $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+                }
+            });
+        });
+    </script>
+}

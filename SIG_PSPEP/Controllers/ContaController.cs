@@ -30,85 +30,156 @@ namespace SIG_PSPEP.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var result = await signInManager.PasswordSignInAsync(
-                    model.Email, model.Password, model.RememberMe, false);
-
-                if (result.Succeeded)
+                return Json(new
                 {
-                    return RedirectToAction("index", "home", "");
-                }
-
-                ModelState.AddModelError(string.Empty, "Senha ou Usuário Inválido");
+                    success = false,
+                    message = "Dados inválidos. Verifique os campos e tente novamente."
+                });
             }
 
-            return View(model);
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Senha ou Usuário Inválido"
+                });
+            }
+
+            if (!user.LockoutEnabled)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Sua conta está desativada. Contacte o administrador."
+                });
+            }
+
+            var result = await signInManager.PasswordSignInAsync(
+                model.Email, model.Password, model.RememberMe, false);
+
+            if (!result.Succeeded)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Senha ou Usuário Inválido"
+                });
+            }
+
+            // Verificar se o usuário tem a role "Administrador"
+            if (await userManager.IsInRoleAsync(user, "Administrador"))
+            {
+                return Json(new
+                {
+                    success = true,
+                    redirectUrl = Url.Action("Index", "Home", new { area = "Admin" })
+                });
+            }
+
+            // Senão, pega a área do UsuarioAute
+            var usuarioAute = await _context.UsuarioAutes
+                .Include(u => u.Area)
+                .FirstOrDefaultAsync(u => u.UserId == user.Id);
+
+            if (usuarioAute == null || usuarioAute.Area == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Área de acesso não atribuída. Contacte o administrador."
+                });
+            }
+
+            var area = usuarioAute.Area.NomeArea?.ToLower();
+
+            return Json(new
+            {
+                success = true,
+                redirectUrl = Url.Action("Index", "Home", new { area = area })
+            });
         }
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> PerfilUsuario()
         {
-            // Obtém o usuário logado
             var user = await userManager.GetUserAsync(User);
-
             if (user == null)
             {
                 return NotFound("Usuário não encontrado");
             }
 
-            var userNameFoto = await _context.UsuarioAutes
+            var usuarioAute = await _context.UsuarioAutes
+                .Include(u => u.Efectivo)
+                    .ThenInclude(e => e.FuncaoCargo)
+                .Include(u => u.Efectivo.Patente)
+                .Include(u => u.Efectivo.OrgaoUnidade)
+                .Include(u => u.Area)
                 .FirstOrDefaultAsync(u => u.UserId == user.Id);
 
-            // Obtém as roles do usuário
-            var roles = await userManager.GetRolesAsync(user);
+            if (usuarioAute == null)
+            {
+                return NotFound("Associação do usuário não encontrada");
+            }
 
-            var perfilViewModel = new PerfilUsuarioViewModel
+            var foto = await _context.FotoEfectivos
+                .Where(f => f.EfectivoId == usuarioAute.EfectivoId)
+                .Select(f => f.Foto)
+                .FirstOrDefaultAsync();
+
+            var roles = await userManager.GetRolesAsync(user);
+            var claims = await userManager.GetClaimsAsync(user);
+
+            var model = new PerfilUsuarioViewModel
             {
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                Role = roles.FirstOrDefault()
+                NomeCompleto = usuarioAute.Efectivo?.NomeCompleto,
+                Role = roles.FirstOrDefault(),
+                Foto = foto,
+                Roles = roles.ToList(),
+                Claims = claims.Select(c => $"{c.Type}: {c.Value}").ToList()
             };
 
-            return View(perfilViewModel);
+            ViewBag.Area = usuarioAute.Area;
+            ViewBag.Efectivo = usuarioAute.Efectivo;
+
+            return View(model);
         }
 
         [HttpPost]
-        [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AlterarSenha(PerfilUsuarioViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                // Retorna ao perfil com os erros de validação
-                return await RetornarPerfilComErros(model);
+                var erros = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return Json(new { success = false, errors = erros });
             }
 
-            // Obtém o usuário logado
             var user = await userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound("Usuário não encontrado.");
+                return Json(new { success = false, errors = new[] { "Usuário não encontrado." } });
             }
 
-            // Tenta alterar a senha do usuário
             var result = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                // Faz logout após a alteração da senha
-                await signInManager.SignOutAsync();
-                TempData["Message"] = "Senha alterada com sucesso. Por favor, faça login novamente.";
-                return RedirectToAction("Login", "Account", "");
+                var erros = result.Errors.Select(e => e.Description).ToList();
+                return Json(new { success = false, errors = erros });
             }
 
-            // Adiciona erros ao ModelState se a alteração falhar
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            // Retorna ao perfil com mensagens de erro
-            return await RetornarPerfilComErros(model);
+            return Json(new { success = true, message = "Senha alterada com sucesso!" });
         }
 
         // Método auxiliar para retornar a view de perfil com erros
@@ -136,14 +207,50 @@ namespace SIG_PSPEP.Controllers
             return View("PerfilUsuario", perfilViewModel);
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> Sair()
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Login", "Conta", "");
         }
+
+       
+        [HttpGet]
+        public async Task<IActionResult> RedirecParaArea()
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (await userManager.IsInRoleAsync(user, "Administrador"))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
+            }
+
+            var usuarioAute = await _context.UsuarioAutes
+                .Include(u => u.Area)
+                .FirstOrDefaultAsync(u => u.UserId == user.Id);
+
+            if (usuarioAute == null || usuarioAute.Area == null)
+            {
+                TempData["ErrorMessage"] = "Área de acesso não atribuída. Contacte o administrador.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var area = usuarioAute.Area.NomeArea?.ToLower();
+            var currentArea = RouteData.Values["area"]?.ToString()?.ToLower();
+
+            if (currentArea != area)
+            {
+                return RedirectToAction("Index", "Home", new { area = area });
+            }
+
+            return RedirectToAction("Index", "Home", new { area = currentArea });
+        }
+
 
         [Authorize]
         [HttpGet]

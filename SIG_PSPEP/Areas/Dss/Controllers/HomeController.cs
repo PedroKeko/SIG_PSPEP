@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SIG_PSPEP.Areas.Dss.Controllers;
@@ -12,13 +11,12 @@ public class HomeController : Controller
     {
         _logger = logger;
     }
-
     public IActionResult Index()
     {
         return View();
     }
 
-    public IActionResult Privacy()
+    public IActionResult AcessoNegado()
     {
         return View();
     }

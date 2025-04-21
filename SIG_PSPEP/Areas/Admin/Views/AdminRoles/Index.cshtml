@@ -1,0 +1,303 @@
+﻿@model List<RoleModification>
+
+@{
+    ViewData["Title"] = "Funções do Usuário";
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <button class="custom2-btn btn-1" data-bs-toggle="modal" data-bs-target="#modalCriarRole">Criar Novo</button>
+            </div>
+            <div class="table-responsive">
+                <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                    <thead>
+                        <tr class="maiuscula">
+                            <th class="text-center w-10">
+                                Nº
+                            </th>
+                            <th>Nome da Role</th>
+                            <th class="text-center w-10">Quantidade</th>
+                            <th class="text-center w-10">Acções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                            @foreach (var role in Model)
+                            {
+                                <tr>
+                                    <td class="text-center w-10">@index</td>
+                                    <td>@role.RoleName</td>
+                                    <td class="text-center w-10">@role.UserCount</td>
+                                    <td class="text-center w-10">
+                                        <a href="javascript:void(0)" class="btn-edit" data-id="@role.RoleId">
+                                            <i class="fas fa-pencil-alt" style="color: #007BFF;"></i>
+                                        </a>
+                                        <a href="javascript:void(0)" onclick="deleteItem('@role.RoleId')">
+                                            <i class="fas fa-trash-alt" style="color: #DC3545;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Criação de Função -->
+<div class="modal fade" id="modalCriarRole" tabindex="-1" aria-labelledby="modalCriarRoleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formCriarRole">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCriarRoleLabel">Nova Função</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="roleName" class="form-label small-label">Nome da Função</label>
+                        <input type="text" id="RoleName" name="RoleName" class="form-control form-control-sm input-1 small-input" required />
+                        <div class="text-danger" id="erroRole"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="custom2-btn btn-2-success">Salvar</button>
+                    <button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Alteração -->
+<div class="modal fade" id="modalEditarRole" tabindex="-1" aria-labelledby="modalEditarRoleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Função</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body" id="conteudoModalEditarRole">
+                <!-- Aqui será carregada a PartialView -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja excluir este Registro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom2-btn btn-2-red" id="confirmDeleteBtn">Excluir</button>
+                <button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/dist/css/backend-bundle.min.js"></script>
+    <script src="~/dist/js/jquery.datatables.min.js"></script>
+    <script src="~/dist/js/datatables.buttons.min.js"></script>
+    <script src="~/dist/js/sweetalert2@11.js"></script>
+    <script>
+           $(document).ready(function () {
+            $('#minhaTabela').DataTable({
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",
+                    "search": "", /* Buscar esta nullo */
+                    "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "Nenhum registro disponível",
+                    "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                    "loadingRecords": "Carregando...",
+                    "processing": "Processando...",
+                    "zeroRecords": "Nenhum registro encontrado",
+                    "emptyTable": "Nenhum dado disponível na tabela",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "previous": "Anterior",
+                        "next": "Próximo",
+                        "last": "Último"
+                    },
+                    "aria": {
+                        "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                        "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                    }
+                },
+                "initComplete": function () {
+                    $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function openModal(url) {
+            $.get(url, function (data) {
+                $('#modalContent').html(data);
+                let modal = new bootstrap.Modal(document.getElementById('modalForm'));
+                modal.show();
+            });
+        }
+
+         // Recarrega a página quando o modal for fechado
+                const modalElement = document.getElementById('modalForm');
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            location.reload();
+        });
+
+        function submitForm(form) {
+            $.post(form.action, $(form).serialize(), function (result) {
+                if (result.success) {
+                    location.reload();
+                } else {
+                    $('#modalContent').html(result); // reexibir erros no modal
+                }
+            });
+            return false;
+        }
+
+         //Detalhes
+          function openModal1(url) {
+            $.get(url, function (data) {
+                $('#modalContent1').html(data);
+                let modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+                modal.show();
+            });
+        }
+
+        //Excluir Registro
+           let deleteId = null;
+
+        function deleteItem(id) {
+            deleteId = id;
+            let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show();
+        }
+
+        document.getElementById('confirmDeleteBtn').onclick = function () {
+            $.post('/Admin/AdminRoles/Delete/' + deleteId, function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 2500,
+                        timerProgressBar: true,
+                    });
+
+                    // Fecha o modal
+                    bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+
+                    // Remove a linha da tabela (opcional)
+                    $(`a[onclick="deleteItem('${deleteId}')"]`).closest('tr').remove();
+
+                    // Ou recarrega a tabela
+                    // location.reload();
+
+                } else {
+                    showErrorAlert(response.message);
+                }
+            }).fail(function () {
+                showErrorAlert("Ocorreu um erro ao tentar eliminar o registo.");
+            });
+        };
+
+        function showErrorAlert(message) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: message,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+
+        // Exemplo usando SweetAlert2 para uma melhor experiência
+        function showErrorAlert(message) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção!',
+                text: message,
+                confirmButtonText: 'Entendi',
+                customClass: {
+                    confirmButton: 'btn btn-warning'
+                },
+                buttonsStyling: false
+            });
+        }
+
+    </script>
+
+    <script>
+              $(function () {
+            $('#formCriarRole').submit(function (e) {
+                e.preventDefault();
+                $('#erroRole').text("");
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/AdminRoles/Create',  // Se o controller estiver em uma área, ajuste a URL
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#modalCriarRole').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: response.message,
+                                toast: true,
+                                position: 'top-end',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload(); // Atualiza a página após a criação
+                            });
+                        } else {
+                            $('#erroRole').html(response.errors.join("<br>"));
+                        }
+                    },
+                            error: function (xhr, status, error) {
+            console.error("Erro no servidor:", xhr.responseText); // Detalhes do erro
+            $('#erroRole').text("Erro interno: " + xhr.responseText);
+        }
+                });
+            });
+        });
+
+    </script>
+
+    <script>
+               $(document).on('click', '.btn-edit', function () {
+            var roleId = $(this).data('id');
+
+            $.get('/Admin/AdminRoles/Update', { id: roleId }, function (html) {
+                $('#conteudoModalEditarRole').html(html);
+                $('#modalEditarRole').modal('show');
+            });
+        });
+    </script>
+}

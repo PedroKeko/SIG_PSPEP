@@ -1,0 +1,176 @@
+﻿@model IEnumerable<SIG_PSPEP.Entidade.Municipio>
+
+@{
+    ViewData["Title"] = "Municípios";
+}
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<!-- Estilos do DataTables -->
+<link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet">
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <button class="custom2-btn btn-1" onclick="openModal('/Admin/Municipios/Create')">Criar Novo</button>
+            </div>
+            <div class="table-responsive">
+                <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                    <thead>
+                        <tr>
+                            <th class="text-center w-10">
+                                Nº
+                            </th>
+                            <th class="text-center">
+                                Município
+                            </th>
+                            <th class="text-center">
+                                Província
+                            </th>
+                            <th class="text-center">
+                                Registo
+                            </th>
+                            <th class="text-center w-10"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">@index</td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(modelItem => item.Nome)
+                                    </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(modelItem => item.Provincia.Nome)
+                                    </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(modelItem => item.DataRegisto)
+                                    </td>
+                                    <td class="text-center align-middle w-10">
+                                        <a href="javascript:void(0)" class="text-primary me-2" title="Editar" onclick="openModal('/Admin/Municipios/Edit/@item.Id')">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a href="javascript:void(0)" class="text-danger" title="Apagar" onclick="deleteItem(@item.Id)">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery e DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script>
+       $(document).ready(function () {
+        $('#minhaTabela').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "", /* Buscar esta nullo */
+                "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "loadingRecords": "Carregando...",
+                "processing": "Processando...",
+                "zeroRecords": "Nenhum registro encontrado",
+                "emptyTable": "Nenhum dado disponível na tabela",
+                "paginate": {
+                    "first": "Primeiro",
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "last": "Último"
+                },
+                "aria": {
+                    "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                    "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                }
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+            }
+        });
+    });
+
+</script>
+
+
+<div class="modal fade" id="modalForm" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja excluir este Registro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom2-btn btn-2-red" id="confirmDeleteBtn">Excluir</button>
+                <button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        function openModal(url) {
+            $.get(url, function (data) {
+                $('#modalContent').html(data);
+                let modal = new bootstrap.Modal(document.getElementById('modalForm'));
+                modal.show();
+            });
+        }
+
+        function submitForm(form) {
+            $.post(form.action, $(form).serialize(), function (result) {
+                if (result.success) {
+                    location.reload();
+                } else {
+                    $('#modalContent').html(result); // reexibir erros no modal
+                }
+            });
+            return false;
+        }
+
+        //Exclusão de Registro
+               let deleteId = null;
+
+        function deleteItem(id) {
+            deleteId = id;  // Armazena o ID para posterior uso
+            // Abre o modal de confirmação
+            let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show();
+        }
+
+        document.getElementById('confirmDeleteBtn').onclick = function () {
+            $.post('/Admin/Municipios/Delete/' + deleteId, function () {
+                location.reload(); 
+            });
+        };
+
+    </script>
+}
+

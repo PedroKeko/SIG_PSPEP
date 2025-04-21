@@ -1,0 +1,87 @@
+﻿@model RegistroViewModel
+
+@{
+    ViewData["Title"] = "Editar Usuário";
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Atualização do Usuário</h5>
+                    <!-- Mensagens de erro de validação -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <form asp-action="Edit" method="post" class="row g-3">
+                        <input type="hidden" asp-for="UserId" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col-md-9 mx-auto">
+                            <select asp-for="EfectivoId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.EfectivoId" style="width: 100%;"></select>
+                        </div>
+
+                        <div class="col-md-9 mx-auto">
+                            <input type="email" asp-for="Email" class="form-control" id="inputEmail" required placeholder="Email"
+                                   oninvalid="this.setCustomValidity('Por favor, informe o email faz favor!')"
+                                   oninput="setCustomValidity('')" />
+                        </div>
+
+                        <div class="col-md-9 mx-auto">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <select asp-for="AreaId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.AreaId" style="width: 100%;"></select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" asp-for="PhoneNumber" class="form-control" id="inputEmail" required placeholder="Telefone"
+                                           oninvalid="this.setCustomValidity('Por favor, Informe o número do Telefone')"
+                                           oninput="setCustomValidity('')" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-9 mx-auto">
+                            <input type="password" asp-for="Password" class="form-control" id="inputPassword" placeholder="Senha" />
+                        </div>
+                        <div class="col-md-9 mx-auto">
+                            <input type="password" asp-for="ConfirmPassword" class="form-control" id="inputPassword" placeholder="Corfirmar Senha" />
+                        </div>
+                        <div class="col-md-9 mx-auto">
+                            <label class="form-check form-check-inline">
+                                <input type="radio" name="EstadoConta" value="true" @(Model.EstadoConta ? "checked" : "") class="form-check-input" />
+                                <span class="form-check-label text-success">Ativado</span>
+                            </label>
+
+                            <label class="form-check form-check-inline">
+                                <input type="radio" name="EstadoConta" value="false" @(!Model.EstadoConta ? "checked" : "") class="form-check-input" />
+                                <span class="form-check-label text-danger">Desativado</span>
+                            </label>
+                        </div>
+                        <div class="col-md-9 mx-auto">
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success w-25">Alterar</button>
+                                <button type="reset" class="btn btn-secondary w-25">Limpar</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/dist/css/backend-bundle.min.js"></script>

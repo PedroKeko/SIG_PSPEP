@@ -7,13 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SIG_PSPEP.Context;
+using SIG_PSPEP.Entidade;
 using SIG_PSPEP.Entidades;
+using SIG_PSPEP.Areas.Dpq.Models;
 using SIG_PSPEP.Services;
-using SIG_PSPEP.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SIG_PSPEP.Areas.Dpq.Controllers
 {
     [Area("Dpq")]
+    [Authorize(Policy = "Require_Admin_ChDepar")]
     public class EfectivosController : Controller
     {
         private readonly ImageCompressionService _imageCompressionService;
@@ -27,75 +30,117 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
             _imageCompressionService = imageCompressionService;
         }
 
-        // GET: Dpq/Efectivos
+        // GET: Efectivos
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Efectivos.Include(e => e.FuncaoCargo).Include(e => e.OrgaoUnidade).Include(e => e.Patente).Include(e => e.SituacaoEfectivo).Include(e => e.User);
+            var appDbContext = _context.Efectivos.Include(e => e.FuncaoCargo).Include(e => e.Municipio).Include(e => e.OrgaoUnidade).Include(e => e.Patente).Include(e => e.ProvinciaNascimento).Include(e => e.ProvinciaResidencia).Include(e => e.SituacaoEfectivo).Include(e => e.User);
             return View(await appDbContext.ToListAsync());
         }
 
-        // GET: Dpq/Efectivos/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Efectivos/Details/5
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            CarregarViewData();
 
-            var efectivo = await _context.Efectivos
-                .Include(e => e.FuncaoCargo)
-                .Include(e => e.OrgaoUnidade)
-                .Include(e => e.Patente)
-                .Include(e => e.SituacaoEfectivo)
-                .Include(e => e.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var efectivo = await _context.Efectivos.FindAsync(id);
             if (efectivo == null)
             {
                 return NotFound();
             }
 
-            return View(efectivo);
+            var foto = await _context.FotoEfectivos
+                .Where(f => f.EfectivoId == id)
+                .Select(f => f.Foto)
+                .FirstOrDefaultAsync();
+
+            var model = new EfectivoViewModel
+            {
+                Id = efectivo.Id,
+                SituacaoEfectivoId = efectivo.SituacaoEfectivoId,
+                OrgaoUnidadeId = efectivo.OrgaoUnidadeId,
+                FuncaoCargoId = efectivo.FuncaoCargoId,
+                PatenteId = efectivo.PatenteId,
+                ProvinciaNascId = efectivo.ProvinciaNascId,
+                ProvinciaResId = efectivo.ProvinciaResId,
+                MunicipioId = efectivo.MunicipioId,
+                Num_Processo = efectivo.Num_Processo,
+                NIP = efectivo.NIP,
+                N_Agente = efectivo.N_Agente,
+                NomeCompleto = efectivo.NomeCompleto,
+                Apelido = efectivo.Apelido,
+                Genero = efectivo.Genero,
+                DataNasc = efectivo.DataNasc,
+                EstadoCivil = efectivo.EstadoCivil,
+                GSanguineo = efectivo.GSanguineo,
+                NumBI = efectivo.NumBI,
+                BIValidade = efectivo.BIValidade,
+                BIEmitido = efectivo.BIEmitido,
+                NumCartaConducao = efectivo.NumCartaConducao,
+                CartaValidade = efectivo.CartaValidade,
+                CartaEmitido = efectivo.CartaEmitido,
+                NumPassaporte = efectivo.NumPassaporte,
+                PassapValidade = efectivo.PassapValidade,
+                PassapEmitido = efectivo.PassapEmitido,
+                Nacionalidade = efectivo.Nacionalidade,
+                Destrito_BairroRes = efectivo.Destrito_BairroRes,
+                Rua = efectivo.Rua,
+                CasaNum = efectivo.CasaNum,
+                Habilitacao = efectivo.Habilitacao,
+                CursoHabilitado = efectivo.CursoHabilitado,
+                InstitAcademica = efectivo.InstitAcademica,
+                Telefone1 = efectivo.Telefone1,
+                Telefone2 = efectivo.Telefone2,
+                Email = efectivo.Email,
+                DataIngresso = efectivo.DataIngresso,
+                TipoVinculo = efectivo.TipoVinculo,
+                Carreira = efectivo.Carreira,
+                UnidadeOrigem = efectivo.UnidadeOrigem,
+                OutrasInfo = efectivo.OutrasInfo,
+                FotoByte = foto
+            };
+
+            return PartialView("_Details", model);
         }
 
-        // GET: Dpq/Efectivos/Create
         public IActionResult Create()
         {
             CarregarViewData();
-
-            return PartialView("Create", new EfectivoViewModel());
+            return PartialView("_Create", new EfectivoViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EfectivoViewModel model)
         {
-            // Verifica se o número de processo já existe
+            CarregarViewData();
             var existeNumeroProcesso = await _context.Efectivos
                 .AnyAsync(e => e.Num_Processo == model.Num_Processo);
 
             if (existeNumeroProcesso)
             {
-                return Json(new { success = false, errors = new List<string> { "Este número de processo já está cadastrado." } });
+                ModelState.AddModelError("Num_Processo", "Este número de processo já está cadastrado.");
             }
 
             if (!ModelState.IsValid)
             {
-                var erros = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-                return Json(new { success = false, errors = erros });
+                return Json(new { success = false, message = "Este número de processo já está cadastrado." });
             }
+
+            //if (!ModelState.IsValid)
+            //{
+            //    return PartialView("_Create", model);
+            //}
 
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return Json(new { success = false, errors = new List<string> { "Usuário não autenticado." } });
+                ModelState.AddModelError("", "Usuário não autenticado.");
+                //return PartialView("_Create", model);
+                return Json(new { success = false, message = "Usuário não autenticado." });
             }
 
             try
             {
-                // Criar entidade Efectivo
                 var efectivo = new Efectivo
                 {
                     SituacaoEfectivoId = model.SituacaoEfectivoId,
@@ -139,6 +184,9 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                     UnidadeOrigem = model.UnidadeOrigem,
                     OutrasInfo = model.OutrasInfo,
                     UserId = user.Id,
+                    Estado = true,
+                    DataRegisto = DateTime.Now,
+                    DataUltimaAlterecao = DateTime.Now,
                 };
 
                 _context.Efectivos.Add(efectivo);
@@ -155,10 +203,16 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                     var fileExtension = Path.GetExtension(model.FotoIF.FileName).ToLower();
 
                     if (!allowedExtensions.Contains(fileExtension))
-                        return Json(new { success = false, errors = new List<string> { "Formato de imagem inválido. Apenas JPG e PNG são permitidos." } });
+                    {
+                        ModelState.AddModelError("FotoIF", "Formato de imagem inválido. Apenas JPG e PNG são permitidos.");
+                        return PartialView("_Create", model);
+                    }
 
                     if (model.FotoIF.Length > 5.5 * 1024 * 1024)
-                        return Json(new { success = false, errors = new List<string> { "O tamanho da imagem excede o limite de 5.5MB." } });
+                    {
+                        ModelState.AddModelError("FotoIF", "O tamanho da imagem excede o limite de 5.5MB.");
+                        return PartialView("_Create", model);
+                    }
 
                     using (var imageStream = model.FotoIF.OpenReadStream())
                     {
@@ -166,56 +220,56 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                     }
                 }
 
-                // Criar registro da foto no banco de dados
                 var fotoEfectivo = new FotoEfectivo
                 {
                     Foto = fotoBytes,
-                    EfectivoId = efectivo.Id
+                    EfectivoId = efectivo.Id,
+                    UserId = user.Id,
+                    Estado = true,
+                    DataRegisto = DateTime.Now,
+                    DataUltimaAlterecao = DateTime.Now,
                 };
 
                 _context.FotoEfectivos.Add(fotoEfectivo);
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true });
+                // Redireciona à Index via Ajax
+                return Json(new { success = true, redirectUrl = Url.Action("Index") });
             }
-            catch (DbUpdateException  dbEx)
+            catch (DbUpdateException)
             {
-                return Json(new { success = false, errors = new List<string> { "Erro ao salvar no banco de dados. Verifique os dados inseridos." } });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, errors = new List<string> { "Erro inesperado. Tente novamente. " + ex.Message } });
+                ModelState.AddModelError("", "Erro ao salvar no banco de dados. Verifique os dados inseridos.");
+                return Json(new { success = false, message = "Erro ao salvar no banco de dados. Verifique os dados inseridos." });
             }
         }
 
-        private void CarregarViewData()
-        {
-            var efectivo = new Efectivo();
-            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "NomeFuncaoCargo", efectivo.FuncaoCargoId);
-            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade", efectivo.OrgaoUnidadeId);
-            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto", efectivo.PatenteId);
-            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao", efectivo.SituacaoEfectivoId);
-            ViewData["ProvinciaNascId"] = new SelectList(_context.Provincias, "Id", "Nome", efectivo.ProvinciaNascId);
-            ViewData["ProvinciaResId"] = new SelectList(_context.Provincias, "Id", "Nome", efectivo.ProvinciaResId);
-            ViewData["MunicipioId"] = new SelectList(_context.Municipios, "Id", "Nome", efectivo.MunicipioId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", efectivo.UserId);
-        }
-
+        // GET: Efectivos/Edit/5
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            CarregarViewData();
+
             var efectivo = await _context.Efectivos.FindAsync(id);
             if (efectivo == null)
             {
                 return NotFound();
             }
 
-            var fotoCondutor = await _context.FotoEfectivos
-                .FirstOrDefaultAsync(f => f.EfectivoId == efectivo.Id);
+            var foto = await _context.FotoEfectivos
+                .Where(f => f.EfectivoId == id)
+                .Select(f => f.Foto)
+                .FirstOrDefaultAsync();
 
             var model = new EfectivoViewModel
             {
                 Id = efectivo.Id,
+                SituacaoEfectivoId = efectivo.SituacaoEfectivoId,
+                OrgaoUnidadeId = efectivo.OrgaoUnidadeId,
+                FuncaoCargoId = efectivo.FuncaoCargoId,
+                PatenteId = efectivo.PatenteId,
+                ProvinciaNascId = efectivo.ProvinciaNascId,
+                ProvinciaResId = efectivo.ProvinciaResId,
+                MunicipioId = efectivo.MunicipioId,
                 Num_Processo = efectivo.Num_Processo,
                 NIP = efectivo.NIP,
                 N_Agente = efectivo.N_Agente,
@@ -235,9 +289,6 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 PassapValidade = efectivo.PassapValidade,
                 PassapEmitido = efectivo.PassapEmitido,
                 Nacionalidade = efectivo.Nacionalidade,
-                ProvinciaNascId = efectivo.ProvinciaNascId,
-                ProvinciaResId = efectivo.ProvinciaResId,
-                MunicipioId = efectivo.MunicipioId,
                 Destrito_BairroRes = efectivo.Destrito_BairroRes,
                 Rua = efectivo.Rua,
                 CasaNum = efectivo.CasaNum,
@@ -252,54 +303,47 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 Carreira = efectivo.Carreira,
                 UnidadeOrigem = efectivo.UnidadeOrigem,
                 OutrasInfo = efectivo.OutrasInfo,
-                FotoByte = fotoCondutor?.Foto // ✅ Corrigido para evitar erro de `null`
-            }; 
-            CarregarViewData();
+                FotoByte = foto
+            };
 
-            return PartialView("Edit", model); // ✅ Verifique se a view está correta
+            return PartialView("_Edit", model);
         }
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EfectivoViewModel model)
+        public async Task<IActionResult> Edit(EfectivoViewModel model)
         {
-            if (id != model.Id)
-            {
-                return Json(new { success = false, errors = new List<string> { "ID inválido." } });
-            }
+            CarregarViewData();
 
             if (!ModelState.IsValid)
             {
-                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                return Json(new { success = false, errors = erros });
+                return Json(new { success = false, message = "Dados inválidos. Corrija os erros e tente novamente." });
             }
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 ModelState.AddModelError("", "Usuário não autenticado.");
-                ViewData["ValidationErrors"] = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-                CarregarViewData();
-                return View(model);
+                //return PartialView("_Create", model);
+                return Json(new { success = false, message = "Usuário não autenticado." });
             }
 
-            var efectivo = await _context.Efectivos.FindAsync(id);
+            var efectivo = await _context.Efectivos.FindAsync(model.Id);
             if (efectivo == null)
             {
-                return Json(new { success = false, errors = new List<string> { "Efectivo não encontrado." } });
+                return NotFound();
             }
 
             try
             {
-                // Atualizar os dados do efectivo
+                // Atualiza os dados do efectivo
                 efectivo.SituacaoEfectivoId = model.SituacaoEfectivoId;
                 efectivo.OrgaoUnidadeId = model.OrgaoUnidadeId;
                 efectivo.FuncaoCargoId = model.FuncaoCargoId;
                 efectivo.PatenteId = model.PatenteId;
+                efectivo.ProvinciaNascId = model.ProvinciaNascId;
+                efectivo.ProvinciaResId = model.ProvinciaResId;
+                efectivo.MunicipioId = model.MunicipioId;
                 efectivo.Num_Processo = model.Num_Processo;
                 efectivo.NIP = model.NIP;
                 efectivo.N_Agente = model.N_Agente;
@@ -319,9 +363,6 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 efectivo.PassapValidade = model.PassapValidade;
                 efectivo.PassapEmitido = model.PassapEmitido;
                 efectivo.Nacionalidade = model.Nacionalidade;
-                efectivo.ProvinciaNascId = model.ProvinciaNascId;
-                efectivo.ProvinciaResId = model.ProvinciaResId;
-                efectivo.MunicipioId = model.MunicipioId;
                 efectivo.Destrito_BairroRes = model.Destrito_BairroRes;
                 efectivo.Rua = model.Rua;
                 efectivo.CasaNum = model.CasaNum;
@@ -336,72 +377,69 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 efectivo.Carreira = model.Carreira;
                 efectivo.UnidadeOrigem = model.UnidadeOrigem;
                 efectivo.OutrasInfo = model.OutrasInfo;
-                efectivo.UserId = user.Id;
                 efectivo.DataUltimaAlterecao = DateTime.Now;
+                efectivo.UserId = user.Id;
 
-                _context.Update(efectivo);
-                await _context.SaveChangesAsync();
+                // Atualiza a foto (se necessário)
+                byte[] fotoBytes = null;
 
-                // Atualizar ou inserir foto
                 if (model.FotoIF != null && model.FotoIF.Length > 0)
                 {
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-                    var fileExtension = Path.GetExtension(model.FotoIF.FileName).ToLower();
+                    var extension = Path.GetExtension(model.FotoIF.FileName).ToLower();
 
-                    if (!allowedExtensions.Contains(fileExtension))
-                        return Json(new { success = false, errors = new List<string> { "Formato de imagem inválido. Apenas JPG e PNG são permitidos." } });
-
-                    if (model.FotoIF.Length > 5.5 * 1024 * 1024)
-                        return Json(new { success = false, errors = new List<string> { "O tamanho da imagem excede o limite de 5.5MB." } });
-
-                    byte[] fotoBytes;
-                    using (var imageStream = model.FotoIF.OpenReadStream())
+                    if (!allowedExtensions.Contains(extension))
                     {
-                        fotoBytes = await _imageCompressionService.CompressImageAsync(imageStream, fileExtension);
+                        ModelState.AddModelError("FotoIF", "Formato de imagem inválido.");
+                        return PartialView("_Edit", model);
                     }
 
-                    var fotoEfectivo = await _context.FotoEfectivos.FirstOrDefaultAsync(f => f.EfectivoId == efectivo.Id);
-                    if (fotoEfectivo == null)
+                    if (model.FotoIF.Length > 5.5 * 1024 * 1024)
                     {
-                        fotoEfectivo = new FotoEfectivo { EfectivoId = efectivo.Id, Foto = fotoBytes };
-                        _context.FotoEfectivos.Add(fotoEfectivo);
+                        ModelState.AddModelError("FotoIF", "Imagem excede 5.5MB.");
+                        return PartialView("_Edit", model);
+                    }
+
+                    using var stream = model.FotoIF.OpenReadStream();
+                    fotoBytes = await _imageCompressionService.CompressImageAsync(stream, extension);
+                }
+
+                var fotoExistente = await _context.FotoEfectivos
+                    .FirstOrDefaultAsync(f => f.EfectivoId == efectivo.Id);
+
+                if (fotoBytes != null)
+                {
+                    if (fotoExistente != null)
+                    {
+                        fotoExistente.UserId = user.Id;
+                        fotoExistente.Foto = fotoBytes;
+                        fotoExistente.DataUltimaAlterecao = DateTime.Now;
                     }
                     else
                     {
-                        fotoEfectivo.Foto = fotoBytes;
-                        _context.FotoEfectivos.Update(fotoEfectivo);
+                        _context.FotoEfectivos.Add(new FotoEfectivo
+                        {
+                            EfectivoId = efectivo.Id,
+                            Foto = fotoBytes,
+                            UserId = user?.Id,
+                            Estado = true,
+                            DataUltimaAlterecao = DateTime.Now
+                        });
                     }
-
-                    await _context.SaveChangesAsync();
                 }
 
-                return Json(new { success = true });
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, redirectUrl = Url.Action("Index") });
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
-                if (!_context.Efectivos.Any(e => e.Id == id))
-                {
-                    return Json(new { success = false, errors = new List<string> { "Efectivo não encontrado." } });
-                }
-                else
-                {
-                    return Json(new { success = false, errors = new List<string> { "Erro de concorrência ao atualizar os dados." } });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, errors = new List<string> { "Erro inesperado. Tente novamente. " + ex.Message } });
+                return Json(new { success = false, message = "Erro ao editar o efectivo." });
             }
         }
 
-        private bool EfectivoExists(int id)
-        {
-            return _context.Efectivos.Any(e => e.Id == id);
-        }
 
-
-
-        // GET: Dpq/Efectivos/Delete/5
+        // GET: Efectivos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -411,8 +449,11 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
 
             var efectivo = await _context.Efectivos
                 .Include(e => e.FuncaoCargo)
+                .Include(e => e.Municipio)
                 .Include(e => e.OrgaoUnidade)
                 .Include(e => e.Patente)
+                .Include(e => e.ProvinciaNascimento)
+                .Include(e => e.ProvinciaResidencia)
                 .Include(e => e.SituacaoEfectivo)
                 .Include(e => e.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -424,7 +465,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
             return View(efectivo);
         }
 
-        // POST: Dpq/Efectivos/Delete/5
+        // POST: Efectivos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -437,6 +478,24 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool EfectivoExists(int id)
+        {
+            return _context.Efectivos.Any(e => e.Id == id);
+        }
+
+        private void CarregarViewData()
+        {
+            var efectivo = new Efectivo();
+            ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "NomeFuncaoCargo", efectivo.FuncaoCargoId);
+            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade", efectivo.OrgaoUnidadeId);
+            ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto", efectivo.PatenteId);
+            ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao", efectivo.SituacaoEfectivoId);
+            ViewData["ProvinciaNascId"] = new SelectList(_context.Provincias, "Id", "Nome", efectivo.ProvinciaNascId);
+            ViewData["ProvinciaResId"] = new SelectList(_context.Provincias, "Id", "Nome", efectivo.ProvinciaResId);
+            ViewData["MunicipioId"] = new SelectList(_context.Municipios, "Id", "Nome", efectivo.MunicipioId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", efectivo.UserId);
         }
     }
 }

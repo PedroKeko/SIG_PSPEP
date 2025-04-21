@@ -1,25 +1,37 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SIG_PSPEP.Context;
 
 namespace SIG_PSPEP.Areas.Dtti.Controllers;
 
 [Area("Dtti")]
-public class HomeController : Controller
+public class HomeController : BaseController
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly UserManager<IdentityUser> userManager;
+    private readonly SignInManager<IdentityUser> signInManager;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(
+        AppDbContext context,
+        UserManager<IdentityUser> userManager,
+        SignInManager<IdentityUser> signInManager,
+        ILogger<HomeController> logger)
+        : base(context)
     {
+        this.userManager = userManager;
+        this.signInManager = signInManager;
         _logger = logger;
     }
 
     public IActionResult Index()
     {
+
+        if (!UsuarioTemAcessoArea("DTTI") && !UsuarioTemAcessoArea("ADMIN"))
+        {
+            return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+        }
+
         return View();
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
 }

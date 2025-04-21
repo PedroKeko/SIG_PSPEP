@@ -35,10 +35,7 @@
     <Folder Include="Areas\Dtti\Data\" />
     <Folder Include="Areas\Dtti\Models\" />
     <Folder Include="Areas\Dpq\Data\" />
-    <Folder Include="Areas\Dpq\Models\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Policies\" />
   </ItemGroup>
 
 </Project>

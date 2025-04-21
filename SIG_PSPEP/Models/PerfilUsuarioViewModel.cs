@@ -13,8 +13,13 @@ namespace SIG_PSPEP.Models
         [Display(Name = "Nome Completo")]
         public string? NomeCompleto { get; set; }
 
-        public byte[]? Foto { get; set; } // Mude para IFormFile para uploads de arquivos
+        public byte[]? Foto { get; set; }
+
         public string? Role { get; set; }
+
+        public List<string> Roles { get; set; } = new();
+
+        public List<string> Claims { get; set; } = new();
 
         [Required(ErrorMessage = "A senha atual é obrigatória.")]
         [DataType(DataType.Password)]
@@ -30,3 +35,5 @@ namespace SIG_PSPEP.Models
         public string? ConfirmNewPassword { get; set; }
     }
 }
+
+

@@ -1,0 +1,117 @@
+﻿@model RoleEdit
+
+@* <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script> *@
+
+<form method="post" asp-action="Update">
+    <input type="hidden" name="RoleName" value="@Model.Role.Name" />
+    <input type="hidden" name="RoleId" value="@Model.Role.Id" />
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Função:</label>
+        <input type="text" class="form-control bg-light" value="@Model.Role.Name" readonly />
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h5 class="bg-info p-2 text-white rounded text-center">Remover usuários da função</h5>
+            @if (!Model.Members.Any())
+            {
+                <div class="alert alert-secondary">Não existem usuários nesta Role</div>
+            }
+            else
+            {
+                <table class="table table-striped table-bordered table-sm" id="membersTable">
+                    <thead class="">
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Remover</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Members)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td class="text-center">
+                                    <input type="checkbox" name="DeleteIds" value="@user.Id" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+        <div class="col-md-6">
+            <h5 class="bg-info p-2 text-white rounded text-center">Adicionar usuários à função</h5>
+            @if (!Model.NonMembers.Any())
+            {
+                <div class="alert alert-secondary">Todos os usuários pertencem a esta Role</div>
+            }
+            else
+            {
+                <table class="table table-striped table-bordered table-sm" id="nonMembersTable">
+                    <thead class="">
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Adicionar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.NonMembers)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td class="text-center">
+                                    <input type="checkbox" name="AddIds" value="@user.Id" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <button type="submit" class="btn btn-success px-5">Salvar</button>
+        <a asp-action="Index" class="btn btn-danger px-5">Cancelar</a>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#membersTable, #nonMembersTable').DataTable({
+            paging: false,
+            pageLength: 5,
+            lengthMenu: [5, 10, 25],
+            searching: true,
+            language: {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "", // campo de busca vazio
+                "lengthMenu": "_MENU_ Registros",
+                "info": " _START_ a _END_ de _TOTAL_",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "loadingRecords": "Carregando...",
+                "processing": "Processando...",
+                "zeroRecords": "Nenhum registro encontrado",
+                "emptyTable": "Nenhum dado disponível na tabela",
+                "paginate": {
+                    "first": "Primeiro",
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "last": "Último"
+                },
+                "aria": {
+                    "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                    "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                }
+            }
+        });
+    });
+</script>
+

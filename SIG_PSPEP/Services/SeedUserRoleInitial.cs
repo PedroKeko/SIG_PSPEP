@@ -25,6 +25,39 @@ public class SeedUserRoleInitial : ISeedUserRoleInitial
             role.ConcurrencyStamp = Guid.NewGuid().ToString();
             IdentityResult roleResult = await _roleManager.CreateAsync(role);
         }
+        if (!await _roleManager.RoleExistsAsync("Comandante"))
+        {
+            IdentityRole role = new IdentityRole();
+            role.Name = "Comandante";
+            role.NormalizedName = "COMANDANTE";
+            role.ConcurrencyStamp = Guid.NewGuid().ToString();
+            IdentityResult roleResult = await _roleManager.CreateAsync(role);
+        }
+        if (!await _roleManager.RoleExistsAsync("2º Comandante"))
+        {
+            IdentityRole role = new IdentityRole();
+            role.Name = "2º Comandante";
+            role.NormalizedName = "2º COMANDANTE";
+            role.ConcurrencyStamp = Guid.NewGuid().ToString();
+            IdentityResult roleResult = await _roleManager.CreateAsync(role);
+        }
+        if (!await _roleManager.RoleExistsAsync("Chefe Estado Maior"))
+        {
+            IdentityRole role = new IdentityRole();
+            role.Name = "Chefe Estado Maior";
+            role.NormalizedName = "CHEFE ESTADO MAIOR";
+            role.ConcurrencyStamp = Guid.NewGuid().ToString();
+            IdentityResult roleResult = await _roleManager.CreateAsync(role);
+        }
+
+        if (!await _roleManager.RoleExistsAsync("Comandante de Sub-Unidade"))
+        {
+            IdentityRole role = new IdentityRole();
+            role.Name = "Comandante de Sub-Unidade";
+            role.NormalizedName = "COMANDANTE de SUB-UNIDADE";
+            role.ConcurrencyStamp = Guid.NewGuid().ToString();
+            IdentityResult roleResult = await _roleManager.CreateAsync(role);
+        }
 
         if (!await _roleManager.RoleExistsAsync("Chefe de Departamento"))
         {
@@ -63,21 +96,11 @@ public class SeedUserRoleInitial : ISeedUserRoleInitial
             IdentityResult roleResult = await _roleManager.CreateAsync(role);
         }
 
-        if (!await _roleManager.RoleExistsAsync("Convidado"))
-        {
-            IdentityRole role = new IdentityRole();
-            role.Name = "Convidado";
-            role.NormalizedName = "CONVIDADO";
-            role.ConcurrencyStamp = Guid.NewGuid().ToString();
-
-            IdentityResult roleResult = await _roleManager.CreateAsync(role);
-        }
-
     }
 
     public async Task SeedUsersAsync()
     {
-        if (await _userManager.FindByEmailAsync("admin@pna.co") == null)
+        if (await _userManager.FindByEmailAsync("admin@pspep.pn.gov.ao") == null)
         {
             IdentityUser user = new IdentityUser();
             user.UserName = "admin@pspep.pn.gov.ao";

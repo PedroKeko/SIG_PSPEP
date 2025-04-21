@@ -71,7 +71,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("IsFuncionarioClaimAccess",
        policy => policy.RequireClaim("IsFuncionario", "true"));
 
-
     options.AddPolicy("TesteClaim",
     policy => policy.RequireClaim("Teste", "teste_claim"));
 });
@@ -167,4 +166,5 @@ builder1.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
 

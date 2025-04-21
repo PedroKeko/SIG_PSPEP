@@ -1,0 +1,75 @@
+﻿@model RegistroViewModel
+
+@{
+    ViewData["Title"] = "Registro de Usuário";
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Registro de Usuário</h5>
+
+                    <form asp-action="Registro" class="row g-3" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col-md-9 mx-auto">
+                            <select asp-for="EfectivoId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.EfectivoId" style="width: 100%;"></select>
+                        </div>
+
+                        <div class="col-md-9 mx-auto">
+                            <input type="email" asp-for="Email" class="form-control" id="inputEmail" required placeholder="Email"
+                                   oninvalid="this.setCustomValidity('Por favor, informe o email faz favor!')"
+                                   oninput="setCustomValidity('')" />
+                        </div>
+
+                        <div class="col-md-9 mx-auto">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <select asp-for="AreaId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.AreaId" style="width: 100%;"></select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" asp-for="PhoneNumber" class="form-control" id="inputEmail" required placeholder="Telefone"
+                                           oninvalid="this.setCustomValidity('Por favor, Informe o número do Telefone')"
+                                           oninput="setCustomValidity('')" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-9 mx-auto">
+                            <input type="password" asp-for="Password" class="form-control" id="inputPassword" required placeholder="Senha"
+                                   oninvalid="this.setCustomValidity('Por favor, crie a senha do usuário!!')"
+                                   oninput="setCustomValidity('')" />
+                        </div>
+                        <div class="col-md-9 mx-auto">
+                            <input type="password" asp-for="ConfirmPassword" class="form-control" id="inputPassword" required placeholder="Corfirmar Senha"
+                                   oninvalid="this.setCustomValidity('Por favor, confirmar a senha faz favor!')"
+                                   oninput="setCustomValidity('')" />
+                        </div>
+                        <div class="col-md-9 mx-auto">
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success w-25">Salvar</button>
+                                <button type="reset" class="btn btn-secondary w-25">Limpar</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/dist/css/backend-bundle.min.js"></script>
+
+
+
+
+
+
