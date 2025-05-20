@@ -1,0 +1,260 @@
+﻿@model IEnumerable<SIG_PSPEP.Entidades.EfectivoOrdemServico>
+
+@{
+	ViewData["Title"] = "Promoções";
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+
+<div class="container-fluid">
+	<div class="card">
+		<div class="card-body">
+			<form id="formFiltro" class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+				<div class="d-flex gap-2 mb-2">
+					<button type="button" class="custom1-btn btn-1" onclick="openModal('/Dpq/EfectivoOrdemServicos/Create')">Singular</button>
+					<button type="button" class="custom1-btn btn-1" onclick="openModalMultiplas('/Dpq/EfectivoOrdemServicos/PromocaoMultipla')">Multiplas</button>				
+					<button type="button" class="custom1-btn btn-1" onclick="exportarDados()">Exportar</button>
+				</div>
+				<div class="d-flex align-items-center flex-wrap">
+					<div class="d-flex align-items-center me-2 mb-2">
+						<label for="dataInicio" class="form-label me-2 mb-0">De</label>
+						<input type="date" name="dataInicio" id="dataInicio" class="form-control" />
+					</div>
+					<div class="d-flex align-items-center me-2 mb-2">
+						<label for="dataFim" class="form-label me-2 mb-0">Até</label>
+						<input type="date" name="dataFim" id="dataFim" class="form-control" />
+					</div>
+					<div class="mb-2">
+						<button type="submit" class="custom1-btn btn-2-red">Filtrar</button>
+					</div>
+				</div>
+			</form>
+			<div class="table-responsive" id="tabela-container">
+				@await Html.PartialAsync("_TabelaEfectivoOrdemServicos", Model)
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- jQuery e DataTables -->
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+
+
+<div class="modal fade" id="modalForm" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content" id="modalContent"></div>
+	</div>
+</div>
+
+<!-- Promoção Multiplas -->
+<div class="modal fade" id="modalFormMultiplas" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" id="modalContentMultiplas"></div>
+	</div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+			</div>
+			<div class="modal-body">
+				Tem certeza que deseja excluir este Registro?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="custom2-btn btn-2-red" id="confirmDeleteBtn">Excluir</button>
+				<button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@section Scripts {
+	<script>
+		 function openModal(url) {
+			$.get(url, function (data) {
+				$('#modalContent').html(data);
+				let modal = new bootstrap.Modal(document.getElementById('modalForm'));
+				modal.show();
+			});
+		}
+
+		 // Recarrega a página quando o modal for fechado
+				const modalElement = document.getElementById('modalForm');
+		modalElement.addEventListener('hidden.bs.modal', function () {
+			location.reload();
+		});
+
+		function submitForm(form) {
+			$.post(form.action, $(form).serialize(), function (result) {
+				if (result.success) {
+					location.reload();
+				} else {
+					$('#modalContent').html(result); // reexibir erros no modal
+				}
+			});
+			return false;
+		}
+	</script>
+	<script>
+			document.addEventListener("DOMContentLoaded", function () {
+			const hoje = new Date();
+			const ontem = new Date(hoje);
+			ontem.setDate(hoje.getDate() - 1);
+
+			const formatarData = (data) => {
+				const ano = data.getFullYear();
+				const mes = String(data.getMonth() + 1).padStart(2, '0');
+				const dia = String(data.getDate()).padStart(2, '0');
+				return `${ano}-${mes}-${dia}`;
+			};
+
+			document.getElementById("dataInicio").value = formatarData(ontem);
+			document.getElementById("dataFim").value = formatarData(hoje);
+		});
+	function openModalMultiplas(url) {
+					$.get(url, function (data) {
+					 $('#modalContentMultiplas').html(data);
+						let modal = new bootstrap.Modal(document.getElementById('modalFormMultiplas'));
+						modal.show();
+					}).fail(function () {
+						alert("Erro ao carregar a página.");
+					});
+				}
+            const modalElemente = document.getElementById('modalFormMultiplas');
+			modalElemente.addEventListener('hidden.bs.modal', function () {
+				location.reload();
+			});
+
+	function submitForm(form) {
+					$.post(form.action, $(form).serialize(), function (result) {
+						const Toast = Swal.mixin({
+							toast: true,
+							position: 'top-end',
+							showConfirmButton: false,
+							timer: 1200,
+							timerProgressBar: true
+						});
+
+						if (result.success) {
+							Toast.fire({
+								icon: 'success',
+								title: 'Operação realizada com sucesso!'
+							});
+
+							setTimeout(() => {
+								location.reload();
+							}, 1250);
+						} else {
+							$('#modalContent').html(result); // reexibir erros no modal
+							Toast.fire({
+								icon: 'error',
+								title: 'Erro ao processar o formulário.'
+							});
+						}
+					});
+					return false;
+				}
+
+	function openModal(url) {
+			$.get(url, function (data) {
+				$('#modalContent').html(data);
+				let modal = new bootstrap.Modal(document.getElementById('modalForm'));
+				modal.show();
+			});
+		}
+
+		  function submitForm(form) {
+			$.post(form.action, $(form).serialize(), function (result) {
+				const Toast = Swal.mixin({
+					toast: true,
+					position: 'top-end',
+					showConfirmButton: false,
+					timer: 2000,
+					timerProgressBar: true
+				});
+
+				if (result.success) {
+					Toast.fire({
+						icon: 'success',
+						title: result.message || 'Operação concluída com sucesso.'
+					});
+
+					setTimeout(() => {
+						location.reload();
+					}, 2100);
+				} else {
+					Toast.fire({
+						icon: 'error',
+						title: result.message || 'Erro ao processar a requisição.'
+					});
+				}
+			});
+
+			return false;
+		}
+
+
+	let deleteId = null;
+
+	function deleteItem(id) {
+			deleteId = id;
+			let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+			modal.show();
+		}
+
+	document.getElementById('confirmDeleteBtn').onclick = function () {
+					$.post('/Dpq/EfectivoOrdemServicos/Delete/' + deleteId, function (result) {
+				const Toast = Swal.mixin({
+					toast: true,
+					position: 'top-end',
+					showConfirmButton: false,
+					timer: 1200,
+					timerProgressBar: true,
+				});
+
+				if (result.success) {
+					Toast.fire({
+						icon: 'success',
+						title: 'Registro eliminado com sucesso!'
+					});
+
+					// Espera o toast e depois recarrega
+					setTimeout(() => {
+						location.reload();
+					}, 1250);
+				} else {
+					Toast.fire({
+						icon: 'error',
+						title: 'Erro ao eliminar o registro!'
+					});
+				}
+			});
+		};
+
+	</script>
+	<script>
+		$(document).ready(function () {
+			$('#formFiltro').submit(function (e) {
+				e.preventDefault();
+
+				var dataInicio = $('#dataInicio').val();
+				var dataFim = $('#dataFim').val();
+
+				$.get('/Dpq/EfectivoOrdemServicos/FiltrarTabela', { dataInicio: dataInicio, dataFim: dataFim }, function (result) {
+					$('#tabela-container').html(result);
+				});
+			});
+		});
+	</script>
+}
+
+
+

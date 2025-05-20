@@ -1,329 +1,410 @@
 ﻿@{
-    ViewData["Title"] = "Painel de Controle";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Painel de Controle";
+	Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+@model DashboardEstatisticas
+<style>
+	.card-hover {
+		border-radius: 12px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+		transition: all 0.3s ease;
+		background-color: #ffffff;
+		position: relative;
+		overflow: hidden;
+		min-height: 100px;
+	}
+
+		.card-hover:hover {
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+			transform: translateY(-3px);
+		}
+
+</style>
 
 <div class="container-fluid">
-    <!-- ============================================================== -->
-    <!-- Sales Cards  -->
-    <!-- ============================================================== -->
-    <div class="row">
-        <div class="row">
-           <!-- Usuários -->
-            <div class="col-md-6 col-lg-2 col-xlg-3">
-                <div class="card card-hover">
-                    <div class="box bg-cyan text-center">
-                        <h1 class="font-light text-white"><i class="mdi mdi-account-multiple"></i></h1>
-                        <h6 class="text-white">Total Usuários</h6>
-                        <span class="text-white" id="usuarios-total">0</span>
-                    </div>
-                </div>
-            </div>
+	<!-- ============================================================== -->
+	<!-- Sales Cards  -->
+	<!-- ============================================================== -->
+	<div class="row">
+		<!-- Usuários -->
+		<div class="col-md-6 col-lg-2 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-cyan text-center">
+					<h1 class="font-light text-white"><i class="mdi mdi-account-multiple"></i></h1>
+					<h6 class="text-white">Total Usuários</h6>
+					<span class="text-white" id="usuarios-total">0</span>
+				</div>
+			</div>
+		</div>
 
-            <!-- Ativos -->
-            <div class="col-md-6 col-lg-4 col-xlg-3">
-                <div class="card card-hover">
-                    <div class="box bg-success text-center">
-                        <h1 class="font-light text-white"><i class="mdi mdi-account-check"></i></h1>
-                        <h6 class="text-white">Usuários Ativados</h6>
-                        <span class="text-white" id="ativos-total">0</span>
-                    </div>
-                </div>
-            </div>
+		<!-- Ativos -->
+		<div class="col-md-6 col-lg-4 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-success text-center">
+					<h1 class="font-light text-white"><i class="mdi mdi-account-check"></i></h1>
+					<h6 class="text-white">Usuários Ativados</h6>
+					<span class="text-white" id="ativos-total">0</span>
+				</div>
+			</div>
+		</div>
 
-            <!-- Desativados -->
-            <div class="col-md-6 col-lg-2 col-xlg-3">
-                <div class="card card-hover">
-                    <div class="box bg-danger text-center">
-                        <h1 class="font-light text-white"><i class="mdi mdi-account-off"></i></h1>
-                        <h6 class="text-white">Desativados</h6>
-                        <span class="text-white" id="desativados-total">0</span>
-                    </div>
-                </div>
-            </div>
+		<!-- Desativados -->
+		<div class="col-md-6 col-lg-2 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-danger text-center">
+					<h1 class="font-light text-white"><i class="mdi mdi-account-off"></i></h1>
+					<h6 class="text-white">Desativados</h6>
+					<span class="text-white" id="desativados-total">0</span>
+				</div>
+			</div>
+		</div>
 
-            <!-- Roles -->
-            <div class="col-md-6 col-lg-2 col-xlg-3">
-                <div class="card card-hover">
-                    <div class="box bg-warning text-center">
-                        <h1 class="font-light text-white"><i class="mdi mdi-security"></i></h1>
-                        <h6 class="text-white">Total Roles</h6>
-                        <span class="text-white" id="roles-total">0</span>
-                    </div>
-                </div>
-            </div>
+		<!-- Roles -->
+		<div class="col-md-6 col-lg-2 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-warning text-center">
+					<h1 class="font-light text-white"><i class="mdi mdi-security"></i></h1>
+					<h6 class="text-white">Total Roles</h6>
+					<span class="text-white" id="roles-total">0</span>
+				</div>
+			</div>
+		</div>
 
-            <!-- Áreas -->
-            <div class="col-md-6 col-lg-2 col-xlg-3">
-                <div class="card card-hover">
-                    <div class="box bg-info text-center">
-                        <h1 class="font-light text-white"><i class="mdi mdi-map-marker-radius"></i></h1>
-                        <h6 class="text-white">Total Áreas</h6>
-                        <span class="text-white" id="areas-total">0</span>
-                    </div>
-                </div>
-            </div>
+		<!-- Áreas -->
+		<div class="col-md-6 col-lg-2 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-info text-center">
+					<h1 class="font-light text-white"><i class="mdi mdi-map-marker-radius"></i></h1>
+					<h6 class="text-white">Total Áreas</h6>
+					<span class="text-white" id="areas-total">0</span>
+				</div>
+			</div>
+		</div>
 
-        </div>
 
-        <!-- Column -->
-        <div class="col-md-6 col-lg-4 col-xlg-3">
-            <div class="card card-hover">
-                <div class="box bg-danger text-center">
-                    <h1 class="font-light text-white">
-                        <i class="mdi mdi-receipt"></i>
-                    </h1>
-                    <h6 class="text-white">Forms</h6>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <!-- Claims -->
-        <div class="col-md-6 col-lg-2 col-xlg-3">
-            <div class="card card-hover">
-                <div class="box bg-cyan text-center">
-                    <h1 class="font-light text-white"><i class="mdi mdi-key"></i></h1>
-                    <h6 class="text-white">Total Claims</h6>
-                    <span class="text-white" id="claims-total">0</span>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <div class="col-md-6 col-lg-2 col-xlg-3">
-            <div class="card card-hover">
-                <div class="box bg-cyan text-center">
-                    <h1 class="font-light text-white">
-                        <i class="mdi mdi-pencil"></i>
-                    </h1>
-                    <h6 class="text-white">Elements</h6>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <div class="col-md-6 col-lg-2 col-xlg-3">
-            <div class="card card-hover">
-                <div class="box bg-success text-center">
-                    <h1 class="font-light text-white">
-                        <i class="mdi mdi-calendar-check"></i>
-                    </h1>
-                    <h6 class="text-white">Calnedar</h6>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <div class="col-md-6 col-lg-2 col-xlg-3">
-            <div class="card card-hover">
-                <div class="box bg-warning text-center">
-                    <h1 class="font-light text-white">
-                        <i class="mdi mdi-alert"></i>
-                    </h1>
-                    <h6 class="text-white">Errors</h6>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-    </div>
-    <!-- ============================================================== -->
-    <!-- Sales chart -->
-    <!-- ============================================================== -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-md-flex align-items-center">
-                        <div>
-                            <h4 class="card-title">Registos de Usuários</h4>
-                            <h5 class="card-subtitle">Ultimos 12 Meses</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <!-- column -->
-                        <div class="col-lg-9">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content"
-                                     id="flot-line-chart"></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="bg-dark p-10 text-white text-center">
-                                        <i class="mdi mdi-account fs-3 mb-1 font-16"></i>
-                                        <h5 class="mb-0 mt-1">2540</h5>
-                                        <small class="font-light">Total de Logs</small>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="bg-dark p-10 text-white text-center">
-                                        <i class="mdi mdi-plus fs-3 font-16"></i>
-                                        <h5 class="mb-0 mt-1">120</h5>
-                                        <small class="font-light">Novos Usuários</small>
-                                    </div>
-                                </div>
-                                <div class="col-6 mt-3">
-                                    <div class="bg-dark p-10 text-white text-center">
-                                        <i class="mdi mdi-cart fs-3 mb-1 font-16"></i>
-                                        <h5 class="mb-0 mt-1">656</h5>
-                                        <small class="font-light">Total de Enventos</small>
-                                    </div>
-                                </div>
-                                <div class="col-6 mt-3">
-                                    <div class="bg-dark p-10 text-white text-center">
-                                        <i class="mdi mdi-tag fs-3 mb-1 font-16"></i>
-                                        <h5 class="mb-0 mt-1">9540</h5>
-                                        <small class="font-light">Total de Províncias</small>
-                                    </div>
-                                </div>
-                                <div class="col-6 mt-3">
-                                    <div class="bg-dark p-10 text-white text-center">
-                                        <i class="mdi mdi-table fs-3 mb-1 font-16"></i>
-                                        <h5 class="mb-0 mt-1">100</h5>
-                                        <small class="font-light">Total de Municípios</small>
-                                    </div>
-                                </div>
-                                <div class="col-6 mt-3">
-                                    <div class="bg-dark p-10 text-white text-center">
-                                        <i class="mdi mdi-web fs-3 mb-1 font-16"></i>
-                                        <h5 class="mb-0 mt-1">8540</h5>
-                                        <small class="font-light">Logs de Hoje</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- column -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Últimos Usuários -->
-        <div class="col-md-6 col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Últimos Usuários Cadastrados</h5>
-                    <ul class="list-group" id="ultimos-usuarios">
-                        <li class="list-group-item text-muted">Carregando...</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
-        <!-- Últimos Logins -->
-        <div class="col-md-6 col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Últimos Logins</h5>
-                    <ul class="list-group" id="ultimos-logins">
-                        <li class="list-group-item text-muted">Carregando...</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+		<!-- Orgão e Unidades -->
+		<div class="col-md-6 col-lg-4 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-danger text-center">
+					<h1 class="font-light text-white">
+						<i class="mdi mdi-receipt"></i>
+					</h1>
+					<h6 class="text-white">Orgão e Unidades</h6>
+					<span class="text-white" id="orgaounidades-total">0</span>
+				</div>
+			</div>
+		</div>
+		<!-- Claims -->
+		<div class="col-md-6 col-lg-2 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-cyan text-center">
+					<h1 class="font-light text-white"><i class="mdi mdi-key"></i></h1>
+					<h6 class="text-white">Total Claims</h6>
+					<span class="text-white" id="claims-total">0</span>
+				</div>
+			</div>
+		</div>
+		<!-- Provincias -->
+		<div class="col-md-6 col-lg-2 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-cyan text-center">
+					<h1 class="font-light text-white">
+						<i class="mdi mdi-pencil"></i>
+					</h1>
+					<h6 class="text-white">Províncias</h6>
+					<span class="text-white" id="provincias-total">0</span>
+				</div>
+			</div>
+		</div>
+		<!-- Municipios -->
+		<div class="col-md-6 col-lg-2 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-success text-center">
+					<h1 class="font-light text-white">
+						<i class="mdi mdi-calendar-check"></i>
+					</h1>
+					<h6 class="text-white">Municípios</h6>
+					<span class="text-white" id="municipios-total">0</span>
+				</div>
+			</div>
+		</div>
+		<!-- Bancos -->
+		<div class="col-md-6 col-lg-2 col-xlg-3">
+			<div class="card card-hover">
+				<div class="box bg-warning text-center">
+					<h1 class="font-light text-white">
+						<i class="mdi mdi-alert"></i>
+					</h1>
+					<h6 class="text-white">Bancos</h6>
+					<span class="text-white" id="bancos-total">0</span>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <!-- ============================================================== -->
-    <!-- Recent comment and chats -->
-    <!-- ============================================================== -->
+	<!-- ============================================================== -->
+	<!-- Sales chart -->
+	<!-- ============================================================== -->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body">
+					<div class="d-md-flex align-items-center">
+						<div>
+							<h4 class="card-title">Registos de Usuários</h4>
+							<h5 class="card-subtitle">Ultimos 12 Meses</h5>
+						</div>
+					</div>
+					<div class="row">
+						<!-- column -->
+						<div class="col-lg-9">
+							<div class="flot-chart">
+								<div class="flot-chart-content" id="flot-line-chart"></div>
+							</div>
+						</div>
+						<div class="col-lg-3">
+							<div class="row">
+								<div class="col-6">
+									<div class="bg-dark p-10 text-white text-center">
+										<i class="mdi mdi-login-variant fs-3 mb-1 font-16"></i>
+										<h5 class="mb-0 mt-1" id="logsacessos-total">0</h5>
+										<small class="font-light">Total de Logs</small>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="bg-dark p-10 text-white text-center">
+										<i class="mdi mdi-account-plus fs-3 font-16"></i>
+										<h5 class="mb-0 mt-1">120</h5>
+										<small class="font-light">Novos Usuários</small>
+									</div>
+								</div>
+								<div class="col-6 mt-3">
+									<div class="bg-dark p-10 text-white text-center">
+										<i class="mdi mdi-alert-circle-outline fs-3 mb-1 font-16"></i>
+										<h5 class="mb-0 mt-1" id="logseventos-total">0</h5>
+										<small class="font-light">Total de Eventos</small>
+									</div>
+								</div>
+								<div class="col-6 mt-3">
+									<div class="bg-dark p-10 text-white text-center">
+										<i class="mdi mdi-map fs-3 mb-1 font-16"></i>
+										<h5 class="mb-0 mt-1">9540</h5>
+										<small class="font-light">Total de Províncias</small>
+									</div>
+								</div>
+								<div class="col-6 mt-3">
+									<div class="bg-dark p-10 text-white text-center">
+										<i class="mdi mdi-map-marker fs-3 mb-1 font-16"></i>
+										<h5 class="mb-0 mt-1">100</h5>
+										<small class="font-light">Total de Municípios</small>
+									</div>
+								</div>
+								<div class="col-6 mt-3">
+									<div class="bg-dark p-10 text-white text-center">
+										<i class="mdi mdi-calendar-clock fs-3 mb-1 font-16"></i>
+										<h5 class="mb-0 mt-1">8540</h5>
+										<small class="font-light">Logs de Hoje</small>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- column -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Últimos Usuários -->
+		<div class="col-md-6 col-lg-6">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Novos Usuários do SIG-PSPEP</h5>
+					<div class="table-responsive">
+						<table class="DataTable table table-striped table-scroll table-bordered table-compact display">
+							<thead>
+								<tr>
+									<th class="text-center w-10">#</th>
+									<th>Nome do Usuário</th>
+								</tr>
+							</thead>
+							<tbody id="ultimos-usuarios">
+								<tr>
+									<td colspan="2" class="text-muted text-center">Carregando...</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Últimos Logins -->
+		<div class="col-md-6 col-lg-6">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Últimos Acessos de Sistema</h5>
+					<div class="table-responsive">
+						<table id="tabela-logins" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+							<thead>
+								<tr>
+									<th class="text-center w-10">#</th> <!-- Nova coluna de ordem -->
+									<th class="w-50">Email</th>
+									<th class="text-center w-20">Tipo de Acesso</th>
+									<th class="text-center w-20">Data de Registo</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Linhas serão inseridas aqui via JS -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </div>
 
 @section Scripts {
-    <script>
-        $(function () {
-            const url = '@Url.Action("ObterEstatisticasDashboard", "Home", new { area = "Admin" })';
+	<script>
+		$(function () {
+			const url = '@Url.Action("ObterEstatisticasDashboard", "Home", new { area = "Admin" })';
 
-            $.getJSON(url)
-                .done(function (data) {
-                    console.log("Dados recebidos:", data); // DEBUG
+			$.getJSON(url)
+				.done(function (data) {
+					console.log("Dados recebidos:", data); // DEBUG
 
-                    // Estatísticas principais
-                    $("#usuarios-total").text(data.totalUsuarios ?? 0);
-                    $("#roles-total").text(data.totalRoles ?? 0);
-                    $("#areas-total").text(data.totalAreas ?? 0);
-                    $("#claims-total").text(data.totalClaims ?? 0);
-                    $("#ativos-total").text(data.usuariosAtivos ?? 0);
-                    $("#desativados-total").text(data.usuariosDesativados ?? 0);
+					// Estatísticas principais
+					$("#usuarios-total").text(data.totalUsuarios ?? 0);
+					$("#roles-total").text(data.totalRoles ?? 0);
+					$("#areas-total").text(data.totalAreas ?? 0);
+					$("#claims-total").text(data.totalClaims ?? 0);
+					$("#ativos-total").text(data.usuariosAtivos ?? 0);
+					$("#desativados-total").text(data.usuariosDesativados ?? 0);
+					$("#provincias-total").text(data.provincias ?? 0);
+					$("#municipios-total").text(data.municipios ?? 0);
+					$("#orgaounidades-total").text(data.orgaoUnidades ?? 0);
+					$("#logseventos-total").text(data.logsEventos ?? 0);
+					$("#logsacessos-total").text(data.logsAcessos ?? 0);
+					$("#bancos-total").text(data.bancos ?? 0);
 
-                    // Últimos usuários
-                    const ultimosUsuariosHtml = (data.ultimosUsuarios || []).map(u =>
-                        `<li class="list-group-item d-flex align-items-center">
-                            <i class="mdi mdi-account text-primary me-2"></i> ${u}
-                        </li>`).join("") || '<li class="list-group-item text-muted">Nenhum usuário recente</li>';
+					// Últimos usuários
+							const ultimosUsuarios = data.ultimosUsuarios || [];
 
-                    $("#ultimos-usuarios").html(ultimosUsuariosHtml);
+		const ultimosUsuariosHtml = ultimosUsuarios.length > 0
+			? ultimosUsuarios.map((u, index) => `
+				<tr>
+					<td class="text-center">${index + 1}</td>
+					<td><i class="mdi mdi-account text-primary me-2"></i> ${u}</td>
+				</tr>
+			`).join("")
+			: `<tr><td colspan="2" class="text-muted text-center">Nenhum usuário recente</td></tr>`;
 
-                    // Últimos logins
-                    const ultimosLoginsHtml = (data.ultimosLogins || []).length > 0
-                        ? data.ultimosLogins.map(l =>
-                            `<li class="list-group-item d-flex align-items-center">
-                                <i class="mdi mdi-login-variant text-success me-2"></i> ${l}
-                            </li>`).join("")
-                        : '<li class="list-group-item text-muted">Nenhum login recente</li>';
+		$("#ultimos-usuarios").html(ultimosUsuariosHtml);
 
-                    $("#ultimos-logins").html(ultimosLoginsHtml);
+					// ============================
+					// GRÁFICO DOS ÚLTIMOS 12 MESES
+					// ============================
+					const mesesNomes = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+					const registrosPorMes = data.registrosPorMes || [];
 
-                    // ============================
-                    // GRÁFICO DOS ÚLTIMOS 12 MESES
-                    // ============================
-                    const mesesNomes = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-                    const registrosPorMes = data.registrosPorMes || [];
+					// Gerar os últimos 12 meses (mês e ano)
+					const hoje = new Date();
+					let mesesUltimos12 = [];
 
-                    // Gerar os últimos 12 meses (mês e ano)
-                    const hoje = new Date();
-                    let mesesUltimos12 = [];
+					for (let i = 11; i >= 0; i--) {
+						const dt = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+						const mes = dt.getMonth() + 1;
+						const ano = dt.getFullYear();
+						const chave = `${mes.toString().padStart(2, '0')}/${ano}`;
+						mesesUltimos12.push({ chave, label: `${mesesNomes[mes - 1]}/${ano}`, mes, ano });
+					}
 
-                    for (let i = 11; i >= 0; i--) {
-                        const dt = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
-                        const mes = dt.getMonth() + 1;
-                        const ano = dt.getFullYear();
-                        const chave = `${mes.toString().padStart(2, '0')}/${ano}`;
-                        mesesUltimos12.push({ chave, label: `${mesesNomes[mes - 1]}/${ano}`, mes, ano });
-                    }
+					// Montar os dados do gráfico
+					let dadosGrafico = mesesUltimos12.map((item, idx) => {
+						const encontrado = registrosPorMes.find(r => r.anoMes === item.chave);
+						return [idx + 1, encontrado ? encontrado.contagem : 0];
+					});
 
-                    // Montar os dados do gráfico
-                    let dadosGrafico = mesesUltimos12.map((item, idx) => {
-                        const encontrado = registrosPorMes.find(r => r.anoMes === item.chave);
-                        return [idx + 1, encontrado ? encontrado.contagem : 0];
-                    });
+					// Ticks (legendas no eixo X)
+					let ticks = mesesUltimos12.map((item, idx) => [idx + 1, item.label]);
 
-                    // Ticks (legendas no eixo X)
-                    let ticks = mesesUltimos12.map((item, idx) => [idx + 1, item.label]);
+					// Plotar gráfico
+					$.plot($("#flot-line-chart"), [{
+						data: dadosGrafico,
+						label: "Registos por Mês",
+						color: "#1ab394",
+						lines: {
+							show: true,
+							fill: true
+						},
+						points: {
+							show: true
+						}
+					}], {
+						xaxis: {
+							ticks: ticks
+						},
+						yaxis: {
+							min: 0
+						},
+						grid: {
+							hoverable: true,
+							clickable: true,
+							borderColor: "#f0f0f0"
+						},
+						tooltip: true,
+						tooltipOpts: {
+							content: "%s: %y registos em %x"
+						}
+					});
+				})
+				.fail(function (jqXHR, textStatus, errorThrown) {
+					console.error("Erro ao carregar estatísticas:", textStatus, errorThrown);
+					alert("Erro ao carregar estatísticas da dashboard.");
+				});
+		});
+	</script>
+	<script>
+		const url = '/Admin/Home/ObterEstatisticasDashboard'; // ajuste para sua rota real
 
-                    // Plotar gráfico
-                    $.plot($("#flot-line-chart"), [{
-                        data: dadosGrafico,
-                        label: "Registos por Mês",
-                        color: "#1ab394",
-                        lines: {
-                            show: true,
-                            fill: true
-                        },
-                        points: {
-                            show: true
-                        }
-                    }], {
-                        xaxis: {
-                            ticks: ticks
-                        },
-                        yaxis: {
-                            min: 0
-                        },
-                        grid: {
-                            hoverable: true,
-                            clickable: true,
-                            borderColor: "#f0f0f0"
-                        },
-                        tooltip: true,
-                        tooltipOpts: {
-                            content: "%s: %y registos em %x"
-                        }
-                    });
-                })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    console.error("Erro ao carregar estatísticas:", textStatus, errorThrown);
-                    alert("Erro ao carregar estatísticas da dashboard.");
-                });
-        });
-    </script>
+		$.getJSON(url)
+		  .done(function (data) {
+			const corpoTabela = $('#tabela-logins tbody');
+			corpoTabela.empty();
+
+			function formatarData(dataISO) {
+			  const data = new Date(dataISO);
+			  const dia = String(data.getDate()).padStart(2, '0');
+			  const mes = String(data.getMonth() + 1).padStart(2, '0');
+			  const ano = data.getFullYear();
+			  const horas = String(data.getHours()).padStart(2, '0');
+			  const minutos = String(data.getMinutes()).padStart(2, '0');
+			  return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+			}
+
+					if (data.ultimosLogins && data.ultimosLogins.length > 0) {
+		  data.ultimosLogins.forEach((login, index) => {
+			const linha = `
+			  <tr>
+				<td class="text-center">${index + 1}</td> <!-- Número de ordem -->
+				<td>${login.email}</td>
+				<td class="text-center">${login.tipoAcesso}</td>
+				<td class="text-center">${formatarData(login.dataRegisto)}</td>
+			  </tr>
+			`;
+			corpoTabela.append(linha);
+		  });
+		} else {
+		  corpoTabela.append('<tr><td colspan="4" class="text-center text-muted">Nenhum login recente</td></tr>');
+		}
+
+		  })
+		  .fail(function () {
+			alert('Erro ao carregar os dados do dashboard.');
+		  });
+	</script>
 }
 
 

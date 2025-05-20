@@ -4,7 +4,6 @@
     ViewData["Title"] = "Lista de Usuários";
 }
 <link href="~/dist/css/mystyle.css" rel="stylesheet" />
-<link href="~/dist/css/form-step.css" rel="stylesheet" />
 <link href="~/dist/css/botoes.css" rel="stylesheet" />
 <link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
 <link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
@@ -19,15 +18,14 @@
                 <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
                     <thead>
                         <tr class="maiuscula">
-                            <th class="text-center">
-                                Nº
-                            </th>
+                            <th class="text-center">#</th>
                             <th class="text-center">Foto</th>
                             <th class="text-center">Nome</th>
                             <th class="text-center">Telefone</th>
                             <th class="text-center">Email</th>
                             <th class="text-center">Área</th>
                             <th class="text-center">Funções</th>
+                            <th class="text-center">Estado</th>
                             <th class="text-center w-10">Acções</th>
                         </tr>
                     </thead>
@@ -37,7 +35,7 @@
                         @foreach (var usuario in Model)
                         {
                                 <tr class="align-middle">
-                                    <td class="text-center w-10">@index</td>
+                                    <td class="text-center">@index</td>
                                     <td class="align-middle text-center">
                                     <img src="@(usuario.FotoBase64 != null
                                 ? $"data:image/png;base64,{usuario.FotoBase64}"
@@ -71,6 +69,16 @@
                                             <span class="text-muted">Nenhuma</span>
                                         }
                                     </td>
+                                    <td class="align-middle text-center">
+                                        @if (usuario.Estado)
+                                        {
+                                            <span class="badge bg-success">Ativo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Desativado</span>
+                                        }
+                                    </td>
                                     <td class="align-middle text-center w-10">
                                         <a asp-action="EditUser" asp-route-id="@usuario?.UserId" class="btn-edit">
                                             <i class="fas fa-pencil-alt" style="color: #007BFF;"></i>
@@ -93,7 +101,7 @@
 
 
 @section Scripts {
-    <script src="~/dist/css/backend-bundle.min.js"></script>
+@*     <script src="~/dist/css/backend-bundle.min.js"></script> *@
     <script src="~/dist/js/jquery.datatables.min.js"></script>
     <script src="~/dist/js/datatables.buttons.min.js"></script>
     <script src="~/dist/js/sweetalert2@11.js"></script>

@@ -1,7 +1,21 @@
 ﻿
 <style>
+    /* Adicionando animação de transição ao ícone */
+    .sidebar-link i {
+        transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
 
-   .navbar {
+    /* Mudança de cor e aumento do ícone quando o mouse passa sobre o link */
+    .sidebar-link:hover i {
+        color: #ff5733; /* Cor vibrante */
+        transform: scale(1.2); /* Aumenta o ícone */
+    }
+
+    .sidebar-link:hover span {
+        color: #ff5733; /* Cor vibrante para o texto */
+        .navbar
+
+    {
         padding-top: 60px; /* Ajuste conforme a altura do navbar-header */
     }
 
@@ -97,12 +111,12 @@
                     </a>
                     <ul aria-expanded="false" class="collapse first-level">
                         <li class="sidebar-item">
-                            <a asp-controller="AcessoLogs" asp-action="Index" asp-area="Admin" class="sidebar-link">
+                            <a asp-controller="LogsAcessos" asp-action="Index" asp-area="Admin" class="sidebar-link">
                                 <i class="mdi mdi-emoticon"></i><span class="hide-menu"> Controle de Acessos </span>
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a asp-controller="EventoLogs" asp-action="Index" asp-area="Admin" class="sidebar-link">
+                            <a asp-controller="LogsEventos" asp-action="Index" asp-area="Admin" class="sidebar-link">
                                 <i class="mdi mdi-emoticon-cool"></i><span class="hide-menu">Controle de Eventos</span>
                             </a>
                         </li>

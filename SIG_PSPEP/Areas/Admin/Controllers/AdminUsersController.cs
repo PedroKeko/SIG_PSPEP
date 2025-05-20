@@ -37,6 +37,7 @@ public class AdminUsersController : Controller
             .Include(u => u.Efectivo.Patente)
             .Include(u => u.Efectivo.OrgaoUnidade)
             .Include(u => u.Area)
+            .OrderByDescending(u => u.Id)
             .ToListAsync();
 
         var model = new List<UsuarioViewModel>();
@@ -60,6 +61,7 @@ public class AdminUsersController : Controller
                 UserName = user.PhoneNumber,
                 NomeEfectivo = usuarioAute.Efectivo?.NomeCompleto,
                 Area = usuarioAute.Area?.NomeArea,
+                Estado = user.LockoutEnabled,
                 FotoBase64 = fotoBase64,
                 Roles = roles.ToList()
             });

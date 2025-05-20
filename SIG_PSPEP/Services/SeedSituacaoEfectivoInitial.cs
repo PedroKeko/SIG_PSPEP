@@ -27,11 +27,7 @@ namespace SIG_PSPEP.Services
                 var situacoes = new List<SituacaoEfectivo>
                 {
                     new SituacaoEfectivo { TipoSituacao = "Activo" },
-                    new SituacaoEfectivo { TipoSituacao = "Licença" },
-                    new SituacaoEfectivo { TipoSituacao = "Reforma" },
-                    new SituacaoEfectivo { TipoSituacao = "Suspenso" },
-                    new SituacaoEfectivo { TipoSituacao = "Espulso" },
-                    new SituacaoEfectivo { TipoSituacao = "Outros" }
+                    new SituacaoEfectivo { TipoSituacao = "Passivo" }
                 };
 
                 await _context.SituacaoEfectivos.AddRangeAsync(situacoes);

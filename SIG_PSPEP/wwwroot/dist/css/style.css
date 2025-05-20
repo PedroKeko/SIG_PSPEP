@@ -12857,6 +12857,27 @@ ul.list-style-none {
                     font-size: 14px
                 }
 
+        .sidebar-nav ul .sidebar-item .second-level {
+            padding-left: 30px; /* Recuo maior para indicar segundo nível */
+            padding-bottom: 7px;
+        }
+
+            .sidebar-nav ul .sidebar-item .second-level .sidebar-item .sidebar-link {
+                padding: 8px 15px;
+                font-size: 12px;
+                opacity: 0.5;
+            }
+
+                .sidebar-nav ul .sidebar-item .second-level .sidebar-item .sidebar-link:hover,
+                .sidebar-nav ul .sidebar-item .second-level .sidebar-item .sidebar-link.active {
+                    opacity: 1;
+                }
+
+                .sidebar-nav ul .sidebar-item .second-level .sidebar-item .sidebar-link i {
+                    font-size: 12px;
+                }
+
+
     .sidebar-nav ul .nav-small-cap {
         font-size: 12px;
         padding: 14px 15px;

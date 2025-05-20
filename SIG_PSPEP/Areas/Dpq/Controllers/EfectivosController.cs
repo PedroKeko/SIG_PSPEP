@@ -1,45 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SIG_PSPEP.Context;
-using SIG_PSPEP.Entidade;
-using SIG_PSPEP.Entidades;
 using SIG_PSPEP.Areas.Dpq.Models;
+using SIG_PSPEP.Context;
+using SIG_PSPEP.Entidades;
 using SIG_PSPEP.Services;
-using Microsoft.AspNetCore.Authorization;
 
 namespace SIG_PSPEP.Areas.Dpq.Controllers
 {
     [Area("Dpq")]
-    [Authorize(Policy = "Require_Admin_ChDepar")]
-    public class EfectivosController : Controller
+    [Authorize(Policy = "Require_Admin_ChDepar_ChSec_Esp")]
+    public class EfectivosController(
+        AppDbContext context,
+        UserManager<IdentityUser> _userManager,
+        ImageCompressionService _imageCompressionService,
+        SignInManager<IdentityUser> signInManager,
+        ILogger<EfectivosController> logger // Corrigido aqui o nome
+    ) : BaseController(context)
     {
-        private readonly ImageCompressionService _imageCompressionService;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly AppDbContext _context;
-
-        public EfectivosController(AppDbContext context, UserManager<IdentityUser> userManager, ImageCompressionService imageCompressionService)
-        {
-            _context = context;
-            _userManager = userManager;
-            _imageCompressionService = imageCompressionService;
-        }
 
         // GET: Efectivos
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Efectivos.Include(e => e.FuncaoCargo).Include(e => e.Municipio).Include(e => e.OrgaoUnidade).Include(e => e.Patente).Include(e => e.ProvinciaNascimento).Include(e => e.ProvinciaResidencia).Include(e => e.SituacaoEfectivo).Include(e => e.User);
+            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            {
+                return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+            }
+            var appDbContext = _context.Efectivos
+                .Include(e => e.FuncaoCargo)
+                .Include(e => e.Municipio)
+                .Include(e => e.OrgaoUnidade)
+                .Include(e => e.Patente)
+                .Include(e => e.ProvinciaNascimento)
+                .Include(e => e.ProvinciaResidencia)
+                .Include(e => e.SituacaoEfectivo)
+                .Include(e => e.User)
+                .OrderByDescending(e => e.DataRegisto);
             return View(await appDbContext.ToListAsync());
         }
 
         // GET: Efectivos/Details/5
         public async Task<IActionResult> Details(int id)
         {
+            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            {
+                return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+            }
             CarregarViewData();
 
             var efectivo = await _context.Efectivos.FindAsync(id);
@@ -102,8 +110,13 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
             return PartialView("_Details", model);
         }
 
+
         public IActionResult Create()
         {
+            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            {
+                return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+            }
             CarregarViewData();
             return PartialView("_Create", new EfectivoViewModel());
         }
@@ -112,10 +125,31 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EfectivoViewModel model)
         {
+            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            {
+                return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+            }
             CarregarViewData();
             var existeNumeroProcesso = await _context.Efectivos
                 .AnyAsync(e => e.Num_Processo == model.Num_Processo);
+            var existeNIP = await _context.Efectivos
+              .AnyAsync(e => e.NIP == model.NIP);
+            var existeNunAgente = await _context.Efectivos
+              .AnyAsync(e => e.N_Agente == model.N_Agente);
 
+            // Validação de data de nascimento
+            if (model.DataNasc == null ||
+                model.DataNasc > DateTime.Now.AddYears(-18))
+            {
+                ModelState.AddModelError("DataNascimento", "O Efectivo deve ter 18 anos ou mais.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "O Efectivo deve ter 18 anos ou mais." });
+            }
+
+            // Validação do número de documento
             if (existeNumeroProcesso)
             {
                 ModelState.AddModelError("Num_Processo", "Este número de processo já está cadastrado.");
@@ -126,10 +160,44 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 return Json(new { success = false, message = "Este número de processo já está cadastrado." });
             }
 
-            //if (!ModelState.IsValid)
-            //{
-            //    return PartialView("_Create", model);
-            //}
+            // Validação do NIP
+            if (existeNIP)
+            {
+                ModelState.AddModelError("NIP", "Este NIP não pertence a este Efectivo, já existe!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Este NIP não pertence a este Efectivo, já existe!" });
+            }
+
+            // Validação do número de Agente
+            if (existeNunAgente)
+            {
+                ModelState.AddModelError("N_Agente", "Este número de Agente já existe!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Este número de Agente já existe!" });
+            }
+
+            // Validação do número de documento
+            if (_context.Efectivos.Any(c => c.NumBI == model.NumBI))
+            {
+                ModelState.AddModelError("NumeroDocumento", "Já existe um efectivo com este número de BI.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Já existe um efectivo com este número de BI." });
+            }
+
+            // Validação do Email
+            if (!string.IsNullOrEmpty(model.Email) && _context.Users.Any(u => u.Email == model.Email))
+            {
+                return Json(new { success = false, message = "Já existe um usuário com este email." });
+            }
 
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -141,6 +209,23 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
 
             try
             {
+                // 2. Base do email: primeiras 10 letras sem espaços
+                string baseNome = new string(model.NomeCompleto
+                    .Where(c => !char.IsWhiteSpace(c))
+                    .Take(10)
+                    .ToArray())
+                    .ToLower();
+
+                string dominio = "@pspep.pn.ao";
+                string emailFinal = baseNome + dominio;
+                int contador = 1;
+
+                // 3. Garante que o email seja único
+                while (await _userManager.FindByEmailAsync(emailFinal) != null)
+                {
+                    emailFinal = baseNome + contador + dominio;
+                    contador++;
+                }
                 var efectivo = new Efectivo
                 {
                     SituacaoEfectivoId = model.SituacaoEfectivoId,
@@ -177,7 +262,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                     InstitAcademica = model.InstitAcademica,
                     Telefone1 = model.Telefone1,
                     Telefone2 = model.Telefone2,
-                    Email = model.Email,
+                    Email = model.Email ?? emailFinal,
                     DataIngresso = model.DataIngresso,
                     TipoVinculo = model.TipoVinculo,
                     Carreira = model.Carreira,
@@ -233,8 +318,73 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 _context.FotoEfectivos.Add(fotoEfectivo);
                 await _context.SaveChangesAsync();
 
+                // 4. Cria o IdentityUser
+                var usuario = new IdentityUser
+                {
+                    UserName = model.Email ?? emailFinal,
+                    Email = model.Email ?? emailFinal,
+                    EmailConfirmed = true
+                };
+
+                if (!string.IsNullOrEmpty(model.Telefone1))
+                {
+                    usuario.PhoneNumber = model.Telefone1;
+                }
+
+                var senha = "Pspep#12345";
+                var result = await _userManager.CreateAsync(usuario, senha);
+
+                if (result.Succeeded)
+                {
+                    // 4. Garante que a Role "COMUN" exista
+                    var roleManager = HttpContext.RequestServices.GetRequiredService<RoleManager<IdentityRole>>();
+                    if (!await roleManager.RoleExistsAsync("Usuario Comum"))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole("Usuario Comum"));
+                    }
+
+                    await _userManager.AddToRoleAsync(usuario, "Usuario Comum");
+
+                    var areaId = _context.Areas
+                       .Where(a => a.NomeArea == "Portal")
+                       .Select(a => a.Id).FirstOrDefault();
+
+                    if (areaId == null)
+                    {
+                        ModelState.AddModelError("", "Área não localizada.");
+                        //return PartialView("_Create", model);
+                        return Json(new { success = false, message = "Área não localizada!" });
+                    }
+
+                    // 4. Cria vínculo na tabela UsuarioAute
+                    var usuarioAute = new UsuarioAute
+                    {
+                        UserId = usuario.Id,
+                        AreaId = areaId,
+                        EfectivoId = efectivo.Id
+                    };
+
+                    _context.UsuarioAutes.Add(usuarioAute);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    // Pode exibir erros na view
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", "Usuário não foi gerado infelizmente.");
+                        //return PartialView("_Create", model);
+                        return Json(new { success = false, message = "Usuário não foi gerado infelizmente." });
+                    }
+                }
+
                 // Redireciona à Index via Ajax
-                return Json(new { success = true, redirectUrl = Url.Action("Index") });
+                return Json(new
+                {
+                    success = true,
+                    message = "Efectivo excluído com Sucesso!",
+                    redirectUrl = Url.Action("Index")
+                });
             }
             catch (DbUpdateException)
             {
@@ -245,6 +395,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
 
         // GET: Efectivos/Edit/5
         [HttpGet]
+        [Authorize(Policy = "Require_Admin_ChDepar_ChSec")]
         public async Task<IActionResult> Edit(int id)
         {
             CarregarViewData();
@@ -313,6 +464,10 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EfectivoViewModel model)
         {
+            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            {
+                return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+            }
             CarregarViewData();
 
             if (!ModelState.IsValid)
@@ -438,51 +593,122 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
             }
         }
 
-
-        // GET: Efectivos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        //Eliminar Registro
+        [HttpPost]
+        [Authorize(Policy = "Require_Admin_ChDepar_ChSec")]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
+            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
             {
-                return NotFound();
+                return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
-
-            var efectivo = await _context.Efectivos
-                .Include(e => e.FuncaoCargo)
-                .Include(e => e.Municipio)
-                .Include(e => e.OrgaoUnidade)
-                .Include(e => e.Patente)
-                .Include(e => e.ProvinciaNascimento)
-                .Include(e => e.ProvinciaResidencia)
-                .Include(e => e.SituacaoEfectivo)
-                .Include(e => e.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (efectivo == null)
+            try
             {
-                return NotFound();
-            }
+                var efetivo = await _context.Efectivos.FindAsync(id);
 
-            return View(efectivo);
+                if (efetivo == null)
+                {
+                    return NotFound();
+                }
+
+                // 1. Verifica se o efectivo está vinculado ao usuário logado
+                var usuarioLogado = await _userManager.GetUserAsync(User);
+                var usuarioAute = await _context.UsuarioAutes
+                                                .FirstOrDefaultAsync(ua => ua.EfectivoId == id);
+
+                if (usuarioAute != null && usuarioLogado != null && usuarioAute.UserId == usuarioLogado.Id)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Não é permitido eliminar o seu próprio registo."
+                    });
+                }
+
+                // 2. Validação: não pode eliminar se já passaram mais de 2 horas
+                if (efetivo.DataRegisto != null && efetivo.DataRegisto.AddHours(2) < DateTime.UtcNow)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"O registo criado em {efetivo.DataRegisto:dd/MM/yyyy HH:mm} não pode ser eliminado após 2 horas."
+                    });
+                }
+
+                // 3. Remover fotos associadas
+                var fotoefetivo = await _context.FotoEfectivos
+                                                .Where(fc => fc.EfectivoId == id)
+                                                .ToListAsync();
+
+                if (fotoefetivo.Any())
+                {
+                    _context.FotoEfectivos.RemoveRange(fotoefetivo);
+                }
+
+                // 4. Buscar e remover o usuário associado
+                IdentityUser? user = null;
+                if (usuarioAute != null)
+                {
+                    user = await _userManager.FindByIdAsync(usuarioAute.UserId);
+                    _context.UsuarioAutes.Remove(usuarioAute);
+                }
+
+                if (user != null)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if (roles.Any())
+                        await _userManager.RemoveFromRolesAsync(user, roles);
+
+                    var claims = await _userManager.GetClaimsAsync(user);
+                    if (claims.Any())
+                    {
+                        foreach (var claim in claims)
+                            await _userManager.RemoveClaimAsync(user, claim);
+                    }
+
+                    var deleteResult = await _userManager.DeleteAsync(user);
+                    if (!deleteResult.Succeeded)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Erro ao remover o usuário associado ao efectivo.",
+                            errors = deleteResult.Errors.Select(e => e.Description)
+                        });
+                    }
+                }
+
+                // 5. Remover o efectivo
+                _context.Efectivos.Remove(efetivo);
+                await _context.SaveChangesAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    message = $"Efectivo {efetivo.NomeCompleto} removido com sucesso.",
+                    redirectUrl = Url.Action("Index")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Erro inesperado ao eliminar o efectivo.",
+                    errorDetails = ex.InnerException?.Message ?? ex.Message
+                });
+            }
         }
 
-        // POST: Efectivos/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var efectivo = await _context.Efectivos.FindAsync(id);
-            if (efectivo != null)
-            {
-                _context.Efectivos.Remove(efectivo);
-            }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool EfectivoExists(int id)
+        public JsonResult GetMunicipios(int provinciaId)
         {
-            return _context.Efectivos.Any(e => e.Id == id);
+            var municipios = _context.Municipios
+                .Where(m => m.ProvinciaId == provinciaId)
+                .Select(m => new { m.Id, m.Nome })
+                .ToList();
+
+            return Json(municipios);
         }
 
         private void CarregarViewData()

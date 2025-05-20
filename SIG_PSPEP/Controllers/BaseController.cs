@@ -28,8 +28,12 @@ public class BaseController : Controller
     }
 
     // Método para checar o acesso de área
+    //protected bool UsuarioTemAcessoArea(string areaPermitida)
+    //{
+    //    return usuarioAute?.Area?.NomeArea == areaPermitida;
+    //}
     protected bool UsuarioTemAcessoArea(string areaPermitida)
     {
-        return usuarioAute?.Area?.NomeArea == areaPermitida;
+        return usuarioAute?.Area?.NomeArea?.ToUpperInvariant() == areaPermitida.ToUpperInvariant();
     }
 }

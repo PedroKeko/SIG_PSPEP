@@ -1,0 +1,33 @@
+﻿@model SIG_PSPEP.Entidades.LogsEvento
+
+<div class="modal-header bg-secondary text-white">
+    <h5 class="modal-title">
+        <i class="bi bi-clock-history me-2"></i> Detalhes do Log de Evento
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+</div>
+
+<div class="modal-body">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Tipo de Evento:</strong>
+                    <span class="badge bg-warning text-dark">@Model.TipoEvento</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Observações:</strong>
+                    <span>@Model.Obs</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Data de Registo:</strong>
+                    <span>@Model.DataRegisto.ToString("dd/MM/yyyy HH:mm")</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Usuário:</strong>
+                    <span class="text-muted">@Model.User?.UserName</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

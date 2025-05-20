@@ -1,0 +1,125 @@
+﻿@model SIG_PSPEP.Areas.Dpq.Models.EfectivoFiltroOrgaoUnidadeModel
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<style>
+	.modal-content {
+		max-height: 85vh;
+		overflow-y: auto;
+		border-radius: 10px;
+	}
+
+	.modal-header {
+		background: rgb(0, 20, 60);
+		background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
+		position: sticky;
+		color: white;
+		padding: 10px 15px;
+		border-bottom: 1px solid #dee2e6;
+	}
+
+		.modal-header .btn-close {
+			filter: invert(1);
+			opacity: 1;
+		}
+
+	.modal-title {
+		font-size: 18px;
+	}
+</style>
+
+<form asp-action="SelecionarParaLancamento" method="post" id="formLancamento">
+	<div class="col-md-3">
+		<div class="form-group">
+			<label>Órgão / Unidade</label>
+			<input type="date" id="selectedDate" name="DataLancamento" class="form-control"
+				   value="@Model.DataSelecionada.Value.ToString("yyyy-MM-dd")" />
+		</div>
+	</div>
+	<input type="hidden" asp-for="OrgaoUnidadeId" />
+    <div class="table-responsive">
+        <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+			<thead>
+				<tr>
+					<th>Selecionar</th>
+					<th>Patente</th>
+					<th>Nome Completo</th>
+					<th>NIP</th>
+					<th>Órgão / Unidade</th>
+				</tr>
+			</thead>
+			<tbody id="efectivo-body">
+				@for (int i = 0; i < Model.Efectivos.Count; i++)
+				{
+					<tr class="efectivo-row">
+						<td>
+							<input asp-for="Efectivos[@i].Selecionado" type="checkbox" />
+							<input type="hidden" asp-for="Efectivos[@i].Id" />
+							<input type="hidden" asp-for="Efectivos[@i].Patente" />
+							<input type="hidden" asp-for="Efectivos[@i].NomeCompleto" />
+							<input type="hidden" asp-for="Efectivos[@i].NIP" />
+							<input type="hidden" asp-for="Efectivos[@i].OrgaoUnidade" />
+						</td>
+						<td>@Model.Efectivos[i].Patente</td>
+						<td>@Model.Efectivos[i].NomeCompleto</td>
+						<td>@Model.Efectivos[i].NIP</td>
+						<td>@Model.Efectivos[i].OrgaoUnidade</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</form>
+
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+<script>
+	$('#btnLancarPresenca').click(function () {
+		const dataLancamento = $('#selectedDate').val();
+
+		const efectivos = [];
+		$('#efectivo-body tr').each(function () {
+			const $row = $(this);
+			const isChecked = $row.find('input[type=checkbox]').is(':checked');
+
+			if (isChecked) {
+				efectivos.push({
+					Id: $row.find('input[name$=".Id"]').val(),
+					Patente: $row.find('input[name$=".Patente"]').val(),
+					NomeCompleto: $row.find('input[name$=".NomeCompleto"]').val(),
+					NIP: $row.find('input[name$=".NIP"]').val(),
+					OrgaoUnidade: $row.find('input[name$=".OrgaoUnidade"]').val(),
+					Selecionado: true
+				});
+			}
+		});
+
+		const model = {
+			DataSelecionada: dataLancamento,
+			Efectivos: efectivos
+		};
+
+		$.ajax({
+			url: '@Url.Action("SelecionarParaLancamento", "TeuController")', // ajuste aqui
+			method: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify(model),
+			success: function (response) {
+				if (response.sucesso) {
+					Swal.fire("Sucesso!", response.mensagem, "success");
+					// Opcional: fechar modal ou recarregar parte da página
+					$('#meuModal').modal('hide');
+				} else {
+					let erros = response.erros?.join('<br>') || response.mensagem;
+					Swal.fire("Erro!", erros, "error");
+				}
+			},
+			error: function () {
+				Swal.fire("Erro!", "Erro ao enviar dados para o servidor.", "error");
+			}
+		});
+	});
+</script>

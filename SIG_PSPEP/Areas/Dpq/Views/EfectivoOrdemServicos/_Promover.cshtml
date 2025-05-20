@@ -1,0 +1,347 @@
+﻿@model SIG_PSPEP.Areas.Dpq.Models.EfectivoOrdemServicoDTO
+
+<!-- Estilos adicionais -->
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/assets/libs/select2/dist/css/select2.min.css" />
+<link rel="stylesheet" type="text/css" href="~/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" />
+
+<style>
+    .modal-dialog {
+        max-width: 800px;
+        min-width: 600px;
+    }
+
+    .modal-content {
+        max-height: 85vh;
+        overflow-y: auto;
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        background: rgb(0, 20, 60);
+        background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
+        position: sticky;
+        color: white;
+        padding: 10px 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+            opacity: 1;
+        }
+
+    .modal-title {
+        font-size: 18px;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 36px !important;
+        font-size: 14px;
+        padding: 4px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+
+    .form-control, .btn {
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    #tabelaPromocoes th, #tabelaPromocoes td {
+        font-size: 13px;
+        padding: 6px 8px;
+        vertical-align: middle;
+    }
+
+        #tabelaPromocoes td button {
+            padding: 2px 6px;
+        }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table.dataTable {
+        width: 100% !important;
+    }
+
+    .fade-out {
+        transition: opacity 0.3s ease-out;
+        opacity: 0;
+    }
+
+    button i {
+        margin-right: 5px; 
+    }
+
+    .select2-container .select2-selection--single {
+        height: 33px !important;
+        font-size: 14px !important;
+        padding: 2px 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        border: 1px solid #ced4da;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        font-size: 13px !important;
+        line-height: 40px !important;
+    }
+
+    .select2-container .select2-search--dropdown .select2-search__field {
+        height: 30px !important;
+        font-size: 13px !important;
+        padding: 4px 8px !important;
+    }
+
+    .select2-container .select2-results__option {
+        font-size: 13px !important;
+    }
+
+    .select2-results__option {
+        padding: 5px !important;
+        user-select: none;
+        -webkit-user-select: none
+    }
+</style>
+
+<div class="modal-header">
+    <h5 class="modal-title">Promoção de Efectivos</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row g-2 mb-3">
+        <div class="col-md-5">
+            <label><strong>Efectivo</strong></label>
+            <select id="efectivo" class="form-select form-control-sm input-1 small-input select2" style="width: 100%;" required>
+                <option value="">--Selecione Efectivo--</option>
+                @foreach (var efectivo in (SelectList)ViewData["EfectivoId"])
+                {
+                    if (!string.IsNullOrWhiteSpace(efectivo.Value))
+                    {
+                        var patenteAtual = (Dictionary<int, string>)ViewData["PatenteAtual"];
+                        var patente = patenteAtual.ContainsKey(int.Parse(efectivo.Value)) ? patenteAtual[int.Parse(efectivo.Value)] : "";
+                        <option value="@efectivo.Value" data-patente="@patente">@efectivo.Text</option>
+                    }
+                }
+            </select>
+        </div>  
+        <div class="col-md-5">
+            <label><strong>Patente</strong></label>
+            <select id="patente" class="form-select form-control-sm input-1 small-input select2" style="width: 100%;" required>
+                <option value="">--Propõe a patente--</option>
+                @foreach (var item in (SelectList)ViewData["PatenteId"])
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-success w-100" type="button" onclick="adicionarNaTabela()">Adicionar</button>
+        </div>
+    </div>
+    <div class="row g-2 mb-3">
+        <div class="col-md-5">
+            <select id="ordServico" class="form-select form-control-sm input-1 small-input select2" style="width: 100%;" required>
+                <option value="">--Selecione Ordem de Serviço--</option>
+                @foreach (var item in (SelectList)ViewData["OrdemServicoId"])
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-5">
+            <input id="numDespacho" type="text" class="form-control" placeholder="Nº de Despacho"/>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-success w-100" type="button" onclick="submeterPromocoes()">Promover</button>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="table-responsive w-100">
+        <table id="tabelaPromocoes" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+            <thead>
+                <tr>
+                    <th >ID</th>              <!-- 0 -->
+                    <th>Nome do Efectivo</th>                       <!-- 1 -->
+                    <th>Patente Atual</th>                          <!-- 2 -->
+                    <th>Patente Proposto</th>                       <!-- 3 -->
+                    <th>Nº de Despacho</th>                         <!-- 4 -->
+                    <th >ID OS</th>           <!-- 5 -->
+                    <th>Ordem de Serviço</th>                       <!-- 6 -->
+                    <th >ID Patente</th>      <!-- 7 -->
+                    <th class="text-center" style="width: 40px;">Acção</th> <!-- 8 -->
+                </tr>
+            </thead>
+
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Scripts -->
+
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+<script src="~/assets/libs/select2/dist/js/select2.full.min.js"></script>
+<script src="~/assets/libs/select2/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Inicializar DataTable
+        $('#tabelaPromocoes').DataTable({
+            responsive: true,
+            autoWidth: false,
+            columnDefs: [
+                { targets: 4, className: 'text-center' }
+            ],
+            language: {
+                decimal: ",",
+                thousands: ".",
+                search: "",
+                lengthMenu: "_MENU_ Proposta por página",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ propostas",
+                infoEmpty: "Nenhuma proposta disponível",
+                infoFiltered: "(filtrado de _MAX_ registros no total)",
+                loadingRecords: "Carregando...",
+                processing: "Processando...",
+                zeroRecords: "Nenhuma proposta encontrada",
+                emptyTable: "Nenhuma proposta de promoção disponível na tabela",
+                paginate: {
+                    first: "Primeiro",
+                    previous: "Anterior",
+                    next: "Próximo",
+                    last: "Último"
+                },
+                aria: {
+                    sortAscending: ": ativar para ordenar a coluna em ordem crescente",
+                    sortDescending: ": ativar para ordenar a coluna em ordem decrescente"
+                }
+            },
+            initComplete: function () {
+                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+            }
+        });
+
+        // Inicializar Select2 dentro de modais
+        $('.modal').on('shown.bs.modal', function () {
+            $(this).find('select.select2').select2({
+                dropdownParent: $(this)
+            });
+        });
+    });
+
+    function adicionarNaTabela() {
+        const selectEfectivo = document.getElementById("efectivo");
+        const selectPatente = document.getElementById("patente");
+        const selectOrdemServico = document.getElementById("ordServico");
+
+        const idEfectivo = selectEfectivo.value;
+        const nomeEfectivo = selectEfectivo.options[selectEfectivo.selectedIndex]?.text ?? '';
+        const patenteAtual = selectEfectivo.options[selectEfectivo.selectedIndex]?.getAttribute("data-patente") ?? '';
+        const idPatente = selectPatente.value;
+        const nomePatente = selectPatente.options[selectPatente.selectedIndex]?.text ?? '';
+        const idOrdemServico = selectOrdemServico.value;
+        const ordemServico = selectOrdemServico.options[selectOrdemServico.selectedIndex]?.text ?? '';
+        const numDespacho = $('#numDespacho').val();
+
+        const tabela = $('#tabelaPromocoes').DataTable();
+
+        if (!idEfectivo) return showToast('Por favor, selecione um efectivo válido.', 'warning');
+        if (!idOrdemServico) return showToast('Por favor, selecione uma ordem de serviço.', 'warning');
+        if (!numDespacho) return showToast('Por favor, informe o Número de Despacho.', 'warning');
+        if (!idPatente) return showToast('Por favor, selecione uma nova patente.', 'warning');
+
+        // Evitar duplicação
+        const existe = tabela.rows().data().toArray().some(row => row[0] === idEfectivo);
+        if (existe) return showToast('Este efectivo já foi adicionado.', 'warning');
+
+        // Adicionar linha com dados visíveis + data-* ocultos para extração posterior
+        tabela.row.add([
+            idEfectivo,             // [0] ID do efectivo (oculto no envio, não exibido)
+            nomeEfectivo,           // [1]
+            patenteAtual,           // [2]
+            nomePatente,            // [3]
+            numDespacho,            // [4]
+            idOrdemServico,         // [5] (oculto)
+            ordemServico,           // [6]
+            idPatente,              // [7] (oculto)
+            `<button type="button" class="btn btn-danger btn-sm d-flex justify-content-center align-items-center" onclick="removerLinha(this)">
+                <i class="fa fa-trash"></i> Remover
+            </button>`
+        ]).draw(false);
+    }
+
+    function removerLinha(button) {
+        const tabela = $('#tabelaPromocoes').DataTable();
+        const row = $(button).closest('tr');
+        tabela.row(row).remove().draw();
+    }
+
+       function submeterPromocoes() {
+        const tabela = $('#tabelaPromocoes').DataTable();
+        const dadosTabela = tabela.rows().data().toArray();
+        const numDespacho = $('#numDespacho').val();
+
+        const promocoesDto = dadosTabela.map(row => ({
+            EfectivoId: row[0],
+            OrdemServicoId: row[5],
+            PatenteId: row[7],
+            NumDespacho: numDespacho
+        }));
+
+        if (!promocoesDto.length) {
+            return showToast('Nenhuma promoção adicionada na tabela.', 'warning');
+        }
+
+        $.ajax({
+            url: '@Url.Action("PromocaoMultipla", "EfectivoOrdemServicos")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(promocoesDto),
+            success: function (response) {
+                if (response.success) {
+                    showToast(response.message, 'success');
+                    tabela.clear().draw();
+                } else {
+                    showToast('Erro inesperado ao salvar promoções.', 'error');
+                }
+            },
+            error: function (jqXHR) {
+                let msg = 'Erro ao processar a solicitação.';
+                if (jqXHR.status === 400) {
+                    msg = jqXHR.responseJSON?.message ?? msg;
+                } else if (jqXHR.status === 500) {
+                    msg = 'Erro interno do servidor.';
+                }
+                showToast(msg, 'error');
+            }
+        });
+    }
+
+       function showToast(message, icon) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: icon,
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didClose: () => {
+                if (icon === 'success') {
+                    $('.modal').modal('hide'); // Fecha qualquer modal aberto
+                    location.reload(); // Atualiza a página
+                }
+            }
+        });
+    }
+
+</script>

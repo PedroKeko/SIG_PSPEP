@@ -1,0 +1,70 @@
+﻿@model SIG_PSPEP.Entidades.OrdemServico
+@{
+    var anoAtual = DateTime.Now.Year;
+}
+<form asp-action="Create" onsubmit="return submitForm(this)">
+	<div class="modal-header">
+		<h5 class="modal-title">Registo de Ordem de Serviço</h5>
+		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+	</div>
+	<div class="modal-body">
+		<div class="row justify-content-center">
+			<div class="col-md-9">
+				<!-- Limita o conteúdo a 8 colunas de 12 -->
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <!-- Campo visível -->
+                <div class="form-group">
+                    <label class="control-label small-label">Número da Ordem</label>
+                    <div class="input-group">
+                        <input type="text"
+                               id="numeroDigitado"
+                               class="form-control form-control-sm input-1 small-input"
+                               placeholder="Digite o número da ordem"
+                               pattern="^\d+$"
+                               required
+                               oninvalid="this.setCustomValidity('Por favor, preencha apenas números!')"
+                               oninput="this.setCustomValidity('')" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">/@anoAtual</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo real que será enviado ao backend -->
+                <input type="hidden" asp-for="NumOrdemServico" id="NumOrdemServico" />
+                <!-- Ano da Ordem -->
+                <div class="form-group">
+                    <label class="control-label small-label">Ano da Ordem</label>
+                    <input type="number" asp-for="AnoOrdemServico"
+                           min="1900" max="2100"
+                           value="@DateTime.Now.Year"
+                           class="form-control form-control-sm input-1 small-input"
+                           placeholder="Ano da Ordem" />
+                    <span asp-validation-for="AnoOrdemServico" class="text-danger"></span>
+                </div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="custom2-btn btn-2-success">Salvar</button>
+		<button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+	</div>
+</form>
+
+<!-- Script para atualizar o hidden automaticamente -->
+<script>
+    const numeroDigitado = document.getElementById("numeroDigitado");
+    const campoReal = document.getElementById("NumOrdemServico");
+    const anoAtual = new Date().getFullYear();
+
+    numeroDigitado.addEventListener("input", function () {
+        const valor = numeroDigitado.value.replace(/\D/g, ''); // só números
+        campoReal.value = valor ? `${valor}/${anoAtual}` : "";
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

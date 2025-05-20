@@ -36,7 +36,7 @@ namespace SIG_PSPEP.Areas.Dpq.Models
         [Required, MaxLength(10)]
         public string? Genero { get; set; }
 
-        public DateTime DataNasc { get; set; }
+        public DateTime DataNasc { get; set; } = DateTime.Today;
 
         [MaxLength(20)]
         public string? EstadoCivil { get; set; }
@@ -47,8 +47,8 @@ namespace SIG_PSPEP.Areas.Dpq.Models
         [Required, MaxLength(20)]
         public string? NumBI { get; set; }
 
-        public DateTime BIValidade { get; set; }
-        public DateTime BIEmitido { get; set; }
+        public DateTime BIEmitido { get; set; } = DateTime.Today;
+        public DateTime BIValidade { get; set; } = DateTime.Today.AddYears(10);
 
         [MaxLength(20)]
         public string? NumCartaConducao { get; set; }
@@ -92,7 +92,7 @@ namespace SIG_PSPEP.Areas.Dpq.Models
         [MaxLength(100)]
         public string? Email { get; set; }
 
-        public DateTime DataIngresso { get; set; }
+        public DateTime DataIngresso { get; set; } = DateTime.Today;
 
         [MaxLength(50)]
         public string? TipoVinculo { get; set; }

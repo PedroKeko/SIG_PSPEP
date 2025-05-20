@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SIG_PSPEP.Context;
 using SIG_PSPEP.Entidade;
 using SIG_PSPEP.Entidades;
+using SIG_PSPEP.Services;
 
 namespace SIG_PSPEP.Areas.Admin.Controllers
 {
@@ -15,10 +16,13 @@ namespace SIG_PSPEP.Areas.Admin.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        public MunicipiosController(AppDbContext context, UserManager<IdentityUser> userManager )
+        private readonly LogsEventosService _logsEventosService;
+
+        public MunicipiosController(AppDbContext context, UserManager<IdentityUser> userManager, LogsEventosService logsEventosService)
         {
             _context = context;
             _userManager = userManager;
+            _logsEventosService = logsEventosService;
         }
 
         // GET: Municipios
@@ -57,7 +61,7 @@ namespace SIG_PSPEP.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Municipio municipio)
+        public async Task<IActionResult> CreateAsync(Municipio municipio)
         {
             var userId = _userManager.GetUserId(User);
             if (ModelState.IsValid)
@@ -65,6 +69,7 @@ namespace SIG_PSPEP.Areas.Admin.Controllers
                 municipio.UserId = userId;
                 _context.Add(municipio);
                 _context.SaveChanges();
+                await _logsEventosService.LogEventAsync(userId, "Insersão", "Inseriu Municipio do "+ municipio.Nome +" !");
                 return Json(new { success = true });
             }
 
@@ -100,6 +105,7 @@ namespace SIG_PSPEP.Areas.Admin.Controllers
                     municipio.UserId = userId;
                     _context.Update(municipio);
                     await _context.SaveChangesAsync();
+                    await _logsEventosService.LogEventAsync(userId, "Alteração", "Alterou Municipio do " + municipio.Nome + " !");
                     return Json(new { success = true });
                 }
                 catch (DbUpdateConcurrencyException)
@@ -124,11 +130,13 @@ namespace SIG_PSPEP.Areas.Admin.Controllers
 
         // GET: Municipios/Delete/5
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
+            var userId = _userManager.GetUserId(User);
             var municipio = _context.Municipios.Find(id);
             _context.Municipios.Remove(municipio);
             _context.SaveChanges();
+            await _logsEventosService.LogEventAsync(userId, "Exclusão", "Excluíu Municipio do " + municipio.Nome + " !");
             return Json(new { success = true });
         }
     }

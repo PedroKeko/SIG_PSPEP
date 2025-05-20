@@ -101,7 +101,7 @@
 </a>
 
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         let backToTop = document.querySelector(".back-to-top");
 
         window.addEventListener("scroll", function () {
@@ -114,19 +114,12 @@
 
         backToTop.addEventListener("click", function (e) {
             e.preventDefault();
-            smoothScrollToTop();
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth" // Rápido e nativo
+            });
         });
-
-        function smoothScrollToTop() {
-            let scrollStep = -window.scrollY / 30; // Define a velocidade da rolagem
-            let scrollInterval = setInterval(function () {
-                if (window.scrollY !== 0) {
-                    window.scrollBy(0, scrollStep);
-                } else {
-                    clearInterval(scrollInterval); // Para quando chegar ao topo
-                }
-            }, 15); // Ajuste para uma rolagem mais fluida
-        }
     });
-
 </script>
+
+

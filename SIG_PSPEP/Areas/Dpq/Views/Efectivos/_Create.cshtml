@@ -195,15 +195,13 @@
                 <div class="col-6 col-md-3">
                     <div class="form-group">
                         <label asp-for="NIP" class="control-label small-label"></label>
-                        <input asp-for="NIP" class="form-control form-control-sm input-1 small-input" placeholder="NIP" required
-                               oninvalid="this.setCustomValidity('Por favor, preencha o NIP do Efectivo!')" oninput="setCustomValidity('')" />
+                        <input asp-for="NIP" class="form-control form-control-sm input-1 small-input" placeholder="NIP" required/>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="form-group">
                         <label asp-for="N_Agente" class="control-label small-label"></label>
-                        <input asp-for="N_Agente" class="form-control form-control-sm input-1 small-input" placeholder="Número de Agente" required
-                               oninvalid="this.setCustomValidity('Por favor, preencha o número de Agente!')" oninput="setCustomValidity('')" />
+                        <input asp-for="N_Agente" class="form-control form-control-sm input-1 small-input" placeholder="Número de Agente" required/>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -261,11 +259,10 @@
                 <div class="col-6 col-md-6">
                     <div class="form-group">
                         <label asp-for="UnidadeOrigem" class="control-label small-label"></label>
-                        <input type="text" asp-for="UnidadeOrigem" class="form-control form-control-sm input-1 small-input">
+                        <input type="text" asp-for="UnidadeOrigem" class="form-control form-control-sm input-1 small-input" required>
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- 3 Academicos -->
@@ -394,7 +391,9 @@
                     <div class="form-group">
                         <div class="form-group">
                             <label asp-for="ProvinciaResId" class="control-label small-label"></label>
-                            <select asp-for="ProvinciaResId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.ProvinciaResId" style="width: 100%;"></select>
+                            <select asp-for="ProvinciaResId" class="select2 form-select form-control-sm input-1 small-input" id="ProvinciaResidenciaId" asp-items="ViewBag.ProvinciaResId" style="width: 100%;" required>
+                                <option value="">-- Selecione Província --</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -402,7 +401,9 @@
                     <div class="form-group">
                         <div class="form-group">
                             <label asp-for="MunicipioId" class="control-label small-label"></label>
-                            <select asp-for="MunicipioId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.MunicipioId" style="width: 100%;"></select>
+                            <select asp-for="MunicipioId" class="select2 form-select form-control-sm input-1 small-input" id="MunicipioResidenciaId" asp-items="ViewBag.MunicipioId" style="width: 100%;" required>
+                                <option value="">-- Selecione Município --</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -466,13 +467,6 @@
     </form>
 </div>
 
-
-@section Scripts {
-    
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
 <script src="~/assets/libs/select2/dist/js/select2.full.min.js"></script>
 <script src="~/assets/libs/select2/dist/js/select2.min.js"></script>
 <script>
@@ -508,7 +502,7 @@
     //Validação do Formulario
     function validateForm() {
         const x = document.getElementsByClassName("tab");
-        const y = x[currentTab].querySelectorAll("input:not([type='file'])");
+        const y = x[currentTab].querySelectorAll("input[required]:not([type='file']), select[required]");
         let valid = true;
 
         y.forEach(input => {
@@ -545,8 +539,7 @@
         showTab(currentTab);
     }
 
-    //Alerte
-        function submitForm() {
+    function submitForm() {
         const form = document.getElementById("regForm");
         const formData = new FormData(form);
         const x = document.getElementsByClassName("tab");
@@ -562,10 +555,34 @@
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                window.location.href = result.redirectUrl;
+                // Sucesso: mostra SweetAlert2 e recarrega após confirmar
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: result.message || 'Formulário submetido com sucesso.',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    },
+                    buttonsStyling: false
+                }).then(() => {
+                    location.reload(); // Ou window.location.href = result.redirectUrl;
+                });
             } else {
-                // Exibe um alerta do Bootstrap com animação
-                showAlert(result.message || "Erro ao submeter o formulário.");
+                // Erro: alerta direto do SweetAlert2 como toast
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro ao Salvar',
+                    text: result.message || "Erro ao submeter o formulário.",
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end',
+                    customClass: {
+                        popup: 'colored-toast'
+                    }
+                });
 
                 // Reexibe a aba atual e reativa os botões
                 x[currentTab].style.display = "block";
@@ -574,39 +591,6 @@
             }
         });
     }
-
-    // Função para exibir um alerta do Bootstrap dentro do modal
-    function showAlert(message) {
-        // Verifica se já existe um alerta e remove o anterior, se houver
-        const existingAlert = document.querySelector('.alert');
-        if (existingAlert) {
-            existingAlert.remove();
-        }
-
-        // Cria o novo alerta do Bootstrap
-        const alertDiv = document.createElement('div');
-        alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
-        alertDiv.setAttribute('role', 'alert');
-        alertDiv.innerHTML = `${message} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-
-        // Adiciona o alerta ao container do modal ou body
-        const alertContainer = document.getElementById('alert-container'); // Ajuste aqui para o id correto do seu modal
-        if (alertContainer) {
-            alertContainer.appendChild(alertDiv);
-        } else {
-            document.body.appendChild(alertDiv); // Caso não tenha um container específico, insere diretamente no body
-        }
-
-        // Adiciona a animação de fechamento automático após 3 segundos
-        setTimeout(() => {
-            alertDiv.classList.remove('show');
-            alertDiv.classList.add('fade');
-            alertDiv.addEventListener('transitionend', () => {
-                alertDiv.remove();
-            });
-        }, 3000); // Ajuste o tempo (3000ms = 3 segundos) conforme necessário
-    }
-
 
     // Pré-visualização de imagem ao carregar
     function previewImage(event) {
@@ -629,7 +613,7 @@
         });
     });
 
-    /*datwpicker*/
+    /*datwpicker Pendente */
     jQuery(".mydatepicker").datepicker();
     jQuery("#datepicker-autoclose").datepicker({
       autoclose: true,
@@ -639,3 +623,37 @@
       theme: "snow",
     });
 </script>
+<!-- Cascateamento Perfeito -->
+<script>
+    $(document).ready(function () {
+        // Quando uma província for selecionada, carrega os municípios
+        $("#ProvinciaResidenciaId").change(function () {
+            var provinciaId = $(this).val();
+
+            // Limpa as opções de município e comuna
+            $("#MunicipioResidenciaId").empty().append('<option value="">-- Selecione Município --</option>');
+
+            if (provinciaId) {
+                $.ajax({
+                    url: '@Url.Action("GetMunicipios", "Efectivos")', // Ajuste o nome do controlador se necessário
+                    data: { provinciaId: provinciaId },
+                    success: function (municipios) {
+                        // Adiciona os municípios ao select
+                        $.each(municipios, function (index, municipio) {
+                            $("#MunicipioResidenciaId").append('<option value="' + municipio.id + '">' + municipio.nome + '</option>');
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Erro ao carregar municípios: " + error);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

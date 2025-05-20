@@ -3,16 +3,20 @@
 * {
     margin: 0;
     padding: 0;
-
+    color: white;
     font-family: 'Roboto', sans-serif;
     font-size: 14px;
-    color: #fff;
 }
 
 p {
     font-size: 12px;
     font-weight: 600;
     color: rgb(52, 37, 148);
+}
+
+i.fas {
+    color: #342594 !important;
+    font-size: 16px;
 }
 
 h1 {
@@ -160,6 +164,26 @@ body {
                 justify-content: space-around;
                 align-items: center;
             }
+.password-wrapper {
+    position: relative;
+    width: 80%;
+}
+
+    .password-wrapper input {
+        width: 100%;
+    }
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: #333 !important;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    z-index: 10;
+}
     
     #bubble {
         cursor: pointer;

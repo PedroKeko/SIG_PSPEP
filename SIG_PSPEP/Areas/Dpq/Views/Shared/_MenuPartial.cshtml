@@ -1,170 +1,216 @@
-﻿
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
+	/* Adicionando animação de transição ao ícone */
+	.sidebar-link i {
+		transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+	}
 
-   .navbar {
-        padding-top: 60px; /* Ajuste conforme a altura do navbar-header */
-    }
+	/* Mudança de cor e aumento do ícone quando o mouse passa sobre o link */
+	.sidebar-link:hover i {
+		color: #ff5733; /* Cor vibrante */
+		transform: scale(1.2); /* Aumenta o ícone */
+	}
 
-    aside {
-        width: 250px;
-        display: flex;
-        flex-direction: column;
-    }
+	.sidebar-link:hover span {
+		color: #ff5733; /* Cor vibrante para o texto */
+		.navbar
+
+	{
+		padding-top: 60px; /* Ajuste conforme a altura do navbar-header */
+	}
+
+	aside {
+		width: 250px;
+		display: flex;
+		flex-direction: column;
+	}
 </style>
 
 <aside class="left-sidebar" data-sidebarbg="skin5">
-    <!-- Sidebar scroll-->
-    <div class="scroll-sidebar">
-        <!-- Sidebar navigation-->
-        <nav class="sidebar-nav">
-            <ul id="sidebarnav" class="pt-4">
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       asp-controller="Home" asp-action="Index" asp-area="Dpq"
-                       aria-expanded="false">
-                        <i class="fa fa-home"></i><span class="hide-menu">Painel de Control</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       href="charts.html"
-                       aria-expanded="false">
-                        <i class="mdi mdi-chart-bar"></i><span class="hide-menu">Estatistica</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       asp-controller="Efectivos" asp-action="Index" asp-area="Dpq"
-                       aria-expanded="false">
-                        <i class="mdi mdi-chart-bubble"></i><span class="hide-menu">Registo de Efectivo</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark"
-                       href="javascript:void(0)"
-                       aria-expanded="false">
-                        <i class="mdi mdi-receipt"></i><span class="hide-menu">Efectividade </span>
-                    </a>
-                    <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-                            <a href="form-basic.html" class="sidebar-link">
-                                <i class="mdi mdi-note-outline"></i><span class="hide-menu">Geral da PSPEP</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="form-wizard.html" class="sidebar-link">
-                                <i class="mdi mdi-note-plus"></i><span class="hide-menu">Por Unidade e Orgão</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="form-wizard.html" class="sidebar-link">
-                                <i class="mdi mdi-note-plus"></i><span class="hide-menu">Reformados</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark"
-                       href="javascript:void(0)"
-                       aria-expanded="false">
-                        <i class="mdi mdi-face"></i><span class="hide-menu">Relatórios </span>
-                    </a>
-                    <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-                            <a href="icon-material.html" class="sidebar-link">
-                                <i class="mdi mdi-emoticon"></i><span class="hide-menu">Efectiividade</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="icon-fontawesome.html" class="sidebar-link">
-                                <i class="mdi mdi-emoticon-cool"></i><span class="hide-menu">Ficha Indívidual</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="icon-fontawesome.html" class="sidebar-link">
-                                <i class="mdi mdi-emoticon-cool"></i><span class="hide-menu">Quadriculados</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       href="tables.html"
-                       aria-expanded="false">
-                        <i class="mdi mdi-border-inside"></i><span class="hide-menu">Passe de Identificação</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       href="grid.html"
-                       aria-expanded="false">
-                        <i class="mdi mdi-blur-linear"></i><span class="hide-menu">Pedidos</span>
-                    </a>
-                </li>
-               
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       href="pages-buttons.html"
-                       aria-expanded="false">
-                        <i class="mdi mdi-relative-scale"></i><span class="hide-menu">Tarefas</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="pages-calendar.html" class="sidebar-link">
-                        <i class="mdi mdi-calendar-check"></i><span class="hide-menu"> Day OFF </span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark"
-                       href="javascript:void(0)"
-                       aria-expanded="false">
-                        <i class="mdi mdi-move-resize-variant"></i><span class="hide-menu">Definições </span>
-                    </a>
-                    <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-                            <a href="index2.html" class="sidebar-link">
-                                <i class="mdi mdi-view-dashboard"></i><span class="hide-menu"> Dashboard-2 </span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="pages-gallery.html" class="sidebar-link">
-                                <i class="mdi mdi-multiplication-box"></i><span class="hide-menu"> Gallery </span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="pages-calendar.html" class="sidebar-link">
-                                <i class="mdi mdi-calendar-check"></i><span class="hide-menu"> Calendar </span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="pages-invoice.html" class="sidebar-link">
-                                <i class="mdi mdi-bulletin-board"></i><span class="hide-menu"> Invoice </span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="pages-chat.html" class="sidebar-link">
-                                <i class="mdi mdi-message-outline"></i><span class="hide-menu"> Chat Option </span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item p-3">
-                    <a href="https://github.com/wrappixel/matrix-admin-bt5"
-                       target="_blank"
-                       class="
-                    w-100
-                    btn btn-cyan
-                    d-flex
-                    align-items-center
-                    text-white
-                  ">
-                        <i class="mdi mdi-cloud-download font-20 me-2"></i>Download
-                        Free
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <!-- End Sidebar navigation -->
-    </div>
-    <!-- End Sidebar scroll-->
+	<!-- Sidebar scroll-->
+	<div class="scroll-sidebar">
+		<!-- Sidebar navigation-->
+		<nav class="sidebar-nav">
+			<ul id="sidebarnav" class="pt-4">
+				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link"
+					   asp-controller="Home" asp-action="Index" asp-area="Dpq"
+					   aria-expanded="false">
+						<i class="fas fa-tachometer-alt"></i><span class="hide-menu">Painel de Control</span>
+					</a>
+				</li>
+
+				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link"
+					   href="charts.html"
+					   aria-expanded="false">
+						<i class="fas fa-chart-bar"></i><span class="hide-menu">Estatística</span>
+					</a>
+				</li>
+
+				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link"
+					   asp-controller="Efectivos" asp-action="Index" asp-area="Dpq"
+					   aria-expanded="false">
+						<i class="fas fa-user-friends"></i><span class="hide-menu">Registo de Efectivo</span>
+					</a>
+				</li>
+
+				<li class="sidebar-item">
+					<a class="sidebar-link has-arrow waves-effect waves-dark"
+					   href="javascript:void(0)"
+					   aria-expanded="false">
+						<i class="fas fa-user-shield"></i><span class="hide-menu">Gerir Efectividade</span>
+					</a>
+					<ul aria-expanded="false" class="collapse first-level">
+						<li class="sidebar-item">
+							<a asp-controller="Efectividades" asp-action="LancamentoMultiplo" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-users"></i><span class="hide-menu">Lançar Colectivo</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a asp-controller="Efectividades" asp-action="LancIndividual" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-user"></i><span class="hide-menu">Lançar Indívidual</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a asp-controller="Efectividades" asp-action="Index" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-user-lock"></i><span class="hide-menu">Lançar Local-DPQ</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="sidebar-item">
+					<a class="sidebar-link has-arrow waves-effect waves-dark"
+					   href="javascript:void(0)"
+					   aria-expanded="false">
+						<i class="fas fa-file-alt"></i><span class="hide-menu">Relatórios</span>
+					</a>
+					<ul aria-expanded="false" class="collapse first-level">
+						<li class="sidebar-item">
+							<a asp-controller="Efectividades" asp-action="ConsultarEfectivos" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-stream"></i><span class="hide-menu">Lista de Efectivos</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a class="sidebar-link has-arrow waves-effect waves-dark"
+							   href="javascript:void(0)"
+							   aria-expanded="false">
+								<i class="fas fa-user-shield"></i><span class="hide-menu">Consultar Efectividade</span>
+							</a>
+							<ul aria-expanded="false" class="collapse second-level">
+								<li class="sidebar-item">
+									<a href="form-basic.html" class="sidebar-link">
+										<i class="fas fa-list"></i><span class="hide-menu">Colectiva</span>
+									</a>
+								</li>
+								<li class="sidebar-item">
+									<a href="form-wizard.html" class="sidebar-link">
+										<i class="fas fa-tasks"></i><span class="hide-menu">Indívidual</span>
+									</a>
+								</li>
+								<li class="sidebar-item">
+									<a href="form-wizard.html" class="sidebar-link">
+										<i class="fas fa-stream"></i><span class="hide-menu">DPQ</span>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="sidebar-item">
+							<a class="sidebar-link waves-effect waves-dark sidebar-link"
+							   href="tables.html"
+							   aria-expanded="false">
+								<i class="fas fa-id-badge"></i><span class="hide-menu">Passe de Identificação</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a href="icon-fontawesome.html" class="sidebar-link">
+								<i class="fas fa-id-card"></i><span class="hide-menu">Ficha Individual</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a href="icon-fontawesome.html" class="sidebar-link">
+								<i class="fas fa-th-list"></i><span class="hide-menu">Quadriculados</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="sidebar-item">
+					<a class="sidebar-link has-arrow waves-effect waves-dark"
+					   href="javascript:void(0)"
+					   aria-expanded="false">
+						<i class="fas fa-user-shield"></i><span class="hide-menu">Carreira Policial</span>
+					</a>
+					<ul aria-expanded="false" class="collapse first-level">
+						<li class="sidebar-item">
+							<a asp-controller="EfectivoOrdemServicos" asp-action="Index" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-clipboard-list"></i><span class="hide-menu">Promoção</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a href="form-wizard.html" class="sidebar-link">
+								<i class="fas fa-network-wired"></i><span class="hide-menu">Despromoção</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a href="form-wizard.html" class="sidebar-link">
+								<i class="fas fa-user-times"></i><span class="hide-menu">Nomeação</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="sidebar-item">
+					<a class="sidebar-link has-arrow waves-effect waves-dark"
+					   href="javascript:void(0)"
+					   aria-expanded="false">
+						<i class="fas fa-cogs"></i><span class="hide-menu">Definições</span>
+					</a>
+					<ul aria-expanded="false" class="collapse first-level">
+						<li class="sidebar-item">
+							<a asp-controller="OrdemServicoes" asp-action="Index" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-clipboard-check"></i><span class="hide-menu">Ordem de Serviço</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a asp-controller="Funcoes" asp-action="Index" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-shield-alt"></i><span class="hide-menu">Função Policial</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a asp-controller="Municipios" asp-action="Index" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-city"></i><span class="hide-menu">Municípios</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a asp-controller="OrgaoUnidades" asp-action="Index" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-building"></i><span class="hide-menu">Unidades / Orgãos</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link"
+					   href="grid.html"
+					   aria-expanded="false">
+						<i class="fas fa-envelope-open-text"></i><span class="hide-menu">Pedidos</span>
+					</a>
+				</li>
+
+				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link"
+					   href="pages-buttons.html"
+					   aria-expanded="false">
+						<i class="fas fa-tasks"></i><span class="hide-menu">Tarefas</span>
+					</a>
+				</li>
+			</ul>
+
+		</nav>
+		<!-- End Sidebar navigation -->
+	</div>
+	<!-- End Sidebar scroll-->
 </aside>

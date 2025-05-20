@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using SIG_PSPEP.Services;
 
 namespace SIG_PSPEP.Controllers
 {
+    [Authorize]
     public class EfectivosController : Controller
     {
         private readonly ImageCompressionService _imageCompressionService;
@@ -97,6 +99,10 @@ namespace SIG_PSPEP.Controllers
 
         public IActionResult Create()
         {
+            //if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            //{
+            //    return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+            //}
             CarregarViewData();
             return PartialView("_Create", new EfectivoViewModel());
         }
@@ -105,20 +111,14 @@ namespace SIG_PSPEP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EfectivoViewModel model)
         {
+
             CarregarViewData();
             var existeNumeroProcesso = await _context.Efectivos
                 .AnyAsync(e => e.Num_Processo == model.Num_Processo);
-
-            if (existeNumeroProcesso)
-            {
-                ModelState.AddModelError("Num_Processo", "Este número de processo já está cadastrado.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return Json(new { success = false, message = "Este número de processo já está cadastrado." });
-            }
-
+            var existeNIP = await _context.Efectivos
+              .AnyAsync(e => e.NIP == model.NIP);
+            var existeNunAgente = await _context.Efectivos
+              .AnyAsync(e => e.N_Agente == model.N_Agente);
 
             // Validação de data de nascimento
             if (model.DataNasc == null ||
@@ -133,6 +133,39 @@ namespace SIG_PSPEP.Controllers
             }
 
             // Validação do número de documento
+            if (existeNumeroProcesso)
+            {
+                ModelState.AddModelError("Num_Processo", "Este número de processo já está cadastrado.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Este número de processo já está cadastrado." });
+            }
+
+            // Validação do NIP
+            if (existeNIP)
+            {
+                ModelState.AddModelError("NIP", "Este NIP não pertence a este Efectivo, já existe!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Este NIP não pertence a este Efectivo, já existe!" });
+            }
+
+            // Validação do número de Agente
+            if (existeNunAgente)
+            {
+                ModelState.AddModelError("N_Agente", "Este número de Agente já existe!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Este número de Agente já existe!" });
+            }
+
+            // Validação do número de documento
             if (_context.Efectivos.Any(c => c.NumBI == model.NumBI))
             {
                 ModelState.AddModelError("NumeroDocumento", "Já existe um efectivo com este número de BI.");
@@ -141,6 +174,12 @@ namespace SIG_PSPEP.Controllers
             if (!ModelState.IsValid)
             {
                 return Json(new { success = false, message = "Já existe um efectivo com este número de BI." });
+            }
+
+            // Validação do Email
+            if (!string.IsNullOrEmpty(model.Email) && _context.Users.Any(u => u.Email == model.Email))
+            {
+                return Json(new { success = false, message = "Já existe um usuário com este email." });
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -266,12 +305,18 @@ namespace SIG_PSPEP.Controllers
                 // 4. Cria o IdentityUser
                 var usuario = new IdentityUser
                 {
-                    UserName = emailFinal,
-                    Email = emailFinal,
-                    EmailConfirmed = true // se desejar
+                    UserName = model.Email ?? emailFinal,
+                    Email = model.Email ?? emailFinal,
+                    EmailConfirmed = true
                 };
 
-                var result = await _userManager.CreateAsync(usuario, "Pspep#12345");
+                if (!string.IsNullOrEmpty(model.Telefone1))
+                {
+                    usuario.PhoneNumber = model.Telefone1;
+                }
+
+                var senha = "Pspep#12345";
+                var result = await _userManager.CreateAsync(usuario, senha);
 
                 if (result.Succeeded)
                 {
@@ -294,7 +339,7 @@ namespace SIG_PSPEP.Controllers
                         //return PartialView("_Create", model);
                         return Json(new { success = false, message = "Área não localizada!" });
                     }
-                   
+
                     // 4. Cria vínculo na tabela UsuarioAute
                     var usuarioAute = new UsuarioAute
                     {
@@ -320,7 +365,9 @@ namespace SIG_PSPEP.Controllers
                 // Redireciona à Index via Ajax
                 return Json(new
                 {
-                    success = true, message = "Efectivo excluído com Sucesso!", redirectUrl = Url.Action("Index")
+                    success = true,
+                    message = "Efectivo excluído com Sucesso!",
+                    redirectUrl = Url.Action("Index")
                 });
             }
             catch (DbUpdateException)

@@ -2,109 +2,100 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SIG_PSPEP.Context;
+using SIG_PSPEP.Entidade;
 using SIG_PSPEP.Entidades;
 
 namespace SIG_PSPEP.Areas.Dpq.Controllers
 {
     [Area("Dpq")]
-    public class OrdemServicoesController : Controller
+    public class OrdemServicoesController : BaseController
     {
-        private readonly AppDbContext _context;
+        private readonly ILogger<EfectividadesController> _logger;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
 
-        public OrdemServicoesController(AppDbContext context)
+        public OrdemServicoesController(
+        AppDbContext context,
+        UserManager<IdentityUser> userManager,
+        SignInManager<IdentityUser> signInManager,
+        ILogger<EfectividadesController> logger)
+        : base(context)
         {
-            _context = context;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            _logger = logger;
         }
 
         // GET: Dpq/OrdemServicoes
+        [Authorize(Policy = "Require_Admin_ChDepar_ChSec_Esp")]
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.OrdemServicos.Include(o => o.User);
             return View(await appDbContext.ToListAsync());
         }
 
-        // GET: Dpq/OrdemServicoes/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var ordemServico = await _context.OrdemServicos
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ordemServico == null)
-            {
-                return NotFound();
-            }
-
-            return View(ordemServico);
-        }
-
-        // GET: Dpq/OrdemServicoes/Create
+        [Authorize(Policy = "Require_Admin_ChDepar_ChSec")]
+        [HttpGet]
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
+            return PartialView("_Create");
         }
 
-        // POST: Dpq/OrdemServicoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NumOrdemServico,AnoOrdemServico,Id,Estado,DataRegisto,DataUltimaAlterecao,UserId")] OrdemServico ordemServico)
+        [Authorize(Policy = "Require_Admin_ChDepar_ChSec")]
+        public IActionResult Create(OrdemServico ordemServico)
         {
+            var userId = userManager.GetUserId(User);
             if (ModelState.IsValid)
             {
+                ordemServico.UserId = userId;
                 _context.Add(ordemServico);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.SaveChanges();
+                return Json(new { success = true });
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ordemServico.UserId);
-            return View(ordemServico);
+
+            return PartialView("_Create", ordemServico);
         }
 
         // GET: Dpq/OrdemServicoes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize(Policy = "Require_Admin_ChDepar")]
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var ordemServico = await _context.OrdemServicos.FindAsync(id);
+            var ordemServico = _context.OrdemServicos.Find(id);
             if (ordemServico == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ordemServico.UserId);
-            return View(ordemServico);
+            return PartialView("_Edit", ordemServico);
         }
 
-        // POST: Dpq/OrdemServicoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: OrdemServicoes/Edit/5
         [HttpPost]
+        [Authorize(Policy = "Require_Admin_ChDepar_ChSec")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("NumOrdemServico,AnoOrdemServico,Id,Estado,DataRegisto,DataUltimaAlterecao,UserId")] OrdemServico ordemServico)
+        public async Task<IActionResult> Edit(OrdemServico ordemServico)
         {
-            if (id != ordemServico.Id)
-            {
-                return NotFound();
-            }
-
+            var userId = userManager.GetUserId(User);
             if (ModelState.IsValid)
             {
                 try
                 {
+                    ordemServico.UserId = userId;
                     _context.Update(ordemServico);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,44 +108,19 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ordemServico.UserId);
-            return View(ordemServico);
+            return PartialView("_Edit", ordemServico);
         }
 
-        // GET: Dpq/OrdemServicoes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Municipios/Delete/5
+        [HttpPost]
+        [Authorize(Policy = "Require_Admin_ChDepar")]
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ordemServico = await _context.OrdemServicos
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ordemServico == null)
-            {
-                return NotFound();
-            }
-
-            return View(ordemServico);
-        }
-
-        // POST: Dpq/OrdemServicoes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var ordemServico = await _context.OrdemServicos.FindAsync(id);
-            if (ordemServico != null)
-            {
-                _context.OrdemServicos.Remove(ordemServico);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var ordemServico = _context.OrdemServicos.Find(id);
+            _context.OrdemServicos.Remove(ordemServico);
+            _context.SaveChanges();
+            return Json(new { success = true });
         }
 
         private bool OrdemServicoExists(int id)

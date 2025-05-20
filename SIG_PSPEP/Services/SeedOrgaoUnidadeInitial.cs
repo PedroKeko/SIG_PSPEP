@@ -35,6 +35,8 @@ namespace SIG_PSPEP.Services
                     new OrgaoUnidade { NomeOrgaoUnidade = "Unidade de Proteção Diplomática", Sigla = "UPD" },
                     new OrgaoUnidade { NomeOrgaoUnidade = "Unidade de Guarda de Honrra e Honorifica", Sigla = "UGHH" },
                     new OrgaoUnidade { NomeOrgaoUnidade = "Unidade de Banda de Música", Sigla = "UBM" },
+                    new OrgaoUnidade { NomeOrgaoUnidade = "Departameto de Telecomunicações e Tecnologia de Informação", Sigla = "DTTI" },
+                    new OrgaoUnidade { NomeOrgaoUnidade = "Departameto de Pessoal e Quadro", Sigla = "DPQ" },
                     new OrgaoUnidade { NomeOrgaoUnidade = "Departameto de Logística", Sigla = "DL" },
                     new OrgaoUnidade { NomeOrgaoUnidade = "Departameto de Transporte", Sigla = "DT" },
                     new OrgaoUnidade { NomeOrgaoUnidade = "Departameto de Inspecção", Sigla = "DI" },

@@ -3,11 +3,9 @@
 @{
     ViewData["Title"] = "Efectividade Geral";
 }
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="~/dist/css/mystyle.css" rel="stylesheet" />
 <link href="~/dist/css/form-step.css" rel="stylesheet" />
 <link href="~/dist/css/botoes.css" rel="stylesheet" />
-<!-- Estilos do DataTables -->
 <link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
 <link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
 
@@ -51,7 +49,7 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td class="text-center">@index</td>
+                                    <td class="text-center w-10">@index</td>
 
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Patente.Posto)
@@ -82,9 +80,10 @@
                                         <a href="#">
                                             <i class="fa fa-upload" style="color: #11008B;"></i>
                                         </a>
-                                        <a id="openDeleteModal_@item.Id" href="@Url.Action("DeleteConfirmed", new { id = item.Id })" data-id="@item.Id">
+                                        <a id="openDeleteModal_@item.Id" href="javascript:void(0)" onclick="deleteItem(@item.Id)">
                                             <i class="fas fa-trash-alt" style="color: #DC3545;"></i>
                                         </a>
+
                                     </td>
                                 </tr>
                                 index++;
@@ -97,10 +96,47 @@
     </div>
 </div>
 
+<!-- Modal de Insersão -->
+<div class="modal fade" id="modalForm" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContent">
+            <!-- Modal Header -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição -->
+<div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog  modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalContent1">
+            <!-- Modal Header -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja excluir este Registro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom2-btn btn-2-red" id="confirmDeleteBtn">Excluir</button>
+                <button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/dist/css/backend-bundle.min.js"></script>
-@* <script src="~/dist/js/jquery-3.7.1.min.js"></script> *@
 <script src="~/dist/js/jquery.datatables.min.js"></script>
 <script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
 
 
 <script>
@@ -136,44 +172,6 @@
     });
 </script>
 
-
-<div class="modal fade" id="modalForm" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content" id="modalContent">
-            <!-- Modal Header -->
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog  modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content" id="modalContent1">
-            <!-- Modal Header -->
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal de Confirmação de Exclusão -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <div class="modal-body">
-                Tem certeza que deseja excluir este Registro?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="custom2-btn btn-2-red" id="confirmDeleteBtn">Excluir</button>
-                <button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 @section Scripts {
     <script>
         function openModal(url) {
@@ -183,7 +181,6 @@
                 modal.show();
             });
         }
-
        
          // Recarrega a página quando o modal for fechado
                 const modalElement = document.getElementById('modalForm');
@@ -211,21 +208,54 @@
             });
         }
 
-        //Exclusão de Registro
+        //Excluir Registro
                let deleteId = null;
 
         function deleteItem(id) {
-            deleteId = id;  // Armazena o ID para posterior uso
-            // Abre o modal de confirmação
+            deleteId = id;
             let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
             modal.show();
         }
 
-        document.getElementById('confirmDeleteBtn').onclick = function () {
-            $.post('/Dpq/Efectivos/Delete/' + deleteId, function () {
-                location.reload();
+                      document.getElementById('confirmDeleteBtn').onclick = function () {
+            $.post('/Efectivos/Delete/' + deleteId, function (response) {
+                if (response.success) {
+                    // Mostrar o alerta toaster com delay antes de redirecionar
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        timerProgressBar: true,
+                        didClose: () => {
+                            window.location.href = response.redirectUrl;
+                        }
+                    });
+                } else {
+                    showErrorAlert(response.message); // tua função de erro
+                }
+            }).fail(function () {
+                showErrorAlert("Ocorreu um erro ao tentar eliminar o registo.");
             });
         };
+
+
+
+        // Exemplo usando SweetAlert2 para uma melhor experiência
+        function showErrorAlert(message) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção!',
+                text: message,
+                confirmButtonText: 'Entendi',
+                customClass: {
+                    confirmButton: 'btn btn-warning'
+                },
+                buttonsStyling: false
+            });
+        }
 
     </script>
 }

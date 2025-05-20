@@ -1,0 +1,253 @@
+﻿ @{
+     ViewData["Title"] = "Pedidos";
+  }
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<style>
+
+    .card {
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.95);
+        color: #000;
+        border: 2px solid #d4af37;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 95%; /* Tamanho fixo, mas responsivo visualmente */
+            height: 95%;
+            background: url('../assets/images/logo_pna.svg') no-repeat center center;
+            background-size: contain;
+            opacity: 0.15;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+    .fw-bold {
+        color: #0b1a3c;
+    }
+
+    .timeline-container {
+        position: relative;
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .timeline-line {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background: #bbb;
+        z-index: 1;
+    }
+
+    .timeline-event {
+        position: relative;
+        width: 220px;
+        margin: 5px 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+        .timeline-event:nth-child(odd) {
+            transform: translateX(100px);
+        }
+
+        .timeline-event:nth-child(even) {
+            transform: translateX(-100px);
+        }
+
+    .circle {
+        width: 10px;
+        height: 10px;
+        background: #000;
+        border-radius: 50%;
+        margin: 0 auto;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 3;
+        transition: all 0.3s ease;
+    }
+
+    .event-card {
+        background: #fff;
+        border-radius: 6px;
+        padding: 6px 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        text-align: center;
+        position: relative;
+        margin-top: 12px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1.5px;
+            height: 8px;
+            background: #ccc;
+        }
+
+    .event-title {
+        font-weight: bold;
+        font-size: 11px;
+        margin-bottom: 2px;
+    }
+
+    .date, .status, .obs {
+        font-size: 10px;
+        margin-bottom: 2px;
+    }
+
+    .gradient-blue {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: #fff;
+    }
+
+    .gradient-yellow {
+        background: linear-gradient(135deg, #f9d423, #ff4e50);
+        color: #fff;
+    }
+
+    .gradient-red {
+        background: linear-gradient(135deg, #c31432, #240b36);
+        color: #fff;
+    }
+
+    .gradient-black {
+        background: linear-gradient(135deg, #000000, #434343);
+        color: #fff;
+    }
+
+    .approved {
+        color: #a0ffb2;
+        font-weight: bold;
+    }
+
+    .rejected {
+        color: #ffcdd2;
+        font-weight: bold;
+    }
+
+    .pending {
+        color: #fff9c4;
+        font-weight: bold;
+    }
+
+    /* Hover extravagante */
+    .timeline-event:hover {
+        transform: scale(1.07) rotate(2deg) translateY(-4px);
+        z-index: 5;
+    }
+
+        .timeline-event:hover .event-card {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            transform: rotate(-1deg);
+        }
+
+        .timeline-event:hover .circle {
+            background-color: #ff9800;
+            transform: scale(1.3);
+        }
+
+    @@media (max-width: 600px) {
+        .timeline-event {
+            width: 180px;
+            transform: none !important;
+            margin: 4px 0;
+        }
+    }
+</style>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+
+                <div class="timeline-event">
+                    <div class="circle"></div>
+                    <div class="event-card gradient-blue">
+                        <div class="event-title">Documentação</div>
+                        <div class="date">08/01/2025</div>
+                        <div class="status approved">Aprovado</div>
+                        <div class="obs">Tudo entregue corretamente.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="circle"></div>
+                    <div class="event-card gradient-yellow">
+                        <div class="event-title">Configuração</div>
+                        <div class="date">10/01/2025</div>
+                        <div class="status approved">Aprovado</div>
+                        <div class="obs">Sistema pronto para uso.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="circle"></div>
+                    <div class="event-card gradient-black">
+                        <div class="event-title">Distribuição</div>
+                        <div class="date">15/01/2025</div>
+                        <div class="status pending">Pendente</div>
+                        <div class="obs">Aguardando envio.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="circle"></div>
+                    <div class="event-card gradient-red">
+                        <div class="event-title">Validação</div>
+                        <div class="date">20/01/2025</div>
+                        <div class="status rejected">Reprovado</div>
+                        <div class="obs">Erro no número de série.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="circle"></div>
+                    <div class="event-card gradient-blue">
+                        <div class="event-title">Conclusão</div>
+                        <div class="date">25/01/2025</div>
+                        <div class="status approved">Aprovado</div>
+                        <div class="obs">Finalizado com sucesso.</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>

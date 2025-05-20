@@ -746,6 +746,235 @@ namespace SIG_PSPEP.Migrations
                     b.ToTable("Bancos");
                 });
 
+            modelBuilder.Entity("SIG_PSPEP.Entidades.Dispositivo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cod_Dispositivo")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DispositivoMarcaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DispositivoModeloId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DispositivoTipoId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MAC")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PROCESSADOR")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RAM")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("ROM")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("SO")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DispositivoMarcaId");
+
+                    b.HasIndex("DispositivoModeloId");
+
+                    b.HasIndex("DispositivoTipoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Dispositivos");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.DispositivoLocalizacao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DispositivoId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Obs")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("OrgaoUnidadeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DispositivoId");
+
+                    b.HasIndex("OrgaoUnidadeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DispositivoLocalizacoes");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.DispositivoMarca", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MarcasDispositivo")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DispositivoMarcas");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.DispositivoModelo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DispositivoMarcaId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Modelo")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DispositivoMarcaId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DispositivoModelos");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.DispositivoTipo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TiposDispositivo")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DispositivoTipos");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.EfectividadeTipo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescTipo")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Sigla")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EfectividadeTipos");
+                });
+
             modelBuilder.Entity("SIG_PSPEP.Entidades.Efectivo", b =>
                 {
                     b.Property<int>("Id")
@@ -981,6 +1210,49 @@ namespace SIG_PSPEP.Migrations
                     b.ToTable("EfectivoContaBancarias");
                 });
 
+            modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoEfectividade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DataPresenca")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EfectividadeTipoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EfectivoId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Justificacao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EfectividadeTipoId");
+
+                    b.HasIndex("EfectivoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EfectivoEfectividades");
+                });
+
             modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoEstadoEfectividade", b =>
                 {
                     b.Property<int>("Id")
@@ -995,9 +1267,6 @@ namespace SIG_PSPEP.Migrations
                     b.Property<DateTime>("DataUltimaAlterecao")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DescricaoEstadoEfectividade")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("EfectivoId")
                         .HasColumnType("int");
 
@@ -1006,6 +1275,9 @@ namespace SIG_PSPEP.Migrations
 
                     b.Property<int>("EstadoEfectividadeId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -1021,7 +1293,7 @@ namespace SIG_PSPEP.Migrations
                     b.ToTable("EfectivoEstadoEfectividades");
                 });
 
-            modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoOrdemServico", b =>
+            modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoHistorico", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1029,8 +1301,35 @@ namespace SIG_PSPEP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AnoPromocao")
+                    b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EfectivoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tipo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EfectivoId");
+
+                    b.ToTable("EfectivoHistoricos");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoOrdemServico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataRegisto")
                         .HasColumnType("datetime2");
@@ -1043,9 +1342,6 @@ namespace SIG_PSPEP.Migrations
 
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("EstadoEfectividadeId")
-                        .HasColumnType("int");
 
                     b.Property<string>("NumDespacho")
                         .HasColumnType("nvarchar(max)");
@@ -1063,7 +1359,7 @@ namespace SIG_PSPEP.Migrations
 
                     b.HasIndex("EfectivoId");
 
-                    b.HasIndex("EstadoEfectividadeId");
+                    b.HasIndex("OrdemServicoId");
 
                     b.HasIndex("PatenteId");
 
@@ -1227,6 +1523,98 @@ namespace SIG_PSPEP.Migrations
                     b.ToTable("FuncaoCargos");
                 });
 
+            modelBuilder.Entity("SIG_PSPEP.Entidades.LogsAcesso", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Obs")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipoAcesso")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LogsAcessos");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.LogsEvento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Obs")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipoEvento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LogsEventos");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.MensagesAdmin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MensagesAdmins");
+                });
+
             modelBuilder.Entity("SIG_PSPEP.Entidades.OrdemServico", b =>
                 {
                     b.Property<int>("Id")
@@ -1235,8 +1623,8 @@ namespace SIG_PSPEP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AnoOrdemServico")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("AnoOrdemServico")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DataRegisto")
                         .HasColumnType("datetime2");
@@ -1310,6 +1698,9 @@ namespace SIG_PSPEP.Migrations
                     b.Property<DateTime>("DataUltimaAlterecao")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Diuturnidade")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
 
@@ -1319,11 +1710,139 @@ namespace SIG_PSPEP.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("grau")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Patentes");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.Radio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CodRadio")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("EstadoTecnico")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("IdRadio")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NumSerie")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("RadioTipoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TEI")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RadioTipoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Radios");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.RadioOrgaoUnidade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OrgaoUnidadeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RadioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrgaoUnidadeId");
+
+                    b.HasIndex("RadioId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RadioOrgaoUnidades");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.RadioTipo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataRegisto")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUltimaAlterecao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Marca")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("Modelo")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RadioTipos");
                 });
 
             modelBuilder.Entity("SIG_PSPEP.Entidades.SituacaoEfectivo", b =>
@@ -1842,6 +2361,99 @@ namespace SIG_PSPEP.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SIG_PSPEP.Entidades.Dispositivo", b =>
+                {
+                    b.HasOne("SIG_PSPEP.Entidades.DispositivoMarca", "DispositivoMarca")
+                        .WithMany()
+                        .HasForeignKey("DispositivoMarcaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SIG_PSPEP.Entidades.DispositivoModelo", "DispositivoModelo")
+                        .WithMany()
+                        .HasForeignKey("DispositivoModeloId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SIG_PSPEP.Entidades.DispositivoTipo", "DispositivoTipo")
+                        .WithMany()
+                        .HasForeignKey("DispositivoTipoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("DispositivoMarca");
+
+                    b.Navigation("DispositivoModelo");
+
+                    b.Navigation("DispositivoTipo");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.DispositivoLocalizacao", b =>
+                {
+                    b.HasOne("SIG_PSPEP.Entidades.Dispositivo", "Dispositivo")
+                        .WithMany()
+                        .HasForeignKey("DispositivoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SIG_PSPEP.Entidades.OrgaoUnidade", "OrgaoUnidades")
+                        .WithMany()
+                        .HasForeignKey("OrgaoUnidadeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Dispositivo");
+
+                    b.Navigation("OrgaoUnidades");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.DispositivoMarca", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.DispositivoModelo", b =>
+                {
+                    b.HasOne("SIG_PSPEP.Entidades.DispositivoMarca", "DispositivoMarca")
+                        .WithMany()
+                        .HasForeignKey("DispositivoMarcaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("DispositivoMarca");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.DispositivoTipo", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SIG_PSPEP.Entidades.Efectivo", b =>
                 {
                     b.HasOne("SIG_PSPEP.Entidades.FuncaoCargo", "FuncaoCargo")
@@ -1932,6 +2544,31 @@ namespace SIG_PSPEP.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoEfectividade", b =>
+                {
+                    b.HasOne("SIG_PSPEP.Entidades.EfectividadeTipo", "EfectividadeTipo")
+                        .WithMany()
+                        .HasForeignKey("EfectividadeTipoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SIG_PSPEP.Entidades.Efectivo", "Efectivo")
+                        .WithMany()
+                        .HasForeignKey("EfectivoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("EfectividadeTipo");
+
+                    b.Navigation("Efectivo");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoEstadoEfectividade", b =>
                 {
                     b.HasOne("SIG_PSPEP.Entidades.Efectivo", "Efectivo")
@@ -1957,6 +2594,17 @@ namespace SIG_PSPEP.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoHistorico", b =>
+                {
+                    b.HasOne("SIG_PSPEP.Entidades.Efectivo", "Efectivo")
+                        .WithMany()
+                        .HasForeignKey("EfectivoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Efectivo");
+                });
+
             modelBuilder.Entity("SIG_PSPEP.Entidades.EfectivoOrdemServico", b =>
                 {
                     b.HasOne("SIG_PSPEP.Entidades.Efectivo", "Efectivo")
@@ -1965,9 +2613,11 @@ namespace SIG_PSPEP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SIG_PSPEP.Entidades.EstadoEfectividade", "EstadoEfectividade")
+                    b.HasOne("SIG_PSPEP.Entidades.OrdemServico", "OrdemServico")
                         .WithMany()
-                        .HasForeignKey("EstadoEfectividadeId");
+                        .HasForeignKey("OrdemServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SIG_PSPEP.Entidades.Patente", "Patente")
                         .WithMany()
@@ -1981,7 +2631,7 @@ namespace SIG_PSPEP.Migrations
 
                     b.Navigation("Efectivo");
 
-                    b.Navigation("EstadoEfectividade");
+                    b.Navigation("OrdemServico");
 
                     b.Navigation("Patente");
 
@@ -2040,6 +2690,24 @@ namespace SIG_PSPEP.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SIG_PSPEP.Entidades.LogsAcesso", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.LogsEvento", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SIG_PSPEP.Entidades.OrdemServico", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
@@ -2059,6 +2727,57 @@ namespace SIG_PSPEP.Migrations
                 });
 
             modelBuilder.Entity("SIG_PSPEP.Entidades.Patente", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.Radio", b =>
+                {
+                    b.HasOne("SIG_PSPEP.Entidades.RadioTipo", "RadioTipo")
+                        .WithMany()
+                        .HasForeignKey("RadioTipoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("RadioTipo");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.RadioOrgaoUnidade", b =>
+                {
+                    b.HasOne("SIG_PSPEP.Entidades.OrgaoUnidade", "OrgaoUnidade")
+                        .WithMany()
+                        .HasForeignKey("OrgaoUnidadeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SIG_PSPEP.Entidades.Radio", "Radio")
+                        .WithMany()
+                        .HasForeignKey("RadioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("OrgaoUnidade");
+
+                    b.Navigation("Radio");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SIG_PSPEP.Entidades.RadioTipo", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()

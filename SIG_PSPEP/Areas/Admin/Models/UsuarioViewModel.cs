@@ -7,6 +7,7 @@
         public string? Email { get; set; }
         public string? NomeEfectivo { get; set; }
         public string? Area { get; set; }
+        public bool Estado { get; set; }
         public List<string>? Roles { get; set; }
         public string? FotoBase64 { get; set; }
     }

@@ -1,0 +1,282 @@
+﻿@model SIG_PSPEP.Entidades.MensagesAdmin
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Contato Administrador - Problemas de Autenticação</title>
+
+	<!-- Fonte Inter -->
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+	<!-- Bootstrap 5 CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+	<style>
+
+		body {
+			width: 100%;
+			background: linear-gradient(to bottom, #180d5e, #ff0000);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			margin: 0;
+			font-family: Arial, sans-serif;
+			position: relative;
+			overflow: hidden;
+		}
+
+		/* Estilização do fundo estrelado */
+		.stars {
+			position: fixed; /* Mantém as estrelas fixas na tela */
+			width: 100vw;
+			height: 100vh;
+			top: 0;
+			left: 0;
+			pointer-events: none; /* Evita que clique nas estrelas interfira */
+			z-index: -1; /* Mantém o fundo atrás de tudo */
+		}
+
+			/* Estrelas individuais */
+			.stars span {
+				position: absolute;
+				color: rgb(95, 249, 0);
+				opacity: 0.4;
+				animation: twinkle 2s infinite alternate ease-in-out;
+			}
+
+		/* Animação para efeito de brilho */
+		@@keyframes twinkle {
+			0% {
+				opacity: 0.2;
+			}
+
+			100% {
+				opacity: 0.6;
+			}
+		}
+
+		#container {
+			width: 320px;
+			height: 440px;
+			border-radius: 10px;
+			-webkit-box-shadow: 0px 0px 6px -1px #000000;
+			box-shadow: 0px 0px 6px -1px #000000;
+			position: relative; /* Importante para o pseudo-elemento funcionar */
+			display: flex;
+			align-items: center;
+			overflow: hidden; /* Garante que o pseudo-elemento não ultrapasse os limites */
+		}
+
+		.card {
+			border-radius: 1rem;
+			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+			max-width: 580px;
+			width: 100%;
+		}
+
+		.card-header {
+			background-color: transparent;
+			border-bottom: none;
+			text-align: center;
+			color: #4b2c91;
+			font-weight: 700;
+			font-size: 1.8rem;
+			padding-top: 1.5rem;
+		}
+
+		.card-body {
+			padding: 22px 20px;
+		}
+
+		.form-label {
+			font-weight: 600;
+			color: #4b2c91;
+		}
+
+		.form-control:focus {
+			border-color: #764ba2;
+			box-shadow: 0 0 8px rgba(118, 75, 162, 0.6);
+		}
+
+		.btn-primary {
+			background-color: #764ba2;
+			border-color: #764ba2;
+			font-weight: 700;
+			padding: 12px;
+			border-radius: 0.75rem;
+			transition: background-color 0.3s ease;
+		}
+
+			.btn-primary:hover {
+				background-color: #5a3677;
+				border-color: #5a3677;
+			}
+
+		.form-text {
+			color: #666;
+			font-size: 0.9rem;
+			text-align: center;
+			margin-bottom: 1.5rem;
+		}
+
+		/* Mensagens de feedback */
+		#formMessage {
+			display: none;
+			padding: 12px;
+			border-radius: 0.5rem;
+			font-weight: 600;
+			text-align: center;
+			margin-top: 1rem;
+		}
+
+			#formMessage.success {
+				color: #276749;
+				background-color: #c6f6d5;
+				border: 1px solid #276749;
+			}
+
+			#formMessage.error {
+				color: #9b2c2c;
+				background-color: #feb2b2;
+				border: 1px solid #9b2c2c;
+			}
+
+		/* Ícones dentro dos inputs */
+		.input-group-text {
+			background-color: #764ba2;
+			color: #fff;
+			border-radius: 0.75rem 0 0 0.75rem;
+			border: none;
+			width: 45px;
+			justify-content: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="stars"></div>
+
+	<div class="card shadow">
+		<div class="card-header">
+			Contactar Administrador
+		</div>
+		<div class="card-body">
+			<p class="form-text">Se está com problemas de autenticação, envie sua mensagem para o administrador.</p>
+			<form asp-action="Mensagem" method="post" id="contactForm" novalidate>
+				@Html.AntiForgeryToken()
+
+				<div class="mb-3">
+					<label for="name" class="form-label">Nome Completo</label>
+					<input type="text" id="name" asp-for="Nome" class="form-control" placeholder="Seu nome completo" required />
+				</div>
+
+				<div class="row g-3 mb-3">
+					<div class="col-md-7">
+						<label for="email" class="form-label">Email</label>
+						<div class="input-group">
+							<span class="input-group-text">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+									<path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v.217l-8 4.8-8-4.8V4z" />
+									<path d="M0 6.383V12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6.383l-7.555 4.53a.5.5 0 0 1-.445 0L0 6.383z" />
+								</svg>
+							</span>
+							<input type="email" id="email" asp-for="Email" class="form-control" placeholder="Seu email" required />
+						</div>
+					</div>
+
+					<div class="col-md-5">
+						<label for="phone" class="form-label">Telefone</label>
+						<div class="input-group">
+							<span class="input-group-text">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone" viewBox="0 0 16 16">
+									<path d="M3.654 1.328a.678.678 0 0 1 .697-.097l2.481 1.243c.329.165.445.584.265.894L6.6 4.917a.678.678 0 0 1-.833.265l-1.472-.74a11.54 11.54 0 0 0 5.64 5.64l-.74-1.472a.678.678 0 0 1 .265-.833l1.449-1.197c.31-.18.73-.064.894.265l1.244 2.48a.678.678 0 0 1-.098.698l-2.01 2.958a1.745 1.745 0 0 1-1.927.67c-2.19-.7-4.18-2.69-4.88-4.88a1.745 1.745 0 0 1 .67-1.927L3.654 1.328z" />
+								</svg>
+							</span>
+							<input type="tel" id="phone" asp-for="Telefone" class="form-control" placeholder="Seu telefone" required />
+						</div>
+					</div>
+				</div>
+
+				<div class="mb-3">
+					<label for="message" class="form-label">Mensagem</label>
+					<textarea id="message" asp-for="Mensagem" class="form-control" rows="4" placeholder="Descreva o seu problema ou dúvida" required></textarea>
+				</div>
+
+				<button type="submit" class="btn btn-primary w-100">Enviar Mensagem</button>
+
+				<div id="formMessage"></div>
+			</form>
+		</div>
+	</div>
+
+
+	<!-- Bootstrap 5 JS Bundle (com Popper) -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+			   document.addEventListener("DOMContentLoaded", function() {
+			const starContainer = document.querySelector(".stars");
+
+			for (let i = 0; i < 50; i++) {
+				let star = document.createElement("span");
+				star.innerHTML = "★";
+				star.style.position = "absolute";
+				star.style.left = Math.random() * 100 + "vw"; /* Usa viewport para garantir que fique dentro da tela */
+				star.style.top = Math.random() * 100 + "vh";
+				star.style.fontSize = Math.random() * 2 + "rem";
+
+				starContainer.appendChild(star);
+			}
+		});
+	</script>
+@* 	<script>
+		const form = document.getElementById('contactForm');
+		const formMessage = document.getElementById('formMessage');
+
+		form.addEventListener('submit', async (e) => {
+		  e.preventDefault();
+
+		  // Resetar mensagem
+		  formMessage.style.display = 'none';
+		  formMessage.textContent = '';
+		  formMessage.className = '';
+
+		  const formData = new FormData(form);
+
+		  try {
+			const response = await fetch(form.action, {
+			  method: 'POST',
+			  body: formData,
+			  headers: {
+				'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+			  },
+			});
+
+			if (!response.ok) {
+			  throw new Error('Erro ao enviar a mensagem. Tente novamente mais tarde.');
+			}
+
+			const data = await response.json();
+
+			if (data.success) {
+			  formMessage.textContent = data.message || 'Mensagem enviada com sucesso!';
+			  formMessage.className = 'success d-block text-center';
+			  formMessage.style.display = 'block';
+			  form.reset();
+			} else {
+			  formMessage.textContent = data.message || 'Erro ao enviar a mensagem.';
+			  formMessage.className = 'error d-block text-center';
+			  formMessage.style.display = 'block';
+			}
+		  } catch (error) {
+			formMessage.textContent = error.message;
+			formMessage.className = 'error d-block text-center';
+			formMessage.style.display = 'block';
+		  }
+		});
+	</script> *@
+</body>
+</html>

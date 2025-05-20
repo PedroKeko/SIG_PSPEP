@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using System.Net.NetworkInformation;
+using System.Net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SIG_PSPEP.Context;
+using SIG_PSPEP.Entidades;
 using SIG_PSPEP.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace SIG_PSPEP.Controllers
 {
@@ -12,21 +16,23 @@ namespace SIG_PSPEP.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly AppDbContext _context;
+        private readonly IEmailSender _emailSender;
 
-        public ContaController(AppDbContext context, UserManager<IdentityUser> userManager,
-         SignInManager<IdentityUser> signInManager)
+        public ContaController(AppDbContext context, 
+            UserManager<IdentityUser> userManager,
+         SignInManager<IdentityUser> signInManager,
+         IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             _context = context;
+            _emailSender = emailSender;
         }
-
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -71,6 +77,17 @@ namespace SIG_PSPEP.Controllers
                 });
             }
 
+            // Registrar o log de acesso com sucesso
+            var log = new LogsAcesso
+            {
+                UserId = user.Id,
+                TipoAcesso = "Login",
+                Obs = "Login efetuado com sucesso",
+                DataRegisto = DateTime.Now
+            };
+            _context.LogsAcessos.Add(log);
+            await _context.SaveChangesAsync();
+
             // Verificar se o usuário tem a role "Administrador"
             if (await userManager.IsInRoleAsync(user, "Administrador"))
             {
@@ -81,7 +98,6 @@ namespace SIG_PSPEP.Controllers
                 });
             }
 
-            // Senão, pega a área do UsuarioAute
             var usuarioAute = await _context.UsuarioAutes
                 .Include(u => u.Area)
                 .FirstOrDefaultAsync(u => u.UserId == user.Id);
@@ -149,11 +165,12 @@ namespace SIG_PSPEP.Controllers
             ViewBag.Area = usuarioAute.Area;
             ViewBag.Efectivo = usuarioAute.Efectivo;
 
-            return View(model);
+            return PartialView("_PerfilUsuario", model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> AlterarSenha(PerfilUsuarioViewModel model)
         {
             if (!ModelState.IsValid)
@@ -182,7 +199,6 @@ namespace SIG_PSPEP.Controllers
             return Json(new { success = true, message = "Senha alterada com sucesso!" });
         }
 
-        // Método auxiliar para retornar a view de perfil com erros
         private async Task<IActionResult> RetornarPerfilComErros(PerfilUsuarioViewModel model)
         {
             // Obtém o usuário logado novamente para repopular os dados do perfil
@@ -207,14 +223,74 @@ namespace SIG_PSPEP.Controllers
             return View("PerfilUsuario", perfilViewModel);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Sair()
         {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                // Obter IP (considerando X-Forwarded-For se estiver atrás de proxy)
+                string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                if (HttpContext.Request.Headers.ContainsKey("X-Forwarded-For"))
+                {
+                    ipAddress = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+                }
+
+                // Obter nome da máquina
+                string hostName = "Desconhecido";
+                try
+                {
+                    if (!string.IsNullOrEmpty(ipAddress) && ipAddress != "::1" && ipAddress != "127.0.0.1")
+                    {
+                        var hostEntry = await Dns.GetHostEntryAsync(ipAddress);
+                        hostName = hostEntry.HostName;
+                    }
+                    else
+                    {
+                        hostName = Environment.MachineName; // Fallback para nome da máquina local
+                    }
+                }
+                catch
+                {
+                    // Deixa "Desconhecido" se falhar
+                }
+
+                // MAC Address (apenas acessível no servidor, não do cliente via browser)
+                string macAddress = "Indisponível";
+                try
+                {
+                    var interfaces = NetworkInterface.GetAllNetworkInterfaces()
+                        .Where(n => n.OperationalStatus == OperationalStatus.Up && n.NetworkInterfaceType != NetworkInterfaceType.Loopback);
+
+                    var first = interfaces.FirstOrDefault();
+                    if (first != null)
+                    {
+                        macAddress = string.Join(":", first.GetPhysicalAddress().GetAddressBytes().Select(b => b.ToString("X2")));
+                    }
+                }
+                catch
+                {
+                    // Mantém "Indisponível" se der erro
+                }
+
+                var log = new LogsAcesso
+                {
+                    UserId = user.Id,
+                    TipoAcesso = "Logout",
+                    Obs = $"Logout efetuado com sucesso | IP: {ipAddress} | Host: {hostName} | MAC: {macAddress}",
+                    DataRegisto = DateTime.Now
+                };
+
+                _context.LogsAcessos.Add(log);
+                await _context.SaveChangesAsync();
+            }
+
             await signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Conta", "");
+            return RedirectToAction("Login", "Conta");
         }
 
-       
         [HttpGet]
         public async Task<IActionResult> RedirecParaArea()
         {
@@ -251,11 +327,92 @@ namespace SIG_PSPEP.Controllers
             return RedirectToAction("Index", "Home", new { area = currentArea });
         }
 
-
         [Authorize]
         [HttpGet]
         [Route("/Conta/AcessoNegado")]
         public ActionResult AcessoNegado()
+        {
+            return View();
+        }
+
+
+        // GET: /Account/ForgotPassword
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        // POST: /Account/ForgotPassword
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
+            {
+                // Para segurança, não dizer que o email não existe
+                return RedirectToAction(nameof(ForgotPasswordConfirmation));
+            }
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetLink = Url.Action(nameof(ResetPassword), "Account", new { token, email = model.Email }, Request.Scheme);
+
+            var mensagem = $"Por favor redefina sua senha clicando <a href='{resetLink}'>aqui</a>.";
+
+            await _emailSender.SendEmailAsync(model.Email, "Redefinir senha", mensagem);
+
+            return RedirectToAction(nameof(ForgotPasswordConfirmation));
+        }
+
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        // GET: /Account/ResetPassword
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (token == null || email == null)
+                return BadRequest("Token ou email inválido.");
+
+            var model = new ResetPasswordViewModel { Token = token, Email = email };
+            return View(model);
+        }
+
+        // POST: /Account/ResetPassword
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                // Não revelar que o usuário não existe
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
+
+            var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        public IActionResult ResetPasswordConfirmation()
         {
             return View();
         }

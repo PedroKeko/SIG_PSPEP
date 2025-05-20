@@ -37,6 +37,7 @@ namespace SIG_PSPEP.Models
         public string? Genero { get; set; }
 
         public DateTime DataNasc { get; set; }
+        public int Idade { get; set; }
 
         [MaxLength(20)]
         public string? EstadoCivil { get; set; }

@@ -6,5 +6,7 @@ namespace SIG_PSPEP.Entidades
     {
         public string? Posto { get; set; }
         public string? Classe { get; set; }
+        public int grau { get; set; }
+        public int Diuturnidade { get; set; }
     }
 }

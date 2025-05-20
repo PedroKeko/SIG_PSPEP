@@ -34,7 +34,9 @@
         <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
            id="navbarDropdown" role="button"
            data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="@fotoPerfil" alt="Profile" class="rounded-circle" width="31">
+            <img src="@fotoPerfil" alt="Profile" class="rounded-circle"
+                 style="width: 50px; height: 50px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.6);;">
+
         </a>
         <ul class="dropdown-menu dropdown-menu-end user-dd animated" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item"><i class="mdi mdi-account me-1"></i> @(userNameFoto?.NomeCompleto ?? "Usuário")</a></li>
@@ -43,7 +45,7 @@
             <li><a class="dropdown-item" href="javascript:void(0)"><i class="mdi mdi-settings me-1"></i>@roles.FirstOrDefault()</a></li>
             <div class="dropdown-divider"></div>
             <li class="ps-4 p-10">
-                <a asp-action="PerfilUsuario" asp-controller="Conta" asp-area="" class="btn btn-sm btn-success btn-rounded text-white">Meu Perfil</a>
+                <a href="javascript:void(0)" onclick="openModal1('/Conta/PerfilUsuario')" class="btn btn-sm btn-success btn-rounded text-white">Meu Perfil</a>
                 <a asp-action="RedirecParaArea" asp-controller="Conta" asp-area="" class="btn btn-sm btn-success btn-rounded text-white">Minha Área</a>
             </li>
             <div class="dropdown-divider"></div>
@@ -66,3 +68,23 @@ else
         </a>
     </li>
 }
+
+
+<div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog  modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalContent1">
+            <!-- Modal Header -->
+        </div>
+    </div>
+</div>
+
+<script>
+        //Detalhes
+      function openModal1(url) {
+        $.get(url, function (data) {
+            $('#modalContent1').html(data);
+            let modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+            modal.show();
+        });
+    }
+</script>
