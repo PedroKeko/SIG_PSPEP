@@ -1,0 +1,310 @@
+﻿@model SIG_PSPEP.Entidades.RadioMovimento
+
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<link href="~/assets/libs/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
+<style>
+    th {
+        text-transform: uppercase;
+    }
+
+    .modal-content {
+        max-height: 85vh;
+        overflow-y: auto;
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        background: rgb(0, 20, 60);
+        background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
+        position: sticky;
+        color: white;
+        padding: 10px 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+            opacity: 1;
+        }
+
+    .modal-title {
+        font-size: 18px;
+    }
+</style>
+
+<form asp-action="Create" onsubmit="return submitForm(this)">
+    <!-- Cabeçalho -->
+    <div class="modal-header">
+        <h5 class="modal-title">Movimento de Saída de Rádio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+    </div>
+
+    <!-- Corpo -->
+    <div class="modal-body">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <!-- Seção: Modelo de Rádio + Observação -->
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <div class="form-group mb-1">
+                            <label for="RadioTipoId" class="form-label small-label fw-semibold">
+                                Modelo de Rádio
+                            </label>
+                            <select asp-for="OrgUnidPnaMinintId"
+                                    asp-items="ViewBag.OrgUnidPnaMinintId"
+                                    class="form-select select2"
+                                    required>
+                                <option value="">-- Selecione Órgão ou Unidade --</option>
+                            </select>
+                            <span asp-validation-for="OrgUnidPnaMinintId" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="form-group mb-1">
+                            <label class="form-label small-label fw-semibold">Observação</label>
+                            <input name="observacao"
+                                   class="form-control form-control-sm input-1 small-input"
+                                   placeholder="Observação se necessário">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Lista de Rádios -->
+                <div class="mb-1 mt-3">
+                    <label class="form-label fw-semibold">Rádios Funcionais em Posse</label>
+                    <div class="table-responsive">
+                        <table id="tabelaRadios" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                            <thead class="text-center">
+                                <tr>
+                                    <th class="text-center">
+                                        <input type="checkbox" id="selectAll" class="form-check-input" />
+                                    </th>
+                                    <th class="text-center">Código</th>
+                                    <th class="text-center">Marca</th>
+                                    <th class="text-center">Modelo</th>
+                                    <th class="text-center">Nº ID</th>
+                                    <th class="text-center">Nº Série</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var radio in (IEnumerable<dynamic>)ViewBag.Radios)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            <input type="checkbox"
+                                                   name="radiosSelecionadas"
+                                                   value="@radio.Id"
+                                                   id="radio_@radio.Id"
+                                                   class="form-check-input checkbox-radio" />
+                                        </td>
+                                        <td class="text-center">@radio.CodRadio</td>
+                                        <td class="text-center">@radio.Marca</td>
+                                        <td class="text-center">@radio.Modelo</td>
+                                        <td class="text-center">@radio.IdRadio</td>
+                                        <td class="text-center">@radio.NumSerie</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="modal-footer d-flex flex-wrap justify-content-center align-items-center gap-3 p-3">
+        <button type="submit" class="custom2-btn btn-2-success d-flex justify-content-center align-items-center px-4 py-2 text-center flex-grow-1 flex-sm-grow-0" style="min-width: 130px;"> Criar </button>
+        <button type="button" class="custom2-btn btn-2-dark-blue d-flex justify-content-center align-items-center px-4 py-2 text-center flex-grow-1 flex-sm-grow-0" data-bs-dismiss="modal" style="min-width: 130px;"> Cancelar </button>
+    </div>
+</form>
+
+<!-- Select2 CSS -->
+<script src="~/assets/libs/select2/dist/js/select2.full.min.js"></script>
+<script src="~/assets/libs/select2/dist/js/select2.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#tabelaRadios').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "",
+                "lengthMenu": "_MENU_ Registros por página",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "loadingRecords": "Carregando...",
+                "processing": "Processando...",
+                "zeroRecords": "Nenhum registro encontrado",
+                "emptyTable": "Nenhum dado disponível na tabela",
+                "paginate": {
+                    "first": "Primeiro",
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "last": "Último"
+                },
+                "aria": {
+                    "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                    "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                }
+            },
+
+            // ✅ Aqui definimos as opções do menu de paginação
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+            "pageLength": 5, // ✅ Define o padrão inicial como 5 registros por página
+
+            "initComplete": function () {
+                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Inicializa o select2 normal
+        $('.select2').select2({
+            dropdownParent: $('body'),
+            width: '100%',
+            language: {
+                noResults: function () {
+                    return "Nenhum resultado encontrado";
+                }
+            }
+        });
+
+        // Se for dentro de modal
+        $(document).on('shown.bs.modal', '.modal', function () {
+            $(this).find('.select2').each(function () {
+                const $select = $(this);
+                if ($select.hasClass('select2-hidden-accessible')) {
+                    $select.select2('destroy');
+                }
+                $select.select2({
+                    dropdownParent: $select.closest('.modal'),
+                    width: '100%',
+                    language: {
+                        noResults: function () {
+                            return "Nenhum resultado encontrado";
+                        }
+                    }
+                });
+            });
+        });
+    });
+</script>
+<!-- 🔹 SCRIPT DE SUBMISSÃO MELHORADO -->
+<script>
+    async function submitForm(form) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Fecha o modal antes de mostrar alerta
+                const modalElement = form.closest('.modal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) modalInstance.hide();
+
+                // Exibe alerta de sucesso com auto-close
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: result.message || 'Rádio registado com sucesso!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    didClose: () => location.reload() // Recarrega após fechar
+                });
+            } else {
+                const mensagem = result.message ||
+                    (result.errors ? result.errors.join('\n') : "Erro ao submeter o formulário.");
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: mensagem,
+                    confirmButtonText: 'OK'
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro inesperado!',
+                text: 'Ocorreu um problema ao enviar o formulário.',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        return false;
+    }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const selectAll = document.getElementById("selectAll");
+
+        // Se não existir o checkbox principal, sai
+        if (!selectAll) return;
+
+        // Função que atualiza o estado do "Selecionar Todos"
+        function atualizarSelectAll() {
+            const checkboxes = document.querySelectorAll(".checkbox-radio");
+            const total = checkboxes.length;
+            const marcados = Array.from(checkboxes).filter(chk => chk.checked).length;
+
+            if (marcados === 0) {
+                selectAll.checked = false;
+                selectAll.indeterminate = false;
+            } else if (marcados === total) {
+                selectAll.checked = true;
+                selectAll.indeterminate = false;
+            } else {
+                selectAll.checked = false;
+                selectAll.indeterminate = true; // estado intermediário
+            }
+        }
+
+        // Quando o "Selecionar Todos" é clicado
+        selectAll.addEventListener("change", function () {
+            const checkboxes = document.querySelectorAll(".checkbox-radio");
+            checkboxes.forEach(chk => {
+                chk.checked = selectAll.checked;
+            });
+        });
+
+        // Listener único para todas as checkboxes (delegação simples)
+        document.addEventListener("change", function (e) {
+            if (e.target.classList.contains("checkbox-radio")) {
+                atualizarSelectAll();
+            }
+        });
+
+        // Atualiza o estado inicial (caso venham pré-selecionadas)
+        atualizarSelectAll();
+    });
+</script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+    }
+}
+
+
+
+

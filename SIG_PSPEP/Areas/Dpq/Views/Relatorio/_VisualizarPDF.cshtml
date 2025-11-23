@@ -1,0 +1,79 @@
+﻿@model FastReport.Web.WebReport
+@using FastReport.Web
+
+<style>
+    .fr-toolbar {
+        margin-top: 10px;
+    }
+
+    /* Alinhamento vertical e responsividade do modal */
+    #modalPrint .modal-dialog {
+        max-width: 75vw;
+        width: 80%;
+        margin: 1.75rem auto;
+    }
+
+    #modalPrint .modal-content {
+        max-height: 95vh; /* aumentada de 100vh para 95vh para respeitar pequenas margens */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    #modalPrint .modal-body {
+        overflow-y: auto;
+        max-height: calc(95vh - 60px); /* aumentada de 90vh para 95vh, com ajuste pelo header */
+        padding: 1.5rem; /* padding um pouco maior se desejar mais respiro */
+    }
+
+
+    /* Ajustes extras para telas muito pequenas */
+    @@media (max-width: 576px) {
+        #modalPrint .modal-dialog {
+            max-width: 98vw;
+            margin: 10px;
+        }
+    }
+
+    .modal-header {
+        background: rgb(0, 20, 60);
+        background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
+        position: sticky;
+        color: white !important;
+        padding: 10px 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+            opacity: 1;
+        }
+
+    .modal-title {
+        font-size: 18px;
+        color: white !important;
+    }
+
+    .fundo {
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.95);
+        color: #000;
+        border: 2px solid #d4af37;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+</style>
+
+<div class="modal-header">
+    <h5 class="modal-title">Relatório de Efectivos</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+</div>
+<div class="modal-body fundo rounded-bottom-3">
+    <div class="fr-bg">
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; min-height: 100vh;">
+            @await Model.Render()
+        </div>
+    </div>
+
+</div>

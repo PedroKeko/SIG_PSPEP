@@ -1,4 +1,23 @@
-﻿
+﻿.modal-header {
+    background: rgb(0, 20, 60);
+    background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
+    position: sticky;
+    color: white !important;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+    .modal-header .btn-close {
+        filter: invert(1);
+        opacity: 1;
+    }
+
+.modal-title {
+    font-size: 18px;
+    color: white !important;
+}
 .icon-edit {
     fill: blue;
 }
@@ -534,4 +553,9 @@ a {
 
 #confirmDeleteModal .modal-dialog {
     max-width: 400px; /* Largura personalizada */
+}
+
+thead th {
+    text-align: center !important;
+    vertical-align: middle !important;
 }

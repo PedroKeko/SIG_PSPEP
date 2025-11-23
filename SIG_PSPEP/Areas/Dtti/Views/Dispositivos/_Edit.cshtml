@@ -1,0 +1,277 @@
+﻿@model SIG_PSPEP.Entidades.Dispositivo
+
+<style>
+    .modal-content {
+        max-height: 85vh;
+        overflow-y: auto;
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        background: rgb(0, 20, 60);
+        background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
+        position: sticky;
+        color: white;
+        padding: 10px 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+            opacity: 1;
+        }
+
+    .modal-title {
+        font-size: 18px;
+    }
+</style>
+
+<link rel="stylesheet" type="text/css" href="~/assets/libs/select2/dist/css/select2.min.css" />
+<form asp-action="Edit" onsubmit="return submitForm(this)">
+    <!-- Cabeçalho -->
+    <div class="modal-header">
+        <h5 class="modal-title">Editar Dispositivo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+    </div>
+
+    <!-- Corpo -->
+    <div class="modal-body">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <!-- Efectivo -->
+                        <div class="form-group mb-1">
+                            <label class="control-label small-label">Marca de Dispositivo</label>
+                            <select asp-for="DispositivoMarcaId"
+                                    class="form-select select2"
+                                    style="width: 100%;"
+                                    asp-items="ViewBag.DispositivoMarcaId"
+                                    id="DispositivoMarcaId"
+                                    required>
+                                <option value="">-- Selecione a Marca --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-1">
+                            <label class="control-label small-label">Modelo de Dispositivo</label>
+                            <select asp-for="DispositivoModeloId"
+                                    class="form-select select2"
+                                    style="width: 100%;"
+                                    asp-items="ViewBag.DispositivoModeloId"
+                                    id="DispositivoModeloId"
+                                    required>
+                                <option value="">-- Selecione o Modelo --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" asp-for="Id" />
+                <!-- Linha com 3 colunas -->
+                <div class="row g-3">
+                    <!-- Coluna Esquerda -->
+                    <div class="col-md-6">
+                        <div class="form-group mb-1">
+                            <label class="control-label small-label">Tipo de Dispositivo</label>
+                            <select asp-for="DispositivoTipoId"
+                                    class="form-select select2"
+                                    style="width: 100%;"
+                                    asp-items="ViewBag.DispositivoTipoId"
+                                    required>
+                                <option value="">-- Selecione o Tipo --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Coluna Central -->
+                    <div class="col-md-3">
+                        <div class="form-group mb-1">
+                            <label asp-for="MAC" class="control-label small-label"></label>
+                            <input asp-for="MAC" class="form-control form-control-sm input-1 small-input" placeholder="Ex: 00-00-00-00-00-00" />
+                            <span asp-validation-for="MAC" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Coluna Direita -->
+                    <div class="col-md-3">
+                        <div class="form-group mb-1">
+                            <label asp-for="RAM" class="control-label small-label"></label>
+                            <input asp-for="RAM" class="form-control form-control-sm input-1 small-input" placeholder="Ex: 4GB" />
+                            <span asp-validation-for="RAM" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div> <!-- /row -->
+                <!-- Linha com 3 colunas -->
+                <div class="row g-3">
+                    <!-- Coluna Esquerda -->
+                    <div class="col-md-6">
+                        <div class="form-group mb-1">
+                            <label asp-for="SO" class="control-label small-label"></label>
+                            <input asp-for="SO" class="form-control form-control-sm input-1 small-input" placeholder="Ex: Windows 10" />
+                            <span asp-validation-for="SO" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Coluna Central -->
+                    <div class="col-md-3">
+                        <div class="form-group mb-1">
+                            <label asp-for="ROM" class="control-label small-label"></label>
+                            <input asp-for="ROM" class="form-control form-control-sm input-1 small-input" placeholder="Ex: 500GB" />
+                            <span asp-validation-for="ROM" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Coluna Direita -->
+                    <div class="col-md-3">
+                        <div class="form-group mb-1">
+                            <label asp-for="PROCESSADOR" class="control-label small-label"></label>
+                            <input asp-for="PROCESSADOR" class="form-control form-control-sm input-1 small-input" placeholder="Ex: Intel Dual Core" />
+                            <span asp-validation-for="PROCESSADOR" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div> <!-- /row -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="modal-footer d-flex flex-wrap justify-content-center align-items-center gap-3 p-3">
+        <button type="submit"
+                class="custom2-btn btn-2-success d-flex justify-content-center align-items-center px-4 py-2 text-center flex-grow-1 flex-sm-grow-0"
+                style="min-width: 130px;">
+            Criar
+        </button>
+
+        <button type="button"
+                class="custom2-btn btn-2-dark-blue d-flex justify-content-center align-items-center px-4 py-2 text-center flex-grow-1 flex-sm-grow-0"
+                data-bs-dismiss="modal"
+                style="min-width: 130px;">
+            Cancelar
+        </button>
+    </div>
+</form>
+
+<!-- Select2 CSS -->
+<script src="~/assets/libs/select2/dist/js/select2.full.min.js"></script>
+<script src="~/assets/libs/select2/dist/js/select2.min.js"></script>
+
+<script>
+    // Espera o DOM estar pronto
+    $(document).ready(function () {
+        // Quando qualquer modal for exibido
+        $(document).on('shown.bs.modal', '.modal', function () {
+            // Inicializa os elementos Select2 dentro do modal aberto
+            $(this).find('.select2').each(function () {
+                // Destroi instância anterior, se houver
+                if ($(this).hasClass("select2-hidden-accessible")) {
+                    $(this).select2('destroy');
+                }
+
+                // Inicializa novamente com dropdown dentro do modal
+                $(this).select2({
+                    dropdownParent: $(this).closest('.modal'),
+                    width: '100%' // Garante largura total
+                });
+            });
+        });
+    });
+</script>
+
+<script>
+    async function submitForm(form) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // ✅ Sucesso: alerta SweetAlert2 bonito e central
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: result.message || 'Rádio registado com sucesso.',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'btn btn-success px-4'
+                    },
+                    buttonsStyling: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                }).then(() => {
+                    // Fecha o modal sem recarregar a página inteira
+                    const modal = bootstrap.Modal.getInstance(form.closest('.modal'));
+                    if (modal) modal.hide();
+
+                    // Atualiza apenas a tabela/lista se necessário (Ajax opcional)
+                    // Exemplo: $('#tabelaRadios').load('/Dtti/Radios #tabelaRadios');
+                    location.reload(); // 🔄 Ou comenta esta linha se quiser evitar reload
+                });
+            } else {
+                // ⚠️ Erro: mostra as mensagens no toast
+                const mensagem = result.message || (result.errors ? result.errors.join('\n') : "Erro ao submeter o formulário.");
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: mensagem,
+                    toast: true,
+                    position: 'top-end',
+                    timer: 4000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    customClass: { popup: 'colored-toast' }
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro inesperado!',
+                text: 'Ocorreu um problema ao enviar o formulário.',
+                toast: true,
+                position: 'top-end',
+                timer: 4000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+        }
+
+        return false; // Evita o comportamento padrão do form
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#DispositivoMarcaId').change(function () {
+            const marcaId = $(this).val();
+            const modeloSelect = $('#DispositivoModeloId');
+
+            modeloSelect.empty();
+            modeloSelect.append('<option value="">-- Carregando modelos... --</option>');
+
+            if (marcaId) {
+                $.get('/Dtti/Dispositivos/GetModelosPorMarca', { marcaId: marcaId })
+                    .done(function (data) {
+                        modeloSelect.empty();
+                        modeloSelect.append('<option value="">-- Selecione o Modelo --</option>');
+                        $.each(data, function (index, item) {
+                            modeloSelect.append(`<option value="${item.id}">${item.modelo}</option>`);
+                        });
+                    })
+                    .fail(function () {
+                        toastr.error("Erro ao carregar os modelos.");
+                    });
+            } else {
+                modeloSelect.empty();
+                modeloSelect.append('<option value="">-- Selecione a Marca primeiro --</option>');
+            }
+        });
+    });
+</script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

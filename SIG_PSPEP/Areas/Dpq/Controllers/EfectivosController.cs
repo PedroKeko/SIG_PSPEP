@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FastReport;
+using FastReport.Data;
+using FastReport.Export.PdfSimple;
+using FastReport.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -7,12 +11,14 @@ using SIG_PSPEP.Areas.Dpq.Models;
 using SIG_PSPEP.Context;
 using SIG_PSPEP.Entidades;
 using SIG_PSPEP.Services;
+using System.Data;
 
 namespace SIG_PSPEP.Areas.Dpq.Controllers
 {
     [Area("Dpq")]
     [Authorize(Policy = "Require_Admin_ChDepar_ChSec_Esp")]
     public class EfectivosController(
+        IWebHostEnvironment _hostingEnvironment,
         AppDbContext context,
         UserManager<IdentityUser> _userManager,
         ImageCompressionService _imageCompressionService,
@@ -21,10 +27,10 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
     ) : BaseController(context)
     {
 
-        // GET: Efectivos
+        // GET: Efectivos  
         public async Task<IActionResult> Index()
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -41,36 +47,57 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
             return View(await appDbContext.ToListAsync());
         }
 
-        // GET: Efectivos/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Detalhes(int id)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
-            {
-                return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
-            }
-            CarregarViewData();
+            // Busca o efectivo pelo ID e carrega todos os relacionamentos necessários
+            var efectivo = await _context.Efectivos
+                .Include(e => e.OrgaoUnidade)
+                .Include(e => e.FuncaoCargo)
+                .Include(e => e.Patente)
+                .Include(e => e.ProvinciaNascimento)
+                .Include(e => e.ProvinciaResidencia)
+                .Include(e => e.Municipio)
+                .Include(e => e.SituacaoEfectivo)
+                .FirstOrDefaultAsync(e => e.Id == id);
 
-            var efectivo = await _context.Efectivos.FindAsync(id);
             if (efectivo == null)
             {
                 return NotFound();
             }
+
+            var historicos = await _context.EfectivoHistoricos
+                .Where(h => h.EfectivoId == id)
+                .OrderByDescending(h => h.Data)
+                .ToListAsync();
 
             var foto = await _context.FotoEfectivos
                 .Where(f => f.EfectivoId == id)
                 .Select(f => f.Foto)
                 .FirstOrDefaultAsync();
 
-            var model = new EfectivoViewModel
+            int idade = DateTime.Today.Year - efectivo.DataNasc.Year;
+            if (efectivo.DataNasc.Date > DateTime.Today.AddYears(-idade))
+            {
+                idade--;
+            }
+
+            int tempoServico = DateTime.Today.Year - efectivo.DataIngresso.Year;
+            if (efectivo.DataIngresso.Date > DateTime.Today.AddYears(-tempoServico))
+            {
+                tempoServico--;
+            }
+
+            var model = new DetalhesEfetivoViewModel
             {
                 Id = efectivo.Id,
-                SituacaoEfectivoId = efectivo.SituacaoEfectivoId,
-                OrgaoUnidadeId = efectivo.OrgaoUnidadeId,
-                FuncaoCargoId = efectivo.FuncaoCargoId,
-                PatenteId = efectivo.PatenteId,
-                ProvinciaNascId = efectivo.ProvinciaNascId,
-                ProvinciaResId = efectivo.ProvinciaResId,
-                MunicipioId = efectivo.MunicipioId,
+                SituacaoEfectivo = efectivo.SituacaoEfectivo?.TipoSituacao ?? "Não definido",
+                OrgaoUnidade = efectivo.OrgaoUnidade?.NomeOrgaoUnidade ?? "Não definido",
+                SiglaUnidade = efectivo.OrgaoUnidade?.Sigla ?? "Não definido",
+                FuncaoCargo = efectivo.FuncaoCargo?.NomeFuncaoCargo ?? "Não definido",
+                Patente = efectivo.Patente?.Posto ?? "Não definido",
+                ProvinciaNasc = efectivo.ProvinciaNascimento?.Nome ?? "Não definido",
+                ProvinciaRes = efectivo.ProvinciaResidencia?.Nome ?? "Não definido",
+                Municipio = efectivo.Municipio?.Nome ?? "Não definido",
                 Num_Processo = efectivo.Num_Processo,
                 NIP = efectivo.NIP,
                 N_Agente = efectivo.N_Agente,
@@ -78,6 +105,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 Apelido = efectivo.Apelido,
                 Genero = efectivo.Genero,
                 DataNasc = efectivo.DataNasc,
+                Idade = idade,
                 EstadoCivil = efectivo.EstadoCivil,
                 GSanguineo = efectivo.GSanguineo,
                 NumBI = efectivo.NumBI,
@@ -100,16 +128,17 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 Telefone2 = efectivo.Telefone2,
                 Email = efectivo.Email,
                 DataIngresso = efectivo.DataIngresso,
+                TempoServico = tempoServico,
                 TipoVinculo = efectivo.TipoVinculo,
                 Carreira = efectivo.Carreira,
                 UnidadeOrigem = efectivo.UnidadeOrigem,
                 OutrasInfo = efectivo.OutrasInfo,
-                FotoByte = foto
+                FotoByte = foto,
+                Historicos = historicos
             };
 
             return PartialView("_Details", model);
         }
-
 
         public IActionResult Create()
         {
@@ -125,7 +154,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EfectivoViewModel model)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -209,12 +238,15 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
 
             try
             {
-                // 2. Base do email: primeiras 10 letras sem espaços
-                string baseNome = new string(model.NomeCompleto
-                    .Where(c => !char.IsWhiteSpace(c))
-                    .Take(10)
-                    .ToArray())
-                    .ToLower();
+                // 2. Base do email: PrimeiroNome + UltimoNome (sem espaços)
+                var nomes = model.NomeCompleto
+                    .Trim()
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                string primeiroNome = nomes.First().ToLower();
+                string ultimoNome = nomes.Last().ToLower();
+
+                string baseNome = primeiroNome + ultimoNome;
 
                 string dominio = "@pspep.pn.ao";
                 string emailFinal = baseNome + dominio;
@@ -382,7 +414,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 return Json(new
                 {
                     success = true,
-                    message = "Efectivo excluído com Sucesso!",
+                    message = "Efectivo Cadastrado com Sucesso!",
                     redirectUrl = Url.Action("Index")
                 });
             }
@@ -464,7 +496,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EfectivoViewModel model)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -598,7 +630,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [Authorize(Policy = "Require_Admin_ChDepar_ChSec")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -700,7 +732,6 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
             }
         }
 
-
         public JsonResult GetMunicipios(int provinciaId)
         {
             var municipios = _context.Municipios
@@ -715,13 +746,168 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         {
             var efectivo = new Efectivo();
             ViewData["FuncaoCargoId"] = new SelectList(_context.FuncaoCargos, "Id", "NomeFuncaoCargo", efectivo.FuncaoCargoId);
-            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades, "Id", "NomeOrgaoUnidade", efectivo.OrgaoUnidadeId);
+            ViewData["OrgaoUnidadeId"] = new SelectList(_context.OrgaoUnidades.Select(o => 
+            new{o.Id,NomeCompleto = o.NomeOrgaoUnidade + " (" + o.Sigla + ")"}), 
+            "Id","NomeCompleto", efectivo.OrgaoUnidadeId);
+            ViewData["OrgUnidPnaMinints"] = new SelectList(_context.OrgUnidPnaMinints.Select(o => 
+            new{o.Id, NomeOrgUnid = o.NomeOrgaoUnidade + " (" + o.Sigla + ")"}),
+            "NomeOrgUnid", "NomeOrgUnid", efectivo.OrgaoUnidadeId);
             ViewData["PatenteId"] = new SelectList(_context.Patentes, "Id", "Posto", efectivo.PatenteId);
             ViewData["SituacaoEfectivoId"] = new SelectList(_context.SituacaoEfectivos, "Id", "TipoSituacao", efectivo.SituacaoEfectivoId);
             ViewData["ProvinciaNascId"] = new SelectList(_context.Provincias, "Id", "Nome", efectivo.ProvinciaNascId);
             ViewData["ProvinciaResId"] = new SelectList(_context.Provincias, "Id", "Nome", efectivo.ProvinciaResId);
             ViewData["MunicipioId"] = new SelectList(_context.Municipios, "Id", "Nome", efectivo.MunicipioId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", efectivo.UserId);
+        }
+        //public async Task<IActionResult> GerarPasse(int id)
+        //{
+        //    // 1. Carrega o efectivo e a foto
+        //    var efectivo = await _context.Efectivos
+        //        .Include(e => e.OrgaoUnidade)
+        //        .Include(e => e.FuncaoCargo)
+        //        .Include(e => e.Patente)
+        //        .FirstOrDefaultAsync(e => e.Id == id);
+
+        //    if (efectivo == null)
+        //        return NotFound("Efetivo não encontrado.");
+
+        //    var foto = await _context.FotoEfectivos
+        //        .Where(f => f.EfectivoId == id)
+        //        .Select(f => f.Foto)
+        //        .FirstOrDefaultAsync();
+
+        //    // 2. Carrega o relatório .frx
+        //    var reportPath = Path.Combine(_hostingEnvironment.WebRootPath, "Reports", "PasseIdentificacao.frx");
+        //    if (!System.IO.File.Exists(reportPath))
+        //        return NotFound("Relatório não encontrado.");
+
+        //    using var report = new Report();
+        //    report.Load(reportPath);
+
+        //    // 3. Atribui valores aos parâmetros
+        //    report.SetParameterValue("SiglaUnidade", efectivo.OrgaoUnidade?.Sigla ?? "");
+        //    report.SetParameterValue("FuncaoCargo", efectivo.FuncaoCargo?.NomeFuncaoCargo ?? "");
+        //    report.SetParameterValue("Classe", efectivo.Patente?.Classe ?? "");
+        //    report.SetParameterValue("Patente", efectivo.Patente?.Posto ?? "");
+        //    report.SetParameterValue("Num_Processo", efectivo.Num_Processo ?? "");
+        //    report.SetParameterValue("NomeCompleto", efectivo.NomeCompleto);
+        //    report.SetParameterValue("FotoByte", foto ?? new byte[0]);
+
+        //    // 4. Prepara e exporta para PDF
+        //    report.Prepare();
+        //    using var ms = new MemoryStream();
+        //    var pdfExport = new PDFSimpleExport();
+        //    pdfExport.Export(report, ms);
+        //    ms.Position = 0;
+
+        //    // 5. Retorna o PDF
+        //    var fileName = $"Passe_{efectivo.NomeCompleto.Replace(" ", "_")}.pdf";
+        //    return File(ms.ToArray(), "application/pdf", fileName);
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> GerarPasse(int id)
+        {
+            try
+            {
+                var efectivo = await _context.Efectivos
+                    .Include(e => e.OrgaoUnidade)
+                    .Include(e => e.FuncaoCargo)
+                    .Include(e => e.Patente)
+                    .FirstOrDefaultAsync(e => e.Id == id);
+
+                if (efectivo == null)
+                    return NotFound("Efetivo não encontrado.");
+
+                var foto = await _context.FotoEfectivos
+                    .Where(f => f.EfectivoId == id)
+                    .Select(f => f.Foto)
+                    .FirstOrDefaultAsync();
+
+                var dataSet = new DataSet();
+                var table = new DataTable("Efectivo");
+
+                table.Columns.Add("NomeCompleto", typeof(string));
+                table.Columns.Add("Num_Processo", typeof(string));
+                table.Columns.Add("SiglaUnidade", typeof(string));
+                table.Columns.Add("FuncaoCargo", typeof(string));
+                table.Columns.Add("Classe", typeof(string));
+                table.Columns.Add("Patente", typeof(string));
+                table.Columns.Add("FotoByte", typeof(byte[]));
+
+                table.Rows.Add(
+                    efectivo.NomeCompleto ?? "",
+                    efectivo.Num_Processo ?? "",
+                    efectivo.OrgaoUnidade?.Sigla ?? "",
+                    efectivo.FuncaoCargo?.NomeFuncaoCargo ?? "",
+                    efectivo.Patente?.Classe ?? "",
+                    efectivo.Patente?.Posto ?? "",
+                    foto ?? new byte[0]
+                );
+
+                dataSet.Tables.Add(table);
+
+                var reportPath = Path.Combine(_hostingEnvironment.WebRootPath, "Reports", "Passe.frx");
+                if (!System.IO.File.Exists(reportPath))
+                    return NotFound($"Relatório não encontrado em: {reportPath}");
+
+                using var report = new Report();
+                report.Load(reportPath);
+                report.RegisterData(dataSet, "Data");
+                var dataSource = report.GetDataSource("Data.Efectivo") as TableDataSource;
+                if (dataSource != null)dataSource.Enabled = true;
+                report.Prepare();
+
+                using var ms = new MemoryStream();
+                var pdfExport = new PDFSimpleExport();
+                pdfExport.Export(report, ms);
+                ms.Position = 0;
+
+                var fileName = $"Passe_{efectivo.NomeCompleto.Replace(" ", "_")}.pdf";
+                return File(ms.ToArray(), "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao gerar o passe: {ex.Message}");
+            }
+        }
+
+
+        public async Task<IActionResult> CriarModeloPasseIdentificacao()
+        {
+            // 1. Caminho onde será salvo o .frx
+            var reportPath = Path.Combine(_hostingEnvironment.WebRootPath, "Reports", "Passe.frx");
+
+            // Cria o diretório se não existir
+            Directory.CreateDirectory(Path.GetDirectoryName(reportPath));
+
+            // 2. Criação do relatório
+            using Report report = new Report();
+
+            // 3. Criação do DataSet manualmente (modelo da entidade Efectivo com campos principais)
+            var dataSet = new DataSet();
+            var table = new DataTable("Efectivo");
+
+            table.Columns.Add("NomeCompleto", typeof(string));
+            table.Columns.Add("Num_Processo", typeof(string));
+            table.Columns.Add("SiglaUnidade", typeof(string));
+            table.Columns.Add("FuncaoCargo", typeof(string));
+            table.Columns.Add("Classe", typeof(string));
+            table.Columns.Add("Patente", typeof(string));
+            table.Columns.Add("FotoByte", typeof(byte[]));
+
+            dataSet.Tables.Add(table);
+            report.RegisterData(dataSet, "Data");
+
+            // 4. Habilita o DataSource para uso no designer
+            var registeredTable = report.GetDataSource("Efectivo") as TableDataSource;
+            if (registeredTable != null)
+                registeredTable.Enabled = true;
+
+            // 5. Salva o arquivo .frx
+            report.Save(reportPath);
+
+            return Ok("Relatório criado com sucesso em: " + reportPath);
         }
     }
 }

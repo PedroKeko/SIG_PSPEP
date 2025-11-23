@@ -1,0 +1,16 @@
+﻿@model FastReport.Web.WebReport
+
+@{
+    Layout = null; // Opcional: remove o layout principal, útil para impressão
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Visualização do Passe de Identificação</title>
+</head>
+<body>
+    @Model.Render() <!-- Renderiza o relatório interativo do FastReport -->
+</body>
+</html>

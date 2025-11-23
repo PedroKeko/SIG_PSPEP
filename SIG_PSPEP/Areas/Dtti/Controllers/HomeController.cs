@@ -25,11 +25,12 @@ public class HomeController : BaseController
 
     public IActionResult Index()
     {
-
-        if (!UsuarioTemAcessoArea("DTTI") && !UsuarioTemAcessoArea("ADMIN"))
-        {
-            return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
-        }
+        #region Segurança da Área
+        //if (!UsuarioTemAcessoAAlgumaArea("DTTI", "ADMIN"))
+        //{
+        //    return Forbid();
+        //}
+        #endregion
 
         return View();
     }

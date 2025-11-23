@@ -10,7 +10,7 @@ using SIG_PSPEP.Entidades;
 namespace SIG_PSPEP.Areas.Dpq.Controllers;
 
 [Area("Dpq")]
-//[Authorize(Roles = "Require_Admin_ChDepar_ChSec_Esp")]
+[Authorize(Policy = "Require_Admin_ChDepar_ChSec_Esp")]
 public class HomeController : BaseController
 {
     private readonly ILogger<EfectividadesController> _logger;
@@ -32,10 +32,10 @@ public class HomeController : BaseController
     public IActionResult Index()
     {
         #region Segurança da Área
-        if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
-        {
-            return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
-        }
+        //if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+        //{
+        //    return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+        //}
         #endregion
 
         return View();
@@ -44,12 +44,12 @@ public class HomeController : BaseController
     [HttpGet]
     public IActionResult DashboardData()
     {
-        #region Segurança da Área
-        if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
-        {
-            return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
-        }
-        #endregion
+        //#region Segurança da Área
+        //if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+        //{
+        //    return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
+        //}
+        //#endregion
         const int universoTotal = 110000;
         var hoje = DateTime.Today;
 

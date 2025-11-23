@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿   using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SIG_PSPEP.Entidade;
 using SIG_PSPEP.Entidades;
@@ -46,11 +46,14 @@ public class AppDbContext : IdentityDbContext
     public DbSet<Municipio> Municipios { get; set; }
     public DbSet<OrdemServico> OrdemServicos { get; set; }
     public DbSet<OrgaoUnidade> OrgaoUnidades { get; set; }
+    public DbSet<OrgUnidPnaMinint> OrgUnidPnaMinints { get; set; }
     public DbSet<Patente> Patentes { get; set; }
     public DbSet<Provincia> Provincias { get; set; }
     public DbSet<RadioTipo> RadioTipos { get; set; }
     public DbSet<Radio> Radios{ get; set; }
-    public DbSet<RadioOrgaoUnidade> RadioOrgaoUnidades { get; set; }
+    public DbSet<RadioGuia> RadioGuias { get; set; }
+    public DbSet<RadioMovimento> RadioMovimentos { get; set; }
+    public DbSet<RadioMovimentoHistorico> RadioMovimentoHistoricos { get; set; }
     public DbSet<SituacaoEfectivo> SituacaoEfectivos { get; set; }
     public DbSet<UsuarioAute> UsuarioAutes { get; set; }
     public DbSet<Utencilio> Utencilios { get; set; }

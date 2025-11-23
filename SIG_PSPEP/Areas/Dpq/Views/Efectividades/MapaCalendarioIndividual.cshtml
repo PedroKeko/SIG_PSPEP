@@ -1,0 +1,399 @@
+﻿@using SIG_PSPEP.Areas.Dpq.Models
+@model CalendarPageModel
+
+@{
+    ViewData["Title"] = "Lançamento de Efectividade Singular";
+    var today = DateTime.Today;
+    var currentMonth = today.Month;
+    var currentYear = today.Year;
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+
+<style>
+    .calendar-container {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .calendar-days-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        font-weight: bold;
+        background-color: #f8f9fa;
+        padding: 10px 0;
+    }
+
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-gap: 2px;
+    }
+
+    .calendar-day {
+        height: 80px;
+        border: 1px solid #dee2e6;
+        padding: 5px;
+        text-align: right;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        position: relative;
+    }
+
+        .calendar-day:hover {
+            background-color: #f1f1f1;
+        }
+
+    .today {
+        background-color: #e6f7ff;
+        font-size: 18px;
+        font-weight: bold;
+        animation: pulseHighlight 4s infinite;
+        transition: transform 0.9s ease;
+    }
+
+    @@keyframes pulseHighlight {
+        0% {
+            box-shadow: 0 0 0px rgba(0,123,255,0.5);
+            transform: scale(1);
+        }
+
+        50% {
+            box-shadow: 0 0 12px rgba(0,123,255,0.8);
+            transform: scale(1.05);
+        }
+
+        100% {
+            box-shadow: 0 0 0px rgba(0,123,255,0.5);
+            transform: scale(1);
+        }
+    }
+
+    .other-month {
+        color: #000f43;
+        background-color: #a5a4a4;
+    }
+
+    .resumo {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-top: 5px;
+        font-size: 11px;
+    }
+
+    .resumo-bar {
+        display: flex;
+        height: 14px;
+        border-radius: 6px;
+        overflow: hidden;
+        background-color: #e9ecef;
+    }
+
+        .resumo-bar span {
+            display: block;
+            text-align: center;
+            color: #fff;
+            font-size: 10px;
+            line-height: 14px;
+        }
+
+            .resumo-bar span.presente {
+                background-color: #28a745;
+            }
+
+            .resumo-bar span.ausente {
+                background-color: #dc3545;
+            }
+
+            .resumo-bar span.dispensado {
+                background-color: #ffc107;
+                color: #000;
+            }
+
+            .resumo-bar span.justificado {
+                background-color: #17a2b8;
+            }
+
+    .modal-custom {
+        max-width: 600px;
+        max-height: 80vh; /* Altura máxima: 80% da altura da tela */
+        width: 90%; /* largura responsiva */
+    }
+</style>
+
+
+<!-- =========================== -->
+<!--       CALENDÁRIO           -->
+<!-- =========================== -->
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+
+            <h2 class="text-center">Efetividade de @(new DateTime(currentYear, currentMonth, 1).ToString("MMMM yyyy"))</h2>
+
+            <div class="calendar-container mt-4">
+                <div class="calendar-header d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn custom1-btn btn-1" id="prevMonth">&laquo; Mês Anterior</button>
+                    <h4 id="currentMonthYear"></h4>
+                    <button class="btn custom1-btn btn-1" id="nextMonth">Próximo Mês &raquo;</button>
+                </div>
+
+                <div class="calendar-grid">
+                    <div class="calendar-days-header">
+                        <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                    </div>
+                    <div id="calendarDays" class="calendar-days"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- =========================== -->
+<!--          MODAL              -->
+<!-- =========================== -->
+<div class="modal fade" id="dateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-custom modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Lançamento Individual de Efectividade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="modalFormContainer"></div>
+
+            <div class="modal-footer">
+                <button id="btnSalvarIndividual" class="custom2-btn btn-2-success">Salvar</button>
+                <button class="custom2-btn btn-2-red" data-bs-dismiss="modal">Fechar</button>                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="dateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md" style="max-width: 500px;">
+        <!-- modal-md menor que lg -->
+        <div class="modal-content" style="max-height: 70vh; overflow-y: auto;">
+            <!-- altura menor e scroll interno -->
+            <div class="modal-header py-2">
+                <h5 class="modal-title">Lançamento Individual de Efetividade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-2">
+                <!-- Conteúdo do form -->
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="custom2-btn btn-2-success" id="btnSalvarIndividual">Salvar</button>
+                <button type="button" class="custom2-btn btn-2-red" data-bs-dismiss="modal">Fechar</button>               
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- =========================== -->
+<!--         SCRIPTS             -->
+<!-- =========================== -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+
+<script>
+    // ===============================================
+    // 0️⃣ Resumos do servidor
+    // ===============================================
+    const calendarResumos = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Resumos));
+
+
+    // ===============================================
+    // 1️⃣ Abrir modal de lançamento individual
+    // ===============================================
+       function openDateModal(dateString) {
+        $.get(`/Dpq/Efectividades/LancamentoIndividual?data=${dateString}`, function (html) {
+
+            $("#modalFormContainer").html(html);
+
+            const modal = new bootstrap.Modal(document.getElementById("dateModal"), {
+                backdrop: 'static',
+                keyboard: false
+            });
+
+            modal.show();
+
+            // =============================
+            // Dinamismo do textarea
+            // =============================
+            const selectTipo = $("#EfectividadeTipoId");  // select do tipo de efetividade
+            const textareaJustificacao = $("#Justificacao"); // textarea de justificação
+
+            function toggleTextarea() {
+                if (selectTipo.val() == "4") { // supondo 4 = Justificado
+                    textareaJustificacao.prop("readonly", false);
+                    textareaJustificacao.prop("disabled", false);
+                } else {
+                    textareaJustificacao.prop("readonly", true);
+                    textareaJustificacao.prop("disabled", true);
+                    textareaJustificacao.val(""); // limpa se não for justificado
+                }
+            }
+
+            // Chama ao carregar
+            toggleTextarea();
+
+            // Chama sempre que o select mudar
+            selectTipo.change(toggleTextarea);
+
+        }).fail(() => {
+            $("#modalFormContainer").html("<p class='text-danger'>Erro ao carregar formulário.</p>");
+        });
+    }
+
+
+    // ===============================================
+    // 2️⃣ Inicialização do calendário
+    // ===============================================
+       document.addEventListener('DOMContentLoaded', function(){
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        generateCalendar(currentMonth, currentYear);
+
+        document.getElementById('prevMonth').addEventListener('click', function(){
+            currentMonth--; if(currentMonth<0){ currentMonth=11; currentYear--; }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', function(){
+            currentMonth++; if(currentMonth>11){ currentMonth=0; currentYear++; }
+            generateCalendar(currentMonth, currentYear);
+        });
+    });
+
+    function generateCalendar(month, year){
+        const calendarDays = document.getElementById('calendarDays');
+        const currentMonthYear = document.getElementById('currentMonthYear');
+        const monthNames = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+        currentMonthYear.textContent = `${monthNames[month]} ${year}`;
+        calendarDays.innerHTML = '';
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month+1,0).getDate();
+        const prevMonthDays = new Date(year, month,0).getDate();
+
+        let date=1, nextMonthDate=1;
+
+        for(let i=0;i<6;i++){
+            for(let j=0;j<7;j++){
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+
+                if(i===0 && j<firstDay){
+                    const prevDate = prevMonthDays - (firstDay-j-1);
+                    const prevMonth = month===0 ? 11 : month-1;
+                    const prevYear = month===0 ? year-1 : year;
+                    dayCell.textContent = prevDate;
+                    dayCell.classList.add('other-month');
+                    dayCell.dataset.date = `${prevYear}-${String(prevMonth+1).padStart(2,'0')}-${String(prevDate).padStart(2,'0')}`;
+                } else if(date>daysInMonth){
+                    const nextMonth = month===11 ? 0 : month+1;
+                    const nextYear = month===11 ? year+1 : year;
+                    dayCell.textContent = nextMonthDate;
+                    dayCell.classList.add('other-month');
+                    dayCell.dataset.date = `${nextYear}-${String(nextMonth+1).padStart(2,'0')}-${String(nextMonthDate).padStart(2,'0')}`;
+                    nextMonthDate++;
+                } else {
+                    const today = new Date();
+                    dayCell.textContent = date;
+                    if(date===today.getDate() && month===today.getMonth() && year===today.getFullYear()){
+                        dayCell.classList.add('today');
+                    }
+
+                    const dayStr = `${year}-${String(month+1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+                    const resumo = calendarResumos.find(r => r.Data===dayStr);
+                         if(resumo){
+        const resumoHtml = `
+            <div class="resumo">
+                <div class="resumo-bar">
+                    <span class="presente" style="width:${resumo.PresentePct.toFixed(0)}%" title="${resumo.Presente} Presente">${resumo.PresentePct.toFixed(0)}%</span>
+                    <span class="ausente" style="width:${resumo.AusentePct.toFixed(0)}%" title="${resumo.Ausente} Ausente">${resumo.AusentePct.toFixed(0)}%</span>
+                    <span class="dispensado" style="width:${resumo.DispensadoPct.toFixed(0)}%" title="${resumo.Dispensado} Dispensado">${resumo.DispensadoPct.toFixed(0)}%</span>
+                    <span class="justificado" style="width:${resumo.JustificadoPct.toFixed(0)}%" title="${resumo.Justificado} Justificado">${resumo.JustificadoPct.toFixed(0)}%</span>
+                </div>
+            </div>
+        `;
+        dayCell.innerHTML += resumoHtml;
+    }
+
+                    dayCell.dataset.date = dayStr;
+                    date++;
+                }
+
+                dayCell.addEventListener('click', function(){
+                    openDateModal(this.dataset.date);
+                });
+
+                calendarDays.appendChild(dayCell);
+            }
+        }
+    }
+
+
+    // ===============================================
+    // 4️⃣ Botão SALVAR — Lançamento INDIVIDUAL
+    // ===============================================
+    $(document).on("click", "#btnSalvarIndividual", function () {
+
+        const modelo = {
+            EfectivoId: $("#EfectivoId").val(),
+            DataPresenca: $("#DataPresenca").val(),
+            EfectividadeTipoId: $("#EfectividadeTipoId").val(),
+            Justificacao: $("#Justificacao").val()
+        };
+
+        if (!modelo.EfectivoId || !modelo.DataPresenca || !modelo.EfectividadeTipoId) {
+            Swal.fire("Atenção", "Preencha os campos obrigatórios.", "warning");
+            return;
+        }
+
+        $.ajax({
+            url: "/Dpq/Efectividades/SalvarLancamentoIndividual",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(modelo),
+
+            success: function (response) {
+
+                if (response.sucesso) {
+
+                    Swal.fire({
+                        icon: "success",
+                        title: response.mensagem,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+
+                        $("#dateModal").modal("hide");
+
+                        // Atualiza apenas o calendário
+                        generateCalendar(currentMonth, currentYear);
+                    });
+
+                } else {
+                    Swal.fire("Erro", response.mensagem, "error");
+                }
+            },
+
+            error: () => Swal.fire("Erro", "Falha ao salvar.", "error")
+        });
+
+    });
+</script>

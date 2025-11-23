@@ -1,0 +1,232 @@
+﻿@model IEnumerable<SIG_PSPEP.Entidades.Radio>
+
+@{
+    ViewData["Title"] = "Historico de Rádios";
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<style>
+    th {
+        text-transform: uppercase;
+    }
+</style>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                    <thead class="text-center">
+                        <tr>
+                            <th class="w-5">
+                                #
+                            </th>
+                            <th>
+                                Código
+                            </th>
+                            <th>
+                                Marca
+                            </th>
+                            <th>
+                                Modelo
+                            </th>
+                            <th>
+                                ID de Rádio
+                            </th>
+                            <th>
+                                TEI
+                            </th>
+                            <th>
+                                Nº de Série
+                            </th>
+                            <th class="w-10">Historico</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        @{
+                            int index = 1;
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">@index</td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CodRadio)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.RadioTipo.Marca)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.RadioTipo.Modelo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IdRadio)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TEI)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NumSerie)
+                                    </td>
+                                    <td class="text-center w-15">
+                                        <button type="button"
+                                                class="btn btn-primary btn-sm"
+                                                style="padding: 2px 10px; font-size: 12px;"
+                                                onclick="openModal('@Url.Action("HistoricoRadios", "RadioMovimentos", new { area = "Dtti", id = item.Id })')">
+                                            Consultar
+                                        </button>
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal genérico -->
+<div class="modal fade" id="modalContainer" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Histórico da Rádio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Conteúdo dinâmico será carregado aqui -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+
+
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+           $(document).ready(function () {
+            $('#minhaTabela').DataTable({
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",
+                    "search": "", /* Buscar esta nullo */
+                    "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "Nenhum registro disponível",
+                    "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                    "loadingRecords": "Carregando...",
+                    "processing": "Processando...",
+                    "zeroRecords": "Nenhum registro encontrado",
+                    "emptyTable": "Nenhum dado disponível na tabela",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "previous": "Anterior",
+                        "next": "Próximo",
+                        "last": "Último"
+                    },
+                    "aria": {
+                        "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                        "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                    }
+                },
+                "initComplete": function () {
+                    $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+                }
+            });
+        });
+    </script>
+    <script>
+        function openModal(url) {
+            $.get(url, function (data) {
+                $('#modalContainer .modal-body').html(data);
+                $('#modalContainer').modal('show');
+            });
+        }
+    </script>
+    <script>
+        function openModal(url) {
+            $.get(url, function (data) {
+                // Coloca o HTML retornado no corpo do modal
+                $('#modalContainer .modal-body').html(data);
+                $('#modalContainer').modal('show');
+
+                // Espera um pouco para o DOM do modal ser renderizado
+                setTimeout(inicializarGrafico, 300);
+            });
+        }
+
+        function inicializarGrafico() {
+            const canvas = document.querySelector("#modalContainer #graficoMovimentos");
+            if (!canvas) return; // Se não há canvas, sai
+
+            // Remove gráfico anterior, se existir
+            if (window.meuGrafico) {
+                window.meuGrafico.destroy();
+            }
+
+            // Lê os dados diretamente da tabela dentro do modal
+            const linhas = document.querySelectorAll("#modalContainer table tbody tr");
+            const contagem = {};
+
+            linhas.forEach(tr => {
+                const movimento = tr.children[4]?.innerText.trim() || "Indefinido";
+                contagem[movimento] = (contagem[movimento] || 0) + 1;
+            });
+
+            const ctx = canvas.getContext("2d");
+            window.meuGrafico = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(contagem),
+                    datasets: [{
+                        label: 'Total de Movimentos',
+                        data: Object.values(contagem),
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(255, 99, 132, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+    <script>
+        $('#modalContainer').on('hidden.bs.modal', function () {
+            setTimeout(() => location.reload(), 300);
+        });
+    </script>
+}
+
+
+

@@ -1,101 +1,495 @@
-﻿@using SIG_PSPEP.Areas.Dpq.Models
-@model EfectivoViewModel
+﻿@model SIG_PSPEP.Areas.Dpq.Models.DetalhesEfetivoViewModel
+
+<style>
+    /* Alinhamento vertical e responsividade do modal */
+    #modalDetalhes .modal-dialog {
+        max-width: 75vw;
+        width: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh; /* Necessário para alinhamento vertical */
+        margin: 0 auto;
+    }
+
+    #modalDetalhes .modal-content {
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    /* Ajustes extras para telas muito pequenas */
+    @@media (max-width: 576px) {
+        #modalDetalhes .modal-dialog {
+            max-width: 98vw;
+            margin: 10px;
+        }
+    }
+
+    .modal-header {
+        background: rgb(0, 20, 60);
+        background: linear-gradient(0deg, rgba(0, 20, 60, 1) 0%, rgba(5, 15, 120, 1) 100%);
+        position: sticky;
+        color: white !important;
+        padding: 10px 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+            opacity: 1;
+        }
+
+    .modal-title {
+        font-size: 18px;
+        color: white !important;
+    }
+
+    .fundo {
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.95);
+        color: #000;
+        border: 2px solid #d4af37;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+        .fundo::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 95%; /* Tamanho fixo, mas responsivo visualmente */
+            height: 95%;
+            background: url('../assets/images/logo_pna.svg') no-repeat center center;
+            background-size: contain;
+            opacity: 0.15;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .fundo > * {
+            position: relative;
+            z-index: 2;
+        }
+
+    .fw-bold {
+        color: #0b1a3c;
+    }
+
+    h4, h5 {
+        color: #0b1a3c;
+    }
+
+    .img-thumbnail {
+        border: 3px solid #d4af37;
+    }
+
+    .section-title {
+        background-color: #0b1a3c;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+
+    .img-patente-canto {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 60px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 5px; /* Arredondar a imagem */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.50); /* Sombra mais intensa */
+        overflow: hidden; /* Garante que nada ultrapasse a borda arredondada */
+        z-index: 10;
+    }
+
+    /* Ordem dos elementos no layout mobile */
+    @@media (max-width: 767.98px) {
+        .mobile-order-1 {
+            order: 1;
+        }
+
+        .mobile-order-2 {
+            order: 2;
+        }
+
+        .mobile-order-3 {
+            order: 3;
+        }
+        /* Espaçamento adicional para mobile */
+        .mobile-mt-4 {
+            margin-top: 1.5rem;
+        }
+    }
+
+    /* Cores da Polícia Nacional de Angola */
+    :root {
+        --pna-azul-escuro: #0b1a3c;
+        --pna-dourado: #d4af37;
+        --pna-azul-claro: #1e3464;
+        --pna-cinza-claro: #f5f5f5;
+    }
+
+    /* Estilo para a tabela moderna */
+    .tabela-pna {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+        .tabela-pna thead {
+            background: linear-gradient(135deg, var(--pna-azul-escuro), var(--pna-azul-claro));
+            color: white;
+        }
+
+        .tabela-pna th {
+            padding: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            border: none;
+            position: relative;
+        }
+
+            .tabela-pna th:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 25%;
+                height: 50%;
+                width: 1px;
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+
+        .tabela-pna tbody tr {
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+
+            .tabela-pna tbody tr:nth-child(even) {
+                background-color: var(--pna-cinza-claro);
+            }
+
+            .tabela-pna tbody tr:hover {
+                background-color: rgba(212, 175, 55, 0.1);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            }
+
+        .tabela-pna td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+    /* Estilo para os badges de status */
+    .badge-pna {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 30px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .badge-aprovado {
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #1e7e34;
+        border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .badge-pendente {
+        background-color: rgba(255, 193, 7, 0.15);
+        color: #d39e00;
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .badge-rejeitado {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #bd2130;
+        border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+
+    .badge-desconhecido {
+        background-color: rgba(108, 117, 125, 0.15);
+        color: #5a6268;
+        border: 1px solid rgba(108, 117, 125, 0.3);
+    }
+
+    /* Animações sutis */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .tabela-pna tbody tr {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Responsividade para dispositivos móveis */
+    @@media (max-width: 767px) {
+        .tabela-pna thead {
+            display: none; /* Oculta o cabeçalho em dispositivos muito pequenos */
+        }
+
+        .tabela-pna, .tabela-pna tbody, .tabela-pna tr, .tabela-pna td {
+            display: block;
+            width: 100%;
+        }
+
+            .tabela-pna tr {
+                margin-bottom: 15px;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .tabela-pna td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+                .tabela-pna td:before {
+                    content: attr(data-label);
+                    position: absolute;
+                    left: 15px;
+                    width: 45%;
+                    padding-right: 10px;
+                    font-weight: 600;
+                    text-align: left;
+                    color: var(--pna-azul-escuro);
+                }
+
+                .tabela-pna td:first-child {
+                    background-color: var(--pna-azul-escuro);
+                    color: white;
+                    text-align: center;
+                    padding-left: 15px;
+                    font-weight: 600;
+                }
+
+                    .tabela-pna td:first-child:before {
+                        display: none;
+                    }
+    }
+
+    /* Design especial para o cabeçalho da seção */
+    .pna-section-header {
+        background: linear-gradient(135deg, var(--pna-azul-escuro), var(--pna-azul-claro));
+        color: white;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .pna-section-header::before {
+            content: "";
+            position: absolute;
+            right: -15px;
+            top: -15px;
+            width: 80px;
+            height: 80px;
+            background-color: rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+        }
+
+        .pna-section-header i {
+            color: var(--pna-dourado);
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+            z-index: 1;
+        }
+</style>
 
 <div class="modal-header bg-primary text-white">
-    <h5 class="modal-title fw-bold">Detalhes do Efectivo</h5>
+    <h5 class="modal-title">Detalhes do Efectivo</h5>
     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
 </div>
 
-<div class="modal-body px-4 py-3">
-    <!-- Foto e Nome -->
-    <div class="text-center mb-4">
-        <img id="profileImage"
-             src="@(Model.FotoByte != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(Model.FotoByte)}" : Url.Content("~/assets/images/users/user-police.png"))"
-             class="rounded-circle shadow border border-3 border-primary"
-             style="width: 130px; height: 130px; object-fit: cover;"
-             alt="Foto de Perfil" />
-        <h5 class="mt-3 text-uppercase fw-semibold">@Model.NomeCompleto</h5>
-        <p class="text-muted small">NIP: @Model.NIP | Nº Processo: @Model.Num_Processo</p>
+<div class="modal-body fundo rounded-bottom-3">
+    <div class="row">
+        <!-- Perfil do Efetivo - Aparece primeiro em qualquer layout -->
+        <div class="col-md-4 position-relative text-center mobile-order-1">
+            <!-- Imagem da patente no canto superior direito -->
+            <img src="@(
+                 Model.Patente == "Comissário-Geral" ? Url.Content("~/assets/images/patente/c_geral.jpg") :
+                 Model.Patente == "Comissário-Chefe" ? Url.Content("~/assets/images/patente/c_chefe.jpg") :
+                 Model.Patente == "Comissário" ? Url.Content("~/assets/images/patente/comissario.jpg") :
+                 Model.Patente == "Subcomissário" ? Url.Content("~/assets/images/patente/sub-comissario.jpg") :
+                 Model.Patente == "Superintendente-Chefe" ? Url.Content("~/assets/images/patente/s_chefe.jpg") :
+                 Model.Patente == "Superintendente" ? Url.Content("~/assets/images/patente/super.jpg") :
+                 Model.Patente == "Intendente" ? Url.Content("~/assets/images/patente/intendente.jpg") :
+                 Model.Patente == "Inspector-Chefe" ? Url.Content("~/assets/images/patente/i_chefe.jpg") :
+                 Model.Patente == "Inspector" ? Url.Content("~/assets/images/patente/inspector.jpg") :
+                 Model.Patente == "Subinspector" ? Url.Content("~/assets/images/patente/sub-inspector.jpg") :
+                 Model.Patente == "1º Subchefe" ? Url.Content("~/assets/images/patente/1-subchefe.jpg") :
+                 Model.Patente == "2º Subchefe" ? Url.Content("~/assets/images/patente/2-subchefe.jpg") :
+                 Model.Patente == "3º Subchefe" ? Url.Content("~/assets/images/patente/3-subchefe.jpg") :
+                 Model.Patente == "Agente de 1ª Classe" ? Url.Content("~/assets/images/patente/Agente-1.jpg") :
+                 Model.Patente == "Agente de 2ª Classe" ? Url.Content("~/assets/images/patente/Agente-2.jpg") :
+                 Model.Patente == "Agente de 3ª Classe" ? Url.Content("~/assets/images/patente/Agente-3.jpg") :
+                                                Url.Content("~/assets/images/patente/default.jpg") )"
+                 alt="Civil"
+                 class="img-patente-canto" />
+
+            <!-- Foto do efetivo -->
+            <img src="@(Model.FotoByte != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(Model.FotoByte)}" : Url.Content("~/assets/img/user.png"))"
+                 alt="Foto do Efetivo"
+                 class="img-thumbnail rounded-circle mb-3 mt-5"
+                 style="width: 200px; height: 200px; object-fit: cover;" />
+
+            <!-- Nome e função -->
+            <h4 class="fw-bold">@Model.NomeCompleto</h4>
+            <div class="text-center text-dark fw-bold" style="line-height: 1.4;">
+                <div class="mb-1">@Model.Patente</div>
+                <div>@Model.FuncaoCargo do <span class="text-primary">@Model.SiglaUnidade</span></div>
+            </div>
+        </div>
+
+        <!-- Informações do Efetivo - Aparece segundo -->
+        <div class="col-md-8 mobile-order-2">
+            <h5 class="section-title d-flex justify-content-between align-items-center">
+                Dados Pessoais
+                <i class="fas fa-user"></i>
+            </h5>
+            <div class="row mb-2">
+                <div class="col-sm-6"><strong>Apelido:</strong> @Model.Apelido</div>
+                <div class="col-sm-6"><strong>Género:</strong> @Model.Genero</div>
+                <div class="col-sm-6"><strong>Estado Civil:</strong> @Model.EstadoCivil</div>
+                <div class="col-sm-6"><strong>Data de Nascimento:</strong> @Model.DataNasc.ToString("dd/MM/yyyy")</div>
+                <div class="col-sm-6"><strong>Idade:</strong> @Model.Idade Anos</div>
+                <div class="col-sm-6"><strong>Nº do Bilhete:</strong> @Model.NumBI</div>
+                <div class="col-sm-6"><strong>BI Emitido:</strong> @Model.BIEmitido.ToString("dd/MM/yyyy") até @Model.BIValidade.ToString("dd/MM/yyyy")</div>
+                <div class="col-sm-6"><strong>Grupo Sanguíneo:</strong> @Model.GSanguineo</div>
+                <div class="col-sm-6"><strong>Nacionalidade:</strong> @Model.Nacionalidade</div>
+                <div class="col-sm-6"><strong>Naturalidade:</strong> @Model.ProvinciaNasc</div>
+            </div>
+
+            <h5 class="section-title d-flex justify-content-between align-items-center">
+                Dados Profissionais
+                <i class="fas fa-briefcase"></i>
+            </h5>
+            <div class="row mb-2">
+                <div class="col-sm-6"><strong>NIP:</strong> @Model.NIP</div>
+                <div class="col-sm-6"><strong>Nº de Agente:</strong> @Model.N_Agente</div>
+                <div class="col-sm-6"><strong>Órgão/Unidade:</strong> @Model.OrgaoUnidade</div>
+                <div class="col-sm-6"><strong>Patente:</strong> @Model.Patente</div>
+                <div class="col-sm-6"><strong>Função/Cargo:</strong> @Model.FuncaoCargo</div>
+                <div class="col-sm-6"><strong>Data de Ingresso:</strong> @Model.DataIngresso.ToString("dd/MM/yyyy")</div>
+                <div class="col-sm-6"><strong>Tipo de Vínculo:</strong> @Model.TipoVinculo</div>
+                <div class="col-sm-6"><strong>Carreira:</strong> @Model.Carreira</div>
+                <div class="col-sm-6"><strong>Unidade de Origem:</strong> @Model.UnidadeOrigem</div>
+                <div class="col-sm-6"><strong>Situação:</strong> @Model.SituacaoEfectivo</div>
+                <div class="col-sm-6"><strong>Ingresso:</strong> @Model.DataIngresso.ToString("dd/MM/yyyy")</div>
+                <div class="col-sm-6"><strong>Tempo de Serviço:</strong> @Model.TempoServico Anos</div>
+            </div>
+
+            <h5 class="section-title d-flex justify-content-between align-items-center">
+                Endereço e Contactos
+                <i class="fas fa-map-marker-alt"></i>
+            </h5>
+            <div class="row mb-2">
+                <div class="col-sm-6"><strong>Residente em:</strong> @Model.ProvinciaRes</div>
+                <div class="col-sm-6"><strong>Município:</strong> @Model.Municipio</div>
+                <div class="col-sm-6"><strong>Bairro:</strong> @Model.Destrito_BairroRes</div>
+                <div class="col-sm-6"><strong>Rua:</strong> @Model.Rua</div>
+                <div class="col-sm-6"><strong>Casa nº:</strong> @Model.CasaNum</div>
+                <div class="col-sm-6"><strong>Telefone 1:</strong> @Model.Telefone1</div>
+                <div class="col-sm-6"><strong>Telefone 2:</strong> @Model.Telefone2</div>
+                <div class="col-sm-6"><strong>Email:</strong> @Model.Email</div>
+            </div>
+
+            <h5 class="section-title d-flex justify-content-between align-items-center">
+                Formação Académica
+                <i class="fas fa-graduation-cap"></i>
+            </h5>
+            <div class="row mb-2">
+                <div class="col-sm-6"><strong>Habilitação Literária:</strong> @Model.Habilitacao</div>
+                <div class="col-sm-6"><strong>Curso:</strong> @Model.CursoHabilitado</div>
+                <div class="col-sm-6"><strong>Instituição:</strong> @Model.InstitAcademica</div>
+            </div>
+
+            <h5 class="section-title d-flex justify-content-between align-items-center">
+                Outras Informações
+                <i class="fas fa-info-circle"></i>
+            </h5>
+            <div class="mb-2">
+                <p>@Model.OutrasInfo</p>
+            </div>
+        </div>
+
+        <!-- Histórico do Efetivo - Aparece por último no layout mobile -->
+        <div class="col-12 mobile-order-3 mobile-mt-4">
+
+            <div class="table-responsive">
+                <table class="tabela-pna">
+                    <thead>
+                        <tr>
+                            <th>Descrição do histórico do Efectivo</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Historicos)
+                        {
+                            <tr>
+                                <td data-label="Descrição">@item.Descricao</td>
+                                <td data-label="Data" class="text-center">@item.Data.ToString("dd/MM/yyyy")</td>
+                                <td data-label="Status" class="text-center">
+                                    @if (item.Status == "Aprovado")
+                                    {
+                                        <span class="badge-pna badge-aprovado">Aprovado</span>
+                                    }
+                                    else if (item.Status == "Pendente")
+                                    {
+                                        <span class="badge-pna badge-pendente">Pendente</span>
+                                    }
+                                    else if (item.Status == "Rejeitado")
+                                    {
+                                        <span class="badge-pna badge-rejeitado">Rejeitado</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-pna badge-desconhecido">Desconhecido</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- Informações Pessoais -->
-    <section class="mb-4">
-        <h6 class="text-primary border-bottom pb-1 d-flex align-items-center">
-            <i class="bi bi-person me-2"></i> Informações Pessoais
-        </h6>
-        <div class="row">
-            <div class="col-md-6 mb-2"><strong>Apelido:</strong> @Model.Apelido</div>
-            <div class="col-md-6 mb-2"><strong>Género:</strong> @Model.Genero</div>
-            <div class="col-md-6 mb-2"><strong>Data de Nascimento:</strong> @Model.DataNasc.ToString("dd/MM/yyyy")</div>
-            <div class="col-md-6 mb-2"><strong>Estado Civil:</strong> @Model.EstadoCivil</div>
-            <div class="col-md-6 mb-2"><strong>Grupo Sanguíneo:</strong> @Model.GSanguineo</div>
-        </div>
-    </section>
 
-    <!-- Documentos -->
-    <section class="mb-4">
-        <h6 class="text-primary border-bottom pb-1 d-flex align-items-center">
-            <i class="bi bi-file-earmark-text me-2"></i> Documentos
-        </h6>
-        <div class="row">
-            <div class="col-md-6 mb-2"><strong>Nº BI:</strong> @Model.NumBI</div>
-            <div class="col-md-6 mb-2"><strong>BI Emitido em:</strong> @Model.BIEmitido</div>
-            <div class="col-md-6 mb-2"><strong>Validade do BI:</strong> @Model.BIValidade.ToString("dd/MM/yyyy")</div>
-            <div class="col-md-6 mb-2"><strong>Nº Carta Condução:</strong> @Model.NumCartaConducao</div>
-            <div class="col-md-6 mb-2"><strong>Carta Emitida em:</strong> @Model.CartaEmitido</div>
-            <div class="col-md-6 mb-2"><strong>Validade da Carta:</strong> @Model.CartaValidade.ToString("dd/MM/yyyy")</div>
-        </div>
-    </section>
-
-    <!-- Contacto -->
-    <section class="mb-4">
-        <h6 class="text-primary border-bottom pb-1 d-flex align-items-center">
-            <i class="bi bi-telephone me-2"></i> Contacto
-        </h6>
-        <div class="row">
-            <div class="col-md-6 mb-2"><strong>Telefone 1:</strong> @Model.Telefone1</div>
-            <div class="col-md-6 mb-2"><strong>Telefone 2:</strong> @Model.Telefone2</div>
-            <div class="col-md-6 mb-2"><strong>Email:</strong> @Model.Email</div>
-        </div>
-    </section>
-
-    <!-- Endereço -->
-    <section class="mb-4">
-        <h6 class="text-primary border-bottom pb-1 d-flex align-items-center">
-            <i class="bi bi-geo-alt me-2"></i> Endereço
-        </h6>
-        <div class="row">
-            <div class="col-md-6 mb-2"><strong>Província de Residência:</strong> @Model.ProvinciaResId</div>
-            <div class="col-md-6 mb-2"><strong>Município:</strong> @Model.MunicipioId</div>
-            <div class="col-md-6 mb-2"><strong>Bairro:</strong> @Model.Destrito_BairroRes</div>
-            <div class="col-md-6 mb-2"><strong>Rua:</strong> @Model.Rua</div>
-            <div class="col-md-6 mb-2"><strong>Número da Casa:</strong> @Model.CasaNum</div>
-        </div>
-    </section>
-
-    <!-- Formação Acadêmica -->
-    <section class="mb-4">
-        <h6 class="text-primary border-bottom pb-1 d-flex align-items-center">
-            <i class="bi bi-mortarboard me-2"></i> Formação Acadêmica
-        </h6>
-        <div class="row">
-            <div class="col-md-6 mb-2"><strong>Habilitação:</strong> @Model.Habilitacao</div>
-            <div class="col-md-6 mb-2"><strong>Curso:</strong> @Model.CursoHabilitado</div>
-            <div class="col-md-6 mb-2"><strong>Instituição:</strong> @Model.InstitAcademica</div>
-        </div>
-    </section>
-
-    <!-- Outras Informações -->
-    <section class="mb-4">
-        <h6 class="text-primary border-bottom pb-1 d-flex align-items-center">
-            <i class="bi bi-info-circle me-2"></i> Outras Informações
-        </h6>
-        <div class="row">
-            <div class="col-md-12 mb-2"><strong>Outras Informações:</strong> @Model.OutrasInfo</div>
-        </div>
-    </section>
-
-    <!-- Rodapé -->
-    <div class="modal-footer bg-light">
-    </div>
 </div>
+

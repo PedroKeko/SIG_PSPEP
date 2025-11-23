@@ -3,6 +3,11 @@
         background: linear-gradient(to bottom left, black, #021324);
     }
 
+    #badgeTotalMensagens {
+        font-size: 10px;
+        padding: 4px 4px;
+    }
+
 </style>
 
 <header class="topbar" data-navbarbg="skin5">
@@ -76,99 +81,65 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark"
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark position-relative"
                        href="#"
                        id="2"
                        role="button"
                        data-bs-toggle="dropdown"
                        aria-expanded="false">
                         <i class="font-24 mdi mdi-comment-processing"></i>
+
+                        <span id="badgeTotalMensagens"
+                              class="badge rounded-pill bg-danger"
+                              style="position: absolute; top: 12px; right: 7px; font-size: 10px; padding: 1px 5px;">
+                            0
+                        </span>
                     </a>
-                    <ul class="
-                    dropdown-menu dropdown-menu-end
-                    mailbox
-                    animated
-                    bounceInDown
-                  "
-                        aria-labelledby="2">
-                        <ul class="list-style-none">
-                            <li>
-                                <div class="">
-                                    <!-- Message -->
-                                    <a href="javascript:void(0)" class="link border-top">
-                                        <div class="d-flex no-block align-items-center p-10">
-                                            <span class="
-                                btn btn-success btn-circle
-                                d-flex
-                                align-items-center
-                                justify-content-center
-                              ">
-                                                <i class="mdi mdi-calendar text-white fs-4"></i>
-                                            </span>
-                                            <div class="ms-2">
-                                                <h5 class="mb-0">Event today</h5>
-                                                <span class="mail-desc">Just a reminder that event</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <!-- Message -->
-                                    <a href="javascript:void(0)" class="link border-top">
-                                        <div class="d-flex no-block align-items-center p-10">
-                                            <span class="
-                                btn btn-info btn-circle
-                                d-flex
-                                align-items-center
-                                justify-content-center
-                              ">
-                                                <i class="mdi mdi-settings fs-4"></i>
-                                            </span>
-                                            <div class="ms-2">
-                                                <h5 class="mb-0">Settings</h5>
-                                                <span class="mail-desc">You can customize this template</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <!-- Message -->
-                                    <a href="javascript:void(0)" class="link border-top">
-                                        <div class="d-flex no-block align-items-center p-10">
-                                            <span class="
-                                btn btn-primary btn-circle
-                                d-flex
-                                align-items-center
-                                justify-content-center
-                              ">
-                                                <i class="mdi mdi-account fs-4"></i>
-                                            </span>
-                                            <div class="ms-2">
-                                                <h5 class="mb-0">Pavan kumar</h5>
-                                                <span class="mail-desc">Just see the my admin!</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <!-- Message -->
-                                    <a href="javascript:void(0)" class="link border-top">
-                                        <div class="d-flex no-block align-items-center p-10">
-                                            <span class="
-                                btn btn-danger btn-circle
-                                d-flex
-                                align-items-center
-                                justify-content-center
-                              ">
-                                                <i class="mdi mdi-link fs-4"></i>
-                                            </span>
-                                            <div class="ms-2">
-                                                <h5 class="mb-0">Luanch Admin</h5>
-                                                <span class="mail-desc">Just see the my new admin!</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
+                    <ul class="dropdown-menu dropdown-menu-end mailbox animated bounceInDown" aria-labelledby="2">
+                        <li>
+                            <div class="drop-title">
+                                Mensagens
+                            </div>
+                        </li>
+                        <li>
+                            <ul class="list-style-none" id="notificacoesMensagens">
+                                <!-- mensagens via AJAX -->
+                            </ul>
+                        </li>
                     </ul>
                 </li>
+
                 <partial name="_LoginPartial" />
             </ul>
         </div>
     </nav>
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Carregar notificações via PartialView
+        fetch('/Reportes/UltimasMensagens')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('notificacoesMensagens').innerHTML = html;
+            });
+
+        // Obter total de mensagens e mostrar badge
+        fetch('/Reportes/TotalMensagens')
+            .then(res => res.json())
+            .then(total => {
+                const badge = document.getElementById('badgeTotalMensagens');
+
+                if (total > 0) {
+                    badge.textContent = total;
+                    badge.style.display = 'inline';
+                } else {
+                    // Remover o badge do DOM
+                    badge.remove();
+                }
+            });
+    });
+</script>
+
+
+

@@ -99,7 +99,7 @@
                         <div class="col-12 col-md-8">
                             <!-- Nome Completo -->
                             <div class="form-group">
-                                <label asp-for="NomeCompleto" class="control-label small-label"></label>
+                                <label asp-for="NomeCompleto" class="control-label small-label">Nome Completo</label>
                                 <input asp-for="NomeCompleto" class="form-control form-control-sm input-1 small-input" placeholder="Nome Completo" required
                                        oninvalid="this.setCustomValidity('Por favor, preencha o nome do Efectivo!')" oninput="setCustomValidity('')" />
                             </div>
@@ -117,7 +117,7 @@
                         <div class="col-6 col-md-4">
                             <!-- Gênero -->
                             <div class="form-group">
-                                <label asp-for="Genero" class="control-label small-label"></label>
+                                <label asp-for="Genero" class="control-label small-label">Gênero</label>
                                 <select asp-for="Genero" class="form-select form-control-sm input-1 small-input">
                                     <option value="Masculino">Masculino</option>
                                     <option value="Feminino">Feminino</option>
@@ -128,7 +128,7 @@
                         <div class="col-6 col-md-4">
                             <!-- Estado Cívil -->
                             <div class="form-group">
-                                <label asp-for="EstadoCivil" class="control-label small-label"></label>
+                                <label asp-for="EstadoCivil" class="control-label small-label">Estado Cívil</label>
                                 <select asp-for="EstadoCivil" class="form-select form-control-sm input-1 small-input">
                                     <option value="Solteiro">Solteiro</option>
                                     <option value="Casado">Casado</option>
@@ -158,7 +158,7 @@
                         <div class="col-6 col-md-4">
                             <!-- Data de Nascimento -->
                             <div class="form-group">
-                                <label asp-for="DataNasc" class="control-label small-label"></label>
+                                <label asp-for="DataNasc" class="control-label small-label">Data de Nascimento</label>
                                 <input asp-for="DataNasc" class="form-control form-control-sm input-1 small-input" type="date" />
                                 <span asp-validation-for="DataNasc" class="text-danger"></span>
                             </div>
@@ -173,7 +173,7 @@
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="form-group">
-                                <label asp-for="ProvinciaNascId" class="control-label small-label"></label>
+                                <label asp-for="ProvinciaNascId" class="control-label small-label">Naturalidade</label>
                                 <select asp-for="ProvinciaNascId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.ProvinciaNascId" style="width: 100%;"></select>
                             </div>
                         </div>
@@ -188,7 +188,7 @@
 
                 <div class="col-6 col-md-3">
                     <div class="form-group">
-                        <label asp-for="Num_Processo" class="control-label small-label"></label>
+                        <label asp-for="Num_Processo" class="control-label small-label">Nº de Processo</label>
                         <input asp-for="Num_Processo" class="form-control form-control-sm input-1 small-input" placeholder="Número do Processo" />
                     </div>
                 </div>
@@ -200,13 +200,13 @@
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="form-group">
-                        <label asp-for="N_Agente" class="control-label small-label"></label>
+                        <label asp-for="N_Agente" class="control-label small-label">Nº de Agente</label>
                         <input asp-for="N_Agente" class="form-control form-control-sm input-1 small-input" placeholder="Número de Agente" required/>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="form-group">
-                        <label asp-for="PatenteId" class="control-label small-label"></label>
+                        <label asp-for="PatenteId" class="control-label small-label">Patente</label>
                         <select asp-for="PatenteId" class="form-select form-control-sm input-1 small-input select2" asp-items="ViewBag.PatenteId" style="width: 100%;"></select>
                     </div>
                 </div>
@@ -214,25 +214,25 @@
             <div class="row">
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="OrgaoUnidadeId" class="control-label small-label"></label>
+                        <label asp-for="OrgaoUnidadeId" class="control-label small-label">Orgão ou Unidade</label>
                         <select asp-for="OrgaoUnidadeId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.OrgaoUnidadeId" style="width: 100%;"></select>
                     </div>
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="FuncaoCargoId" class="control-label small-label"></label>
+                        <label asp-for="FuncaoCargoId" class="control-label small-label">Funcão / Cargo</label>
                         <select asp-for="FuncaoCargoId" class="select2 form-select form-control-sm input-1 small-input" asp-items="ViewBag.FuncaoCargoId" style="width: 100%;"></select>
                     </div>
                 </div>
                 <div class="col-6 col-md-2">
                     <div class="form-group">
-                        <label asp-for="SituacaoEfectivoId" class="control-label small-label"></label>
+                        <label asp-for="SituacaoEfectivoId" class="control-label small-label">Situacão</label>
                         <select asp-for="SituacaoEfectivoId" class="form-select form-control-sm input-1 small-input" asp-items="ViewBag.SituacaoEfectivoId"></select>
                     </div>
                 </div>
                 <div class="col-6 col-md-2">
                     <div class="form-group">
-                        <label asp-for="DataIngresso" class="control-label small-label"></label>
+                        <label asp-for="DataIngresso" class="control-label small-label">Ingresso</label>
                         <input type="date" asp-for="DataIngresso" class="form-control form-control-sm input-1 small-input">
                     </div>
                 </div>
@@ -240,7 +240,7 @@
             <div class="row">
                 <div class="col-6 col-md-3">
                     <div class="form-group">
-                        <label asp-for="TipoVinculo" class="control-label small-label"></label>
+                        <label asp-for="TipoVinculo" class="control-label small-label">Tipo de Vinculo</label>
                         <select asp-for="TipoVinculo" class="form-select form-control-sm input-1 small-input">
                             <option value="Efectivo">Efectivo</option>
                             <option value="Não Efectivo">Não Efectivo</option>
@@ -258,10 +258,70 @@
                 </div>
                 <div class="col-6 col-md-6">
                     <div class="form-group">
-                        <label asp-for="UnidadeOrigem" class="control-label small-label"></label>
-                        <input type="text" asp-for="UnidadeOrigem" class="form-control form-control-sm input-1 small-input" required>
+                        <label asp-for="UnidadeOrigem" class="control-label small-label">Situação</label>
+
+                        <div class="select-wrapper-colado">
+                            <select asp-for="UnidadeOrigem"
+                                    id="UnidadeOrigem"
+                                    class="select2"
+                                    asp-items="ViewBag.OrgUnidPnaMinints">
+                            </select>
+
+                            <button type="button" onclick="openModal2('/Dtti/OrgUnidPnaMinint/Create')" class="btn-colado">+</button>
+                        </div>
+
                     </div>
                 </div>
+                <style>
+                    /* Contêiner flex fixo */
+                    .select-wrapper-colado {
+                        display: flex;
+                        width: 100%;
+                        max-width: 100%;
+                        align-items: center;
+                        overflow: hidden; /* evita estouro */
+                    }
+
+                    /* --- SELECT NORMAL (caso Select2 não carregue) --- */
+                    select.select2 {
+                        flex: 1;
+                        min-width: 0; /* ESSENCIAL!!! evita quebrar */
+                        border-radius: 4px 0 0 4px;
+                    }
+
+                    /* --- AJUSTES DO SELECT2 --- */
+                    .select-wrapper-colado .select2-container {
+                        flex: 1 !important; /* ocupa só o necessário */
+                        min-width: 0 !important; /* impede ultrapassar o wrapper */
+                    }
+
+                    .select-wrapper-colado .select2-selection {
+                        height: 32px !important;
+                        border-radius: 4px 0 0 4px !important;
+                        border-right: none !important;
+                    }
+
+                    .select2-selection__rendered {
+                        line-height: 32px !important;
+                    }
+
+                    .select2-selection__arrow {
+                        height: 32px !important;
+                    }
+
+                    /* --- BOTÃO COLADO --- */
+                    .btn-colado {
+                        padding: 3px 12px;
+                        background: #f2f2f2;
+                        border: 1px solid #ccc;
+                        border-left: none;
+                        border-radius: 0 4px 4px 0;
+                        cursor: pointer;
+                        font-size: 16px;
+                    }
+
+                </style>
+
             </div>
         </div>
 
@@ -270,7 +330,7 @@
             <div class="row">
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="Habilitacao" class="control-label small-label"></label>
+                        <label asp-for="Habilitacao" class="control-label small-label">Habilitação Literária</label>
                         <select asp-for="Habilitacao" class="form-select form-control-sm input-1 small-input">
                             <option value="Ensino Secundário">Ensino Secundário</option>
                             <option value="Médio Técnico">Médio Técnico</option>
@@ -283,14 +343,14 @@
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="CursoHabilitado" class="control-label small-label"></label>
+                        <label asp-for="CursoHabilitado" class="control-label small-label">Curso Habilitado</label>
                         <input type="text" asp-for="CursoHabilitado" class="form-control form-control-sm input-1 small-input" placeholder="Curso Habilitado" />
                         <span asp-validation-for="CursoHabilitado" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="InstitAcademica" class="control-label small-label"></label>
+                        <label asp-for="InstitAcademica" class="control-label small-label">Instituição Acadêmica</label>
                         <input type="text" asp-for="InstitAcademica" class="form-control form-control-sm input-1 small-input" placeholder="Instituição Acadêmica" />
                         <span asp-validation-for="InstitAcademica" class="text-danger"></span>
                     </div>
@@ -314,7 +374,7 @@
                 <div class="col-6 col-md-4">
                     <!-- Número de Documento -->
                     <div class="form-group">
-                        <label asp-for="NumBI" class="control-label small-label"></label>
+                        <label asp-for="NumBI" class="control-label small-label">Nº do Bilhete</label>
                         <input asp-for="NumBI" class="form-control form-control-sm input-1 small-input" placeholder="Bilhete de Identidade" required />
                         <span asp-validation-for="NumBI" class="text-danger"></span>
                     </div>
@@ -339,46 +399,46 @@
             <div class="row">
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="NumCartaConducao" class="control-label small-label"></label>
+                        <label asp-for="NumCartaConducao" class="control-label small-label">Nº da Carta de Conducao</label>
                         <input asp-for="NumCartaConducao" class="form-control form-control-sm input-1 small-input" placeholder="Número da Carta de Condução" />
                         <span asp-validation-for="NumCartaConducao" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="CartaValidade" class="control-label small-label"></label>
-                        <input type="date" asp-for="CartaValidade" class="form-control form-control-sm input-1 small-input" />
-                        <span asp-validation-for="CartaValidade" class="text-danger"></span>
+                        <label asp-for="CartaEmitido" class="control-label small-label">Data de Emissão</label>
+                        <input type="date" asp-for="CartaEmitido" class="form-control form-control-sm input-1 small-input" />
+                        <span asp-validation-for="CartaEmitido" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="CartaEmitido" class="control-label small-label"></label>
-                        <input type="date" asp-for="CartaEmitido" class="form-control form-control-sm input-1 small-input" />
-                        <span asp-validation-for="CartaEmitido" class="text-danger"></span>
+                        <label asp-for="CartaValidade" class="control-label small-label">Data de Validade</label>
+                        <input type="date" asp-for="CartaValidade" class="form-control form-control-sm input-1 small-input" />
+                        <span asp-validation-for="CartaValidade" class="text-danger"></span>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="NumPassaporte" class="control-label small-label"></label>
+                        <label asp-for="NumPassaporte" class="control-label small-label">Nº do Passaporte</label>
                         <input asp-for="NumPassaporte" class="form-control form-control-sm input-1 small-input" placeholder="Número do Passaporte" />
                         <span asp-validation-for="NumPassaporte" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="PassapValidade" class="control-label small-label"></label>
-                        <input type="date" asp-for="PassapValidade" class="form-control form-control-sm input-1 small-input" />
-                        <span asp-validation-for="PassapValidade" class="text-danger"></span>
+                        <label asp-for="PassapEmitido" class="control-label small-label">Data de Emissão</label>
+                        <input type="date" asp-for="PassapEmitido" class="form-control form-control-sm input-1 small-input" />
+                        <span asp-validation-for="PassapEmitido" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="PassapEmitido" class="control-label small-label"></label>
-                        <input type="date" asp-for="PassapEmitido" class="form-control form-control-sm input-1 small-input" />
-                        <span asp-validation-for="PassapEmitido" class="text-danger"></span>
+                        <label asp-for="PassapValidade" class="control-label small-label">Data de Validade</label>
+                        <input type="date" asp-for="PassapValidade" class="form-control form-control-sm input-1 small-input" />
+                        <span asp-validation-for="PassapValidade" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -390,7 +450,7 @@
                 <div class="col-6 col-md-4">
                     <div class="form-group">
                         <div class="form-group">
-                            <label asp-for="ProvinciaResId" class="control-label small-label"></label>
+                            <label asp-for="ProvinciaResId" class="control-label small-label">Província</label>
                             <select asp-for="ProvinciaResId" class="select2 form-select form-control-sm input-1 small-input" id="ProvinciaResidenciaId" asp-items="ViewBag.ProvinciaResId" style="width: 100%;" required>
                                 <option value="">-- Selecione Província --</option>
                             </select>
@@ -400,7 +460,7 @@
                 <div class="col-6 col-md-4">
                     <div class="form-group">
                         <div class="form-group">
-                            <label asp-for="MunicipioId" class="control-label small-label"></label>
+                            <label asp-for="MunicipioId" class="control-label small-label">Município</label>
                             <select asp-for="MunicipioId" class="select2 form-select form-control-sm input-1 small-input" id="MunicipioResidenciaId" asp-items="ViewBag.MunicipioId" style="width: 100%;" required>
                                 <option value="">-- Selecione Município --</option>
                             </select>
@@ -409,7 +469,7 @@
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-group">
-                        <label asp-for="Destrito_BairroRes" class="control-label small-label"></label>
+                        <label asp-for="Destrito_BairroRes" class="control-label small-label">Destrito / Bairro</label>
                         <input asp-for="Destrito_BairroRes" class="form-control form-control-sm input-1 small-input" placeholder="Bairro ou Destrito Residente" />
                         <span asp-validation-for="Destrito_BairroRes" class="text-danger"></span>
                     </div>
@@ -425,21 +485,21 @@
                 </div>
                 <div class="col-6 col-md-2">
                     <div class="form-group">
-                        <label asp-for="CasaNum" class="control-label small-label"></label>
+                        <label asp-for="CasaNum" class="control-label small-label">Nº da Casa / Apt</label>
                         <input asp-for="CasaNum" class="form-control form-control-sm input-1 small-input" placeholder="Nº de Casa ou Apartamento" />
                         <span asp-validation-for="CasaNum" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="form-group">
-                        <label asp-for="Telefone1" class="control-label small-label"></label>
+                        <label asp-for="Telefone1" class="control-label small-label">Telefone</label>
                         <input asp-for="Telefone1" class="form-control form-control-sm input-1 small-input" placeholder="Contacto principal" />
                         <span asp-validation-for="Telefone1" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="form-group">
-                        <label asp-for="Telefone2" class="control-label small-label"></label>
+                        <label asp-for="Telefone2" class="control-label small-label">Telefone</label>
                         <input asp-for="Telefone2" class="form-control form-control-sm input-1 small-input" placeholder="Contacto alternativo" />
                         <span asp-validation-for="Telefone2" class="text-danger"></span>
                     </div>
@@ -467,8 +527,49 @@
     </form>
 </div>
 
+<div class="modal fade" id="modalForm2" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalContent2"></div>
+    </div>
+</div>
+
 <script src="~/assets/libs/select2/dist/js/select2.full.min.js"></script>
 <script src="~/assets/libs/select2/dist/js/select2.min.js"></script>
+<!-- Inclua Toastr CSS e JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#UnidadeOrigem').select2({
+            width: '100%'
+        });
+    });
+
+    function openModal2(url) {
+        $.get(url, function (data) {
+            $('#modalContent2').html(data);
+            let modal = new bootstrap.Modal(document.getElementById('modalForm2'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            modal.show();
+        });
+    }
+
+    function submitForm(form) {
+        $.post(form.action, $(form).serialize(), function (result) {
+            if (result.success) {
+                toastr.success(result.message || 'Operação realizada com sucesso!');
+                $('#modalForm2').modal('hide'); // fecha o modal se quiser
+            } else {
+                $('#modalContent2').html(result); // reexibe erros no modal
+                toastr.error(result.message || 'Ocorreu um erro!');
+            }
+        });
+        return false;
+    }
+</script>
 <script>
     let currentTab = 0;
     showTab(currentTab);

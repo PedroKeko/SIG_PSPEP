@@ -25,15 +25,15 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
             var query = _context.EfectivoOrdemServicos
-                .Include(e => e.Efectivo)
-                .Include(e => e.Patente)
-                .Include(e => e.OrdemServico)
-                .Include(e => e.User);
+               .Include(e => e.Efectivo).Include(e => e.Patente)
+               .Include(e => e.OrdemServico).Include(e => e.User)
+               .Where(e => e.TipoPromocao == "p")
+               .AsQueryable();
 
             var lista = await query.ToListAsync();
             return View(lista);
@@ -42,7 +42,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [HttpGet]
         public async Task<IActionResult> FiltrarTabela(DateTime? dataInicio, DateTime? dataFim)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -51,6 +51,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                 .Include(e => e.Patente)
                 .Include(e => e.OrdemServico)
                 .Include(e => e.User)
+                .Where(e => e.TipoPromocao == "p")
                 .AsQueryable();
 
             if (dataInicio.HasValue && dataFim.HasValue)
@@ -69,7 +70,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         // GET: Dpq/EfectivoOrdemServicoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -95,7 +96,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [Authorize(Policy = "Require_Admin_ChDepar_ChSec")]
         public IActionResult Create()
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -111,7 +112,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [Authorize(Policy = "Require_Admin_ChDepar")]
         public async Task<IActionResult> Create(EfectivoOrdemServico efectivoOrdemServico)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -151,7 +152,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                             message = $"A patente selecionada ({novaPatente.Posto}) tem grau inferior ou igual à atual ({efectivo.Patente.Posto})."
                         });
                     }
-
+                    efectivoOrdemServico.TipoPromocao = "p";
                     _context.Add(efectivoOrdemServico);
                     await _context.SaveChangesAsync();
 
@@ -196,7 +197,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [Authorize(Policy = "Require_Admin_ChDepar_ChSec_Esp")]
         public IActionResult PromocaoMultipla()
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -215,7 +216,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [Authorize(Policy = "Require_Admin_ChDepar")]
         public async Task<IActionResult> PromocaoMultipla([FromBody] List<EfectivoOrdemServicoDTO> promocoesDto)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -286,7 +287,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
                             DataUltimaAlterecao = DateTime.Now,
                             Estado = true
                         };
-
+                        promocao.TipoPromocao = "p";
                         _context.EfectivoOrdemServicos.Add(promocao);
 
                         efectivo.PatenteId = dto.PatenteId;
@@ -341,7 +342,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         // GET: Dpq/EfectivoOrdemServicoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -365,7 +366,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EfectivoId,OrdemServicoId,PatenteId,NumDespacho,AnoPromocao,Id,Estado,DataRegisto,DataUltimaAlterecao,UserId")] EfectivoOrdemServico efectivoOrdemServico)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -403,7 +404,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         // GET: Dpq/EfectivoOrdemServicoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }
@@ -430,7 +431,7 @@ namespace SIG_PSPEP.Areas.Dpq.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!UsuarioTemAcessoArea("DPQ") && !UsuarioTemAcessoArea("ADMIN"))
+            if (!UsuarioTemAcessoArea("DPQ"))
             {
                 return Forbid(); // ou RedirectToAction("AcessoNegado", "Conta");
             }

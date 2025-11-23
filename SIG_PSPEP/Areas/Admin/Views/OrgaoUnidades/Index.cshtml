@@ -140,7 +140,11 @@
         function openModal(url) {
             $.get(url, function (data) {
                 $('#modalContent').html(data);
-                let modal = new bootstrap.Modal(document.getElementById('modalForm'));
+                 // Configuração para impedir fechar ao clicar fora e ESC
+        let modal = new bootstrap.Modal(document.getElementById('modalForm'), {
+            backdrop: 'static',
+            keyboard: false
+        });
                 modal.show();
             });
         }
@@ -161,8 +165,10 @@
 
         function deleteItem(id) {
             deleteId = id;  // Armazena o ID para posterior uso
-            // Abre o modal de confirmação
-            let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+        let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
             modal.show();
         }
 

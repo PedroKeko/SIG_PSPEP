@@ -13,9 +13,8 @@ namespace SIG_PSPEP.Entidades
         [StringLength(50)]
         public string? IdRadio { get; set; }
 
-        [Required]
         [StringLength(50)]
-        public string TEI { get; set; } = null!;
+        public string? TEI { get; set; }
 
         [StringLength(50)]
         public string? NumSerie { get; set; }

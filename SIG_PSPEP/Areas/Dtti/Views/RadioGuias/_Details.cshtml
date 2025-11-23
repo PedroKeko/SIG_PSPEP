@@ -1,0 +1,273 @@
+﻿@model SIG_PSPEP.Areas.Dtti.Models.RadioGuiaDetalhesViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da Guia de Rádio";
+}
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<style>
+    /* ===== Estrutura geral ===== */
+    .modal-body {
+        background-color: #f8fafd;
+        padding: 35px 30px;
+    }
+
+    .modal-title {
+        font-weight: 700;
+        color: #00143c;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .modal-dialog {
+        max-width: 820px;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ===== Informações principais ===== */
+    .info-section {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px 24px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 24px;
+        font-size: 0.92rem;
+    }
+
+    .info-item strong {
+        color: #00143c;
+        font-weight: 600;
+    }
+
+    .info-item span {
+        color: #333;
+    }
+
+    .info-item-1 span {
+        color: #fff;
+    }
+
+    .badge-status {
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    /* ===== Tabela ===== */
+    .table {
+        font-size: 0.88rem;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .table thead {
+            background: #00143c;
+            color: #fff;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f3f6fb;
+            transition: 0.2s ease;
+        }
+
+    /* ===== Observação ===== */
+    .observacao-box {
+        background: #e8f1ff;
+        border-left: 4px solid #007bff;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        color: #002a5c;
+    }
+
+    /* ===== Responsividade ===== */
+    @@media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+    }
+</style>
+
+<!-- Cabeçalho -->
+<div class="modal-header border-0 align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+        <i class="fas fa-broadcast-tower text-primary fs-5"></i>
+        <h5 class="modal-title mb-0 fw-bold text-dark">Detalhes da Guia de Rádio</h5>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+        @if (User.IsInRole("Administrador") || User.IsInRole("Chefe de Departamento"))
+        {
+            if (!Model.Aprovado)
+            {
+                <button id="btnAprovar" class="custom2-btn btn-2-dark-blue shadow-sm px-3">
+                    <i class="fas fa-check-circle me-1"></i> Aprovar Guia
+                </button>
+            }
+            else
+            {
+                <span class="custom2-btn btn-2-success px-3 py-2">
+                    <i class="fas fa-check-double me-1"></i> Já Aprovada
+                </span>
+            }
+        }
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+    </div>
+</div>
+
+<!-- Corpo -->
+<div class="modal-body">
+
+    <!-- Seção principal -->
+    <div class="info-section">
+        <div class="info-grid">
+            <div class="info-item">
+                <strong>Nº da Guia:</strong><br />
+                <span class="fw-bold">@Model.NumGuia</span>
+            </div>
+            <div class="info-item-1">
+                <strong>Status de Aprovação:</strong><br />
+                @if (Model.Aprovado)
+                {
+                    <span class="badge bg-success badge-status">Aprovado</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger badge-status">Pendente</span>
+                }
+            </div>
+            <div class="info-item">
+                <strong>Responsável:</strong><br />
+                <span>@Model.NomeUsuario</span>
+            </div>
+            <div class="info-item">
+                <strong>Chefe da Área:</strong><br />
+                <span>@Model.NomeChefe</span>
+            </div>
+            <div class="info-item">
+                <strong>Data de Registro:</strong><br />
+                <span>@Model.DataRegisto.ToString("dd/MM/yyyy")</span>
+            </div>                   
+            <div class="info-item">
+                <strong>Data de Aprovação:</strong><br />
+                <span>@(Model.DataAprovacao?.ToString("dd/MM/yyyy") ?? "—")</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Observação -->
+    @if (!string.IsNullOrWhiteSpace(Model.Observacao))
+    {
+        <div class="observacao-box">
+            <strong>Observação:</strong> @Model.Observacao
+        </div>
+    }
+
+    <!-- Lista de Rádios -->
+    <div class="table-responsive">
+        <table class="DataTable table table-striped table-scroll table-bordered table-compact display">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Código</th>
+                    <th>ID Rádio</th>
+                    <th>Nº Série</th>
+                    <th>Tipo Movimento</th>
+                    <th>Órgão / Unidade</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @if (Model.Radios != null && Model.Radios.Any())
+                {
+                    int i = 1;
+                    foreach (var r in Model.Radios)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@r.CodRadio</td>
+                            <td>@r.IdRadio</td>
+                            <td>@r.NumSerie</td>
+                            <td>@r.TipoMovimento</td>
+                            <td>@r.OrgUnidPnaMinint</td>
+                        </tr>
+                        i++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-muted">Nenhum rádio associado a esta guia.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+<script>
+    $(function () {
+        $("#btnAprovar").click(function () {
+            Swal.fire({
+                title: 'Confirmar aprovação?',
+                text: "Deseja realmente aprovar esta guia?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, aprovar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#198754'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("AprovarGuia", "RadioGuias", new { area = "Dtti" })',
+                        type: 'POST',
+                        data: { idGuia: '@Model.Id' },
+                        success: function (res) {
+                            if (res.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Aprovada!',
+                                    text: res.message,
+                                    confirmButtonColor: '#198754'
+                                }).then(() => location.reload());
+                            } else {
+                                Swal.fire('Erro', res.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('Erro', 'Falha na comunicação com o servidor.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>

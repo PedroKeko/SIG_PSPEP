@@ -1,0 +1,105 @@
+﻿@model SIG_PSPEP.Entidades.MensagesAdmin
+
+<style>
+    .card-header.bg-primary {
+        background-color: #0a2342 !important; /* Azul escuro PNA */
+        color: #f5f5f5 !important;
+    }
+
+    dt.text-secondary {
+        color: #4b5d67 !important; /* Cinza azulado */
+    }
+
+    dd.fs-5 {
+        color: #212529; /* Texto escuro */
+    }
+
+    .badge.bg-success {
+        background-color: #145214 !important; /* Verde escuro */
+        color: #e0f0d9 !important;
+        font-weight: 400;
+        font-size: 0.9rem;
+        padding: 0.4em 0.8em;
+        border-radius: 0.25rem;
+    }
+
+    .badge.bg-warning.text-dark {
+        background-color: #d9a829 !important; /* Amarelo mostarda */
+        color: #3e2e00 !important;
+        font-weight: 500;
+        font-size: 0.9rem;
+        padding: 0.4em 0.8em;
+        border-radius: 0.25rem;
+    }
+
+</style>
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title"><i class="mdi mdi-email-open-outline me-2"></i> Detalhes do Efectivo</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+</div>
+
+<div class="modal-body fundo rounded-bottom-3">
+    <div class="card-body">
+        <div class="card shadow-sm">
+            <dl class="row mb-0">
+
+                <dt class="col-sm-3 text-secondary fw-semibold">
+                    <i class="mdi mdi-account-circle me-1"></i>
+                    @Html.DisplayNameFor(model => model.Nome)
+                </dt>
+                <dd class="col-sm-9 fs-8">
+                    @Html.DisplayFor(model => model.Nome)
+                </dd>
+
+                <dt class="col-sm-3 text-secondary fw-semibold">
+                    <i class="mdi mdi-email-outline me-1"></i>
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class="col-sm-9 fs-8">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+
+                <dt class="col-sm-3 text-secondary fw-semibold">
+                    <i class="mdi mdi-phone me-1"></i>
+                    @Html.DisplayNameFor(model => model.Telefone)
+                </dt>
+                <dd class="col-sm-9 fs-8">
+                    @Html.DisplayFor(model => model.Telefone)
+                </dd>
+
+                <dt class="col-sm-3 text-secondary fw-semibold">
+                    <i class="mdi mdi-message-text-outline me-1"></i>
+                    @Html.DisplayNameFor(model => model.Mensagem)
+                </dt>
+                <dd class="col-sm-9 fs-8">
+                    <pre class="mb-0" style="white-space: pre-wrap;">@Html.DisplayFor(model => model.Mensagem)</pre>
+                </dd>
+
+                <dt class="col-sm-3 text-secondary fw-semibold">
+                    <i class="mdi mdi-calendar-clock me-1"></i>
+                    @Html.DisplayNameFor(model => model.DataRegisto)
+                </dt>
+                <dd class="col-sm-9 fs82 text-muted">
+                    @Html.DisplayFor(model => model.DataRegisto)
+                </dd>
+
+                <dt class="col-sm-3 text-secondary fw-semibold">
+                    <i class="mdi mdi-eye-outline me-1"></i>
+                    @Html.DisplayNameFor(model => model.Estado)
+                </dt>
+                <dd class="col-sm-9 fs-8">
+                    @Html.Raw(Model.Estado
+                                        ? "<span class='badge bg-success'>Visualizado</span>"
+                                        : "<span class='badge bg-warning text-dark'>Não Visualizado</span>")
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<!-- jQuery e DataTables -->
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>

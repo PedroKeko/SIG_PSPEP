@@ -1,0 +1,162 @@
+﻿@model SIG_PSPEP.Areas.Dtti.Models.RadioLocalizacaoViewModel
+@{
+    ViewData["Title"] = "Localização de Rádio";
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<link href="~/assets/libs/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
+<style>
+    th {
+        text-transform: uppercase;
+    }
+    .badge {
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 500;
+        min-width: 70px;
+    }
+
+    /* Limitar a altura do dropdown */
+    select.form-select {
+        max-height: 38px; /* altura padrão Bootstrap */
+    }
+    /* Para limitar a lista aberta (não há opção nativa para reduzir as opções visíveis no select normal) */
+    option {
+        padding: 5px;
+    }
+</style>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <form asp-action="Localizacao" method="get" class="w-100">
+                    <div class="row g-2">
+                        <div class="col-md-2">
+                            <select asp-for="TipoId" class="form-select select2">
+                                <option value="">-- Tipo de Rádio --</option>
+                                @foreach (var tipo in Model.Tipos)
+                                {
+                                    <option value="@tipo.Id">
+                                        @(tipo.Marca + " - " + tipo.Modelo)
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select asp-for="OrgaoUnidadeId" class="form-select select2" asp-items="@(new SelectList(Model.OrgaosMinint, "Id", "Sigla"))">
+                                <option value="">-- Localização --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select asp-for="EstadoTecnico" class="form-select select2" asp-items="@(new SelectList(Model.EstadosTecnicos))">
+                                <option value="">-- Estado Técnico --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input asp-for="Marca" class="form-control form-control-sm input-1 small-input" placeholder="Marca" />
+                        </div>
+                        <div class="col-md-2">
+                            <input asp-for="Modelo" class="form-control form-control-sm input-1 small-input" placeholder="Modelo" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="custom2-btn btn-2-red w-100">Filtrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="table-responsive">
+                <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                    <thead class="">
+                        <tr>
+                            <th class="w-5">
+                                #
+                            </th>
+                            <th>Código</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>ID Rádio</th>
+                            <th>Nº Série</th>
+                            <th>TEI</th>
+                            <th>Estado Técnico</th>
+                            <th>Localização</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                            @foreach (var item in Model.Radios)
+                            {
+                                <tr>
+                                    <td class="text-center">@index</td>
+                                    <td class="text-center">@item.Radio.CodRadio</td>
+                                    <td class="text-center">@item.Radio.RadioTipo.Marca</td>
+                                    <td class="text-center">@item.Radio.RadioTipo.Modelo</td>
+                                    <td class="text-center">@item.Radio.IdRadio</td>
+                                    <td class="text-center">@item.Radio.NumSerie</td>
+                                    <td class="text-center">@item.Radio.TEI</td>
+                                    <td class="text-center">@item.Radio.EstadoTecnico</td>
+                                    <td class="text-center">@item.OrgUnidPnaMinint.Sigla</td>
+
+                                </tr>
+                                index++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+<script src="~/assets/libs/select2/dist/js/select2.full.min.js"></script>
+<script src="~/assets/libs/select2/dist/js/select2.min.js"></script>
+
+
+<script>
+       $(document).ready(function () {
+        $('#minhaTabela').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "", /* Buscar esta nullo */
+                "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "loadingRecords": "Carregando...",
+                "processing": "Processando...",
+                "zeroRecords": "Nenhum registro encontrado",
+                "emptyTable": "Nenhum dado disponível na tabela",
+                "paginate": {
+                    "first": "Primeiro",
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "last": "Último"
+                },
+                "aria": {
+                    "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                    "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                }
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+            }
+        });
+    });
+</script>
+<script>
+        $('.form-select').select2({
+      width: '100%',
+      dropdownAutoWidth: true,
+      minimumResultsForSearch: 2,
+    });
+</script>

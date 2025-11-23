@@ -23,13 +23,14 @@
 }
 
 .custom2-btn {
-    height: 30px;
+    height: 33px; /* aumentei um pouco para melhor proporção */
     display: flex;
     align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
     color: #fff;
     border-radius: 5px;
     padding: 10px 30px;
-    text-align: center;
+    text-align: center !important;
     font-family: 'Lato', sans-serif;
     font-weight: 400;
     font-size: 12px;
@@ -40,7 +41,6 @@
     box-shadow: inset 2px 2px 2px 0px rgba(255,255,255,.5), 7px 7px 20px 0px rgba(0,0,0,.1), 4px 4px 5px 0px rgba(0,0,0,.1);
     outline: none;
 }
-
 
 /* Azul ainda mais escuro */
 .btn-1 {

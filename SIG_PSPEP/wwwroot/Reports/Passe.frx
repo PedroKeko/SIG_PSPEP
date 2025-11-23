@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/26/2025 20:35:30" ReportInfo.Modified="05/26/2025 20:35:30" ReportInfo.CreatorVersion="2025.1.0.0">
+  <Dictionary>
+    <TableDataSource Name="Efectivo" ReferenceName="Data.Efectivo" DataType="System.Int32" Enabled="true">
+      <Column Name="NomeCompleto" DataType="System.String"/>
+      <Column Name="Num_Processo" DataType="System.String"/>
+      <Column Name="SiglaUnidade" DataType="System.String"/>
+      <Column Name="FuncaoCargo" DataType="System.String"/>
+      <Column Name="Classe" DataType="System.String"/>
+      <Column Name="Patente" DataType="System.String"/>
+      <Column Name="FotoByte" DataType="System.Byte[]" BindableControl="Picture"/>
+    </TableDataSource>
+  </Dictionary>
+</Report>

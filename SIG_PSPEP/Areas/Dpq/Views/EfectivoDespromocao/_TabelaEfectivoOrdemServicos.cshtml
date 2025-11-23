@@ -1,0 +1,110 @@
+﻿@model IEnumerable<SIG_PSPEP.Entidades.EfectivoOrdemServico>
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+
+<table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+	<thead>
+		<tr>
+			<th class="text-center w-10">
+				Nº
+			</th>
+			<th class="text-center w-100">
+				Nome do Efectivo
+			</th>
+			<th class="text-center w-50">
+				@Html.DisplayNameFor(model => model.Patente)
+			</th>
+			<th class="text-center">
+				Nº de Ordem
+			</th>
+			<th>
+				Nº de Despacho
+			</th>
+			<th class="text-center">
+				Registo
+			</th>
+			<th class="text-center w-10">Acções</th>
+		</tr>
+	</thead>
+	<tbody>
+		@{
+			int index = 1;
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td class="text-center">
+						@index
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Efectivo.NomeCompleto)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Patente.Posto)
+					</td>
+					<td class="text-center">
+						@Html.DisplayFor(modelItem => item.OrdemServico.NumOrdemServico)
+					</td>
+					<td class="text-center">
+						@Html.DisplayFor(modelItem => item.NumDespacho)
+					</td>
+					<td class="text-center">
+						@Html.DisplayFor(modelItem => item.DataRegisto)
+					</td>
+					<td class="text-center align-middle w-10">
+						<a href="javascript:void(0)" class="text-primary me-2" title="Editar" onclick="openModal('/Dpq/EfectivoOrdemServicos/Edit/@item.Id')">
+							<i class="fas fa-pencil-alt"></i>
+						</a>
+						<a href="javascript:void(0)" class="text-danger" title="Apagar" onclick="deleteItem(@item.Id)">
+							<i class="fas fa-trash-alt"></i>
+						</a>
+					</td>
+				</tr>
+				index++;
+			}
+		}
+	</tbody>
+</table>
+
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+<script>
+	   $(document).ready(function () {
+		$('#minhaTabela').DataTable({
+			"language": {
+				"decimal": ",",
+				"thousands": ".",
+				"search": "", /* Buscar esta nullo */
+				"lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+				"infoEmpty": "Nenhum registro disponível",
+				"infoFiltered": "(filtrado de _MAX_ registros no total)",
+				"loadingRecords": "Carregando...",
+				"processing": "Processando...",
+				"zeroRecords": "Nenhum registro encontrado",
+				"emptyTable": "Nenhum dado disponível na tabela",
+				"paginate": {
+					"first": "Primeiro",
+					"previous": "Anterior",
+					"next": "Próximo",
+					"last": "Último"
+				},
+				"aria": {
+					"sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+					"sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+				}
+			},
+				"initComplete": function () {
+		$('.dataTables_filter input')
+			.attr('placeholder', 'Digite para buscar...')
+			.css('width', '300px'); // Ou '100%' para ocupar todo espaço possível
+	}
+		});
+	});
+
+</script>

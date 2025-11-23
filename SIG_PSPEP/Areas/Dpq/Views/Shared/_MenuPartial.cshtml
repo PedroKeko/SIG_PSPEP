@@ -57,27 +57,42 @@
 				</li>
 
 				<li class="sidebar-item">
-					<a class="sidebar-link has-arrow waves-effect waves-dark"
-					   href="javascript:void(0)"
-					   aria-expanded="false">
-						<i class="fas fa-user-shield"></i><span class="hide-menu">Gerir Efectividade</span>
+					<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+						<i class="fas fa-user-shield"></i>
+						<span class="hide-menu">Gerir Efetividade</span>
 					</a>
-					<ul aria-expanded="false" class="collapse first-level">
+					<ul class="collapse first-level" aria-expanded="false">
 						<li class="sidebar-item">
-							<a asp-controller="Efectividades" asp-action="LancamentoMultiplo" asp-area="Dpq" class="sidebar-link">
-								<i class="fas fa-users"></i><span class="hide-menu">Lançar Colectivo</span>
+							<a asp-area="Dpq" asp-controller="Efectividades" asp-action="LancamentoMultiplo" class="sidebar-link">
+								<i class="fas fa-users"></i>
+								<span class="hide-menu">Lançar Colectivo</span>
 							</a>
 						</li>
 						<li class="sidebar-item">
-							<a asp-controller="Efectividades" asp-action="LancIndividual" asp-area="Dpq" class="sidebar-link">
-								<i class="fas fa-user"></i><span class="hide-menu">Lançar Indívidual</span>
+							<a asp-area="Dpq" asp-controller="Efectividades" asp-action="MapaCalendarioIndividual" class="sidebar-link">
+								<i class="fas fa-user"></i>
+								<span class="hide-menu">Lançar Singular</span>
 							</a>
 						</li>
 						<li class="sidebar-item">
-							<a asp-controller="Efectividades" asp-action="Index" asp-area="Dpq" class="sidebar-link">
-								<i class="fas fa-user-lock"></i><span class="hide-menu">Lançar Local-DPQ</span>
+							<a asp-area="Dpq" asp-controller="Efectividades" asp-action="LancamentoLocal" class="sidebar-link">
+								<i class="fas fa-user-lock"></i>
+								<span class="hide-menu">Lançar Local-DPQ</span>
 							</a>
 						</li>
+						<li class="sidebar-item">
+							<a asp-area="Dpq" asp-controller="Efectividades" asp-action="ConsultarEfectividadeGeral" class="sidebar-link">
+								<i class="fas fa-list"></i>
+								<span class="hide-menu">Consulta Geral-PSPEP</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a asp-area="Dpq" asp-controller="Efectividades" asp-action="ConsultarEfectividadeLocal" class="sidebar-link">
+								<i class="fas fa-stream"></i>
+								<span class="hide-menu">Consulta Local-DPQ</span>
+							</a>
+						</li>
+
 					</ul>
 				</li>
 
@@ -92,30 +107,6 @@
 							<a asp-controller="Efectividades" asp-action="ConsultarEfectivos" asp-area="Dpq" class="sidebar-link">
 								<i class="fas fa-stream"></i><span class="hide-menu">Lista de Efectivos</span>
 							</a>
-						</li>
-						<li class="sidebar-item">
-							<a class="sidebar-link has-arrow waves-effect waves-dark"
-							   href="javascript:void(0)"
-							   aria-expanded="false">
-								<i class="fas fa-user-shield"></i><span class="hide-menu">Consultar Efectividade</span>
-							</a>
-							<ul aria-expanded="false" class="collapse second-level">
-								<li class="sidebar-item">
-									<a href="form-basic.html" class="sidebar-link">
-										<i class="fas fa-list"></i><span class="hide-menu">Colectiva</span>
-									</a>
-								</li>
-								<li class="sidebar-item">
-									<a href="form-wizard.html" class="sidebar-link">
-										<i class="fas fa-tasks"></i><span class="hide-menu">Indívidual</span>
-									</a>
-								</li>
-								<li class="sidebar-item">
-									<a href="form-wizard.html" class="sidebar-link">
-										<i class="fas fa-stream"></i><span class="hide-menu">DPQ</span>
-									</a>
-								</li>
-							</ul>
 						</li>
 						<li class="sidebar-item">
 							<a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -150,12 +141,12 @@
 							</a>
 						</li>
 						<li class="sidebar-item">
-							<a href="form-wizard.html" class="sidebar-link">
-								<i class="fas fa-network-wired"></i><span class="hide-menu">Despromoção</span>
+							<a asp-controller="EfectivoDespromocao" asp-action="Index" asp-area="Dpq" class="sidebar-link">
+								<i class="fas fa-clipboard-list"></i><span class="hide-menu">Despromoção</span>
 							</a>
 						</li>
 						<li class="sidebar-item">
-							<a href="form-wizard.html" class="sidebar-link">
+							<a href="#" class="sidebar-link">
 								<i class="fas fa-user-times"></i><span class="hide-menu">Nomeação</span>
 							</a>
 						</li>

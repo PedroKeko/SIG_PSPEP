@@ -1,0 +1,17 @@
+﻿@model IEnumerable<dynamic>
+
+@foreach (var item in Model)
+{
+    <a href="@Url.Action("DetalhesMensagem", "MensagesAdmin", new { area = "Admin", id = item.Id })" class="link border-top">
+        <div class="d-flex no-block align-items-center p-10">
+            <span class="btn btn-info btn-circle d-flex align-items-center justify-content-center">
+                <i class="mdi mdi-email-outline text-white fs-4"></i>
+            </span>
+            <div class="ms-2">
+                <h5 class="mb-0">@item.Nome</h5>
+                <span class="mail-desc">@item.Mensagem?.Substring(0, Math.Min(40, item.Mensagem.Length))...</span>
+                <small class="text-muted d-block">@item.Data</small>
+            </div>
+        </div>
+    </a>
+}

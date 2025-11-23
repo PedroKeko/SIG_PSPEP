@@ -1,139 +1,143 @@
 ﻿@model IEnumerable<SIG_PSPEP.Entidades.Area>
+@using FastReport.Web
+@using System.Text.Json
 
 @{
-    ViewData["Title"] = "Areas do Sistema";
+    ViewData["Title"] = "Áreas do Sistema";
 }
+
+<style>
+    /* Estilo dos cards */
+    .area-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        background: #ffffff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        cursor: pointer;
+    }
+
+        /* Hover animado */
+        .area-card:hover {
+            transform: translateY(-7px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            background: #f0f4ff; /* leve fundo azul claro */
+        }
+
+    /* Corpo do card */
+    .card-body {
+        padding: 1rem 1rem 0.5rem 1rem;
+    }
+
+    /* Título do card */
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1e3a8a; /* azul escuro */
+        margin-bottom: 0.5rem;
+    }
+
+    /* Descrição do card */
+    .card-text {
+        font-size: 10px;
+        color: #444;
+        margin-bottom: 0.3rem;
+    }
+
+    /* Footer do card */
+    .card-footer {
+        background-color: #f7f7f7;
+        border-top: 1px solid #ddd;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Badges de estado */
+    .estado-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #fff;
+        display: inline-block;
+        text-align: center;
+        min-width: 60px;
+    }
+
+    /* Ativo */
+    .estado-ativo {
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6); /* azul escuro gradiente */
+    }
+
+    /* Inativo */
+    .estado-inativo {
+        background: linear-gradient(135deg, #dc2626, #f87171); /* vermelho gradiente */
+    }
+
+    /* Ícones no footer */
+    .card-footer a i {
+        font-size: 1.1rem;
+        transition: color 0.3s;
+    }
+
+    .card-footer a:hover i {
+        color: #3b82f6; /* azul para hover */
+    }
+
+    /* Ajuste do container */
+    #cardsContainer .col-md-3 {
+        margin-bottom: 1px;
+    }
+
+</style>
 
 <link href="~/dist/css/mystyle.css" rel="stylesheet" />
 <link href="~/dist/css/botoes.css" rel="stylesheet" />
-<!-- Estilos do DataTables -->
-<link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet">
 
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <button class="custom2-btn btn-1" onclick="openModal('/Areas/Create')">Criar Novo</button>
-            </div>
-            <div class="table-responsive">
-                <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
-                    <thead>
-                        <tr>
-                            <th class="text-center w-10">
-                                Nº
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.NomeArea)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.DescricaoArea)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.DataRegisto)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Estado)
-                            </th>
-                            <th>
-
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            int index = 1;
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td class="text-center">@index</td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.NomeArea)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.DescricaoArea)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.DataRegisto)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Estado)
-                                    </td>
-                                    <td class="text-center align-middle w-10">
-                                        <a href="javascript:void(0)" class="text-primary me-2" title="Editar" onclick="openModal('/Areas/Edit/@item.Id')">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" class="text-danger" title="Apagar" onclick="deleteItem(@item.Id)">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                index++;
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="container-fluid mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="custom2-btn btn-1" onclick="openModal('/Areas/Create')">Criar Novo</button>
+        <button class="custom2-btn btn-1" onclick="openModalPrint('/Admin/RelatorioArea/VisualizarPDF')">Visualizar Relatório</button>
     </div>
+
+    <!-- Cards container melhorado -->
+    <div id="cardsContainer" class="row">
+        <!-- Os cards serão injetados dinamicamente aqui -->
+    </div>
+
+
+    <!-- Paginação -->
+    <nav>
+        <ul id="pagination" class="pagination justify-content-center mt-1"></ul>
+    </nav>
 </div>
 
-<!-- jQuery e DataTables -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script src="~/dist/js/sweetalert2@11.js"></script>
-<script>
-       $(document).ready(function () {
-        $('#minhaTabela').DataTable({
-            "language": {
-                "decimal": ",",
-                "thousands": ".",
-                "search": "", /* Buscar esta nullo */
-                "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
-                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "infoEmpty": "Nenhum registro disponível",
-                "infoFiltered": "(filtrado de _MAX_ registros no total)",
-                "loadingRecords": "Carregando...",
-                "processing": "Processando...",
-                "zeroRecords": "Nenhum registro encontrado",
-                "emptyTable": "Nenhum dado disponível na tabela",
-                "paginate": {
-                    "first": "Primeiro",
-                    "previous": "Anterior",
-                    "next": "Próximo",
-                    "last": "Último"
-                },
-                "aria": {
-                    "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
-                    "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
-                }
-            },
-            "initComplete": function () {
-                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
-            }
-        });
-    });
-
-</script>
-
-
+<!-- Modal para Create/Edit -->
 <div class="modal fade" id="modalForm" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" id="modalContent"></div>
     </div>
 </div>
 
-<!-- Modal de Confirmação de Exclusão -->
+<!-- Modal de Visualização PDF -->
+<div class="modal fade" id="modalPrint" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalContentPrint"></div>
+    </div>
+</div>
+
+<!-- Modal de Exclusão -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <h5 class="modal-title">Confirmar Exclusão</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                Tem certeza que deseja excluir este Registro?
+                Tem certeza que deseja excluir este registro?
             </div>
             <div class="modal-footer">
                 <button type="button" class="custom2-btn btn-2-red" id="confirmDeleteBtn">Excluir</button>
@@ -143,70 +147,161 @@
     </div>
 </div>
 
-
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="~/dist/js/sweetalert2@11.js"></script>
+
     <script>
+        // Serializa o modelo para JS
+        const areas = @Html.Raw(JsonSerializer.Serialize(Model));
+
+        const itemsPerPage = 8; // cards por página
+        let currentPage = 1;
+
+        function renderCards() {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedItems = areas.slice(start, end);
+
+            paginatedItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'col-md-3';
+                card.innerHTML = `
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">${item.NomeArea}</h5>
+                            <p class="card-text">${item.DescricaoArea}</p>
+                            <p class="card-text"><small class="text-muted">Data: ${new Date(item.DataRegisto).toLocaleDateString()}</small></p>
+                            <p class="card-text"><small class="text-muted">Estado: ${item.Estado}</small></p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a href="javascript:void(0)" class="text-primary" onclick="openModal('/Areas/Edit/${item.Id}')">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="text-danger" onclick="deleteItem(${item.Id})">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            const pageCount = Math.ceil(areas.length / itemsPerPage);
+
+            for (let i = 1; i <= pageCount; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.onclick = (e) => {
+                    e.preventDefault();
+                    currentPage = i;
+                    renderCards();
+                };
+                pagination.appendChild(li);
+            }
+        }
+
+        renderCards(); // inicializa cards
+
+        // === Funções dos Modais ===
+
         function openModal(url) {
             $.get(url, function (data) {
                 $('#modalContent').html(data);
-                let modal = new bootstrap.Modal(document.getElementById('modalForm'));
+                let modal = new bootstrap.Modal(document.getElementById('modalForm'), {
+                    backdrop: 'static', // não fecha clicando fora
+                    keyboard: false     // não fecha com ESC
+                });
                 modal.show();
             });
         }
 
         function submitForm(form) {
-    $.post(form.action, $(form).serialize(), function (result) {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            customClass: {
-                popup: 'colored-toast'
-            },
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        });
+            $.post(form.action, $(form).serialize(), function (result) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    customClass: { popup: 'colored-toast' }
+                });
 
-        if (result.success) {
-            Toast.fire({
-                icon: 'success',
-                title: 'Área registrada com sucesso!'
-            }).then(() => {
-                location.reload();
+                if (result.success) {
+                    Toast.fire({ icon: 'success', title: 'Área registrada com sucesso!' })
+                        .then(() => location.reload());
+                } else {
+                    $('#modalContent').html(result);
+                    Toast.fire({ icon: 'error', title: 'Erro ao registrar a área!' });
+                }
             });
-        } else {
-            $('#modalContent').html(result); // reexibe modal com erros
-            Toast.fire({
-                icon: 'error',
-                title: 'Erro ao registrar a área!'
-            });
+            return false;
         }
-    });
 
-    return false;
-}
-
-        //Exclusão de Registro
-               let deleteId = null;
-
+        // Exclusão de Registro
+        let deleteId = null;
         function deleteItem(id) {
-            deleteId = id;  // Armazena o ID para posterior uso
-            // Abre o modal de confirmação
-            let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            deleteId = id;
+            let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
             modal.show();
         }
 
         document.getElementById('confirmDeleteBtn').onclick = function () {
             $.post('/Admin/Areas/Delete/' + deleteId, function () {
-                location.reload(); 
+                location.reload();
             });
         };
 
+        // Modal PDF
+        function openModalPrint(url) {
+            $.get(url, function (data) {
+                $('#modalContentPrint').html(data);
+                let modal = new bootstrap.Modal(document.getElementById('modalPrint'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                modal.show();
+                inserirBotaoExportarPDF();
+            });
+        }
+
+        function inserirBotaoExportarPDF() {
+            setTimeout(function () {
+                const toolbar = document.querySelector('.fr-toolbar');
+                if (!toolbar) return;
+
+                if (!toolbar.querySelector('button[title="Exportar em PDF"]')) {
+                    const btn = document.createElement('button');
+                    btn.style.cssText = `
+                        margin:0 10px;padding:6px 10px;
+                        background:#f9f0f0;color:#000;border:0;border-radius:4px;
+                        cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+                    `;
+                    btn.title = 'Exportar em PDF';
+                    btn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" fill="none">
+                            <path d="M0.5 10a0.5 0.5 0 0 1 0.5 0.5v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3a0.5 0.5 0 0 1 1 0v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-3a0.5 0.5 0 0 1 0.5-0.5z"
+                                stroke="#000" stroke-width="1.3" fill="#000"/>
+                            <path d="M7.646 10.854a0.5 0.5 0 0 0 0.708 0l3-3a0.5 0.5 0 0 0-0.708-0.708L8.5 9.293V1.5a0.5 0.5 0 0 0-1 0v7.793L5.354 7.146a0.5 0.5 0 1 0-0.708 0.708l3 3z"
+                                stroke="#000" stroke-width="1.5" fill="#000"/>
+                        </svg>`;
+                    btn.onclick = () => window.open('/Admin/RelatorioArea/ExportarPDF', '_blank');
+                    toolbar.appendChild(btn);
+                }
+            }, 2000);
+        }
     </script>
 }
-
-

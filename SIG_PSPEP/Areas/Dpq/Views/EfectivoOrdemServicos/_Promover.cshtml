@@ -142,7 +142,7 @@
             </select>
         </div>
         <div class="col-md-2 d-flex align-items-end">
-            <button class="btn btn-success w-100" type="button" onclick="adicionarNaTabela()">Adicionar</button>
+            <button class="btn custom1-btn btn-1 w-100" type="button" onclick="adicionarNaTabela()">Adicionar</button>
         </div>
     </div>
     <div class="row g-2 mb-3">
@@ -156,10 +156,10 @@
             </select>
         </div>
         <div class="col-md-5">
-            <input id="numDespacho" type="text" class="form-control" placeholder="Nº de Despacho"/>
+            <input id="numDespacho" type="text" class="form-control" placeholder="Nº de Despacho" />
         </div>
         <div class="col-md-2 d-flex align-items-end">
-            <button class="btn btn-success w-100" type="button" onclick="submeterPromocoes()">Promover</button>
+            <button class="btn custom1-btn btn-2-success w-100" type="button" onclick="submeterPromocoes()">Promover</button>
         </div>
     </div>
 
@@ -169,14 +169,14 @@
         <table id="tabelaPromocoes" class="DataTable table table-striped table-scroll table-bordered table-compact display">
             <thead>
                 <tr>
-                    <th >ID</th>              <!-- 0 -->
+                    <th class="d-none">ID</th>              <!-- 0 -->
                     <th>Nome do Efectivo</th>                       <!-- 1 -->
                     <th>Patente Atual</th>                          <!-- 2 -->
                     <th>Patente Proposto</th>                       <!-- 3 -->
                     <th>Nº de Despacho</th>                         <!-- 4 -->
-                    <th >ID OS</th>           <!-- 5 -->
+                    <th class="d-none">ID OS</th>           <!-- 5 -->
                     <th>Ordem de Serviço</th>                       <!-- 6 -->
-                    <th >ID Patente</th>      <!-- 7 -->
+                    <th class="d-none">ID Patente</th>      <!-- 7 -->
                     <th class="text-center" style="width: 40px;">Acção</th> <!-- 8 -->
                 </tr>
             </thead>
@@ -200,7 +200,9 @@
             responsive: true,
             autoWidth: false,
             columnDefs: [
-                { targets: 4, className: 'text-center' }
+                { targets: 4, className: 'text-center' }, 
+                { targets: [0, 5, 7], visible: false }, // Oculta colunas 0 (ID), 5 (ID OS), 7 (ID Patente)
+                { targets: [8], orderable: false }
             ],
             language: {
                 decimal: ",",

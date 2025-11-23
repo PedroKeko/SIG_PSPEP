@@ -1,0 +1,145 @@
+﻿@model SIG_PSPEP.Entidades.Radio
+
+<style>
+    .modal-body {
+        background-color: #f9fafc;
+        padding: 40px 40px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 20px;
+        font-size: 0.88rem;
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px dashed #e0e0e0;
+        padding: 4px 0;
+    }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+    .details-label {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .details-value {
+        color: #4a4a4a;
+        text-align: right;
+        font-weight: 500;
+    }
+
+    .badge-status {
+        font-size: 0.78rem;
+        border-radius: 8px;
+        padding: 4px 10px;
+        min-width: 90px; /* reduzido para não quebrar layout */
+        text-align: center;
+        display: inline-block;
+        color: #fff;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        color: #00143c;
+    }
+
+    /* Reduz a altura geral do modal */
+    .modal-dialog {
+        max-width: 750px;
+    }
+
+    .modal-content {
+        border-radius: 8px;
+    }
+</style>
+
+<!-- Cabeçalho -->
+<div class="modal-header">
+    <h5 class="modal-title"><i class="fas fa-broadcast-tower me-2 text-primary"></i>Detalhes do Rádio</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+</div>
+
+<!-- Corpo -->
+<div class="modal-body">
+    <div class="details-grid">
+
+        <div class="detail-item">
+            <div class="details-label">Código do Rádio</div>
+            <div class="details-value">@Model.CodRadio</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="details-label">ID Rádio</div>
+            <div class="details-value">@Model.IdRadio</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="details-label">TEI</div>
+            <div class="details-value">@Model.TEI</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="details-label">Número de Série</div>
+            <div class="details-value">@Model.NumSerie</div>
+        </div>
+
+        @{
+            string badgeColor = Model.EstadoTecnico switch
+            {
+                "Funcional" => "success",
+                "Avariado" => "danger",
+                "Sem Sinal" => "warning",
+                "Em Manutenção" => "info",
+                "Desativado" => "secondary",
+                _ => "dark"
+            };
+        }
+        <div class="detail-item">
+            <div class="details-label">Estado Técnico</div>
+            <div class="details-value">
+                <span class="badge-status fw-semibold bg-@badgeColor">
+                    @Model.EstadoTecnico
+                </span>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="details-label">Tipo de Rádio</div>
+            <div class="details-value">
+                @(Model.RadioTipo != null ? Model.RadioTipo.Marca + " " + Model.RadioTipo.Modelo : "—")
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="details-label">Estado</div>
+            <div class="details-value">
+                <span class="badge-status bg-@(Model.Estado ? "success" : "secondary")">
+                    @(Model.Estado ? "Ativo" : "Inativo")
+                </span>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="details-label">Registado em</div>
+            <div class="details-value">@Model.DataRegisto.ToString("dd/MM/yyyy")</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="details-label">Última Alteração</div>
+            <div class="details-value">@Model.DataUltimaAlterecao.ToString("dd/MM/yyyy")</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="details-label">Utilizador</div>
+            <div class="details-value">@Model.User?.UserName</div>
+        </div>
+    </div>
+</div>

@@ -45,14 +45,7 @@
                        aria-expanded="false">
                         <i class="mdi mdi-account-key"></i><span class="hide-menu">Usuarios</span>
                     </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       asp-controller="Areas" asp-action="Index" asp-area="Admin"
-                       aria-expanded="false">
-                        <i class="mdi mdi-chart-bubble"></i><span class="hide-menu">Áreas</span>
-                    </a>
-                </li>
+                </li>               
                 <li class="sidebar-item">
                     <a class="sidebar-link has-arrow waves-effect waves-dark"
                        href="javascript:void(0)"
@@ -80,6 +73,12 @@
                     </a>
                     <ul aria-expanded="false" class="collapse first-level">
                         <li class="sidebar-item">
+                            <a class="sidebar-link"
+                               asp-controller="Areas" asp-action="Index" asp-area="Admin" aria-expanded="false">
+                                <i class="mdi mdi-chart-bubble"></i><span class="hide-menu">Áreas</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
                             <a asp-controller="OrgaoUnidades" asp-action="Index" asp-area="Admin" class="sidebar-link">
                                 <i class="mdi mdi-note-outline"></i><span class="hide-menu">Orgãos e Unidades</span>
                             </a>
@@ -94,14 +93,12 @@
                                 <i class="mdi mdi-note-plus"></i><span class="hide-menu">Municípios</span>
                             </a>
                         </li>
+                        <li class="sidebar-item">
+                            <a asp-controller="Bancos" asp-action="Index" asp-area="Admin" class="sidebar-link">
+                                <i class="mdi mdi-relative-scale"></i><span class="hide-menu">Instituíção Bancaria</span>
+                            </a>
+                        </li>
                     </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       asp-controller="Bancos" asp-action="Index" asp-area="Admin"
-                       aria-expanded="false">
-                        <i class="mdi mdi-relative-scale"></i><span class="hide-menu">Instituíção Bancaria</span>
-                    </a>
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link has-arrow waves-effect waves-dark"
@@ -123,11 +120,28 @@
                     </ul>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                       asp-controller="Tickets" asp-action="Index" asp-area="Admin"
+                    <a class="sidebar-link has-arrow waves-effect waves-dark"
+                       href="javascript:void(0)"
                        aria-expanded="false">
-                        <i class="mdi mdi-relative-scale"></i><span class="hide-menu">Ticket</span>
+                        <i class="mdi mdi-ticket"></i><span class="hide-menu">Tickets</span>
                     </a>
+                    <ul aria-expanded="false" class="collapse first-level">
+                        <li class="sidebar-item">
+                            <a asp-controller="LogsAcessos" asp-action="Index" asp-area="Admin" class="sidebar-link">
+                                <i class="mdi mdi-email-outline"></i><span class="hide-menu"> Mensagens Externas </span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a asp-controller="LogsEventos" asp-action="Index" asp-area="Admin" class="sidebar-link">
+                                <i class="mdi mdi-email"></i><span class="hide-menu">Mensagens Internas</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a asp-controller="Notificacoes" asp-action="Index" asp-area="Admin" class="sidebar-link">
+                                <i class="mdi mdi-bell"></i><span class="hide-menu">Notificações</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

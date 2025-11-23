@@ -1,12 +1,10 @@
 using FastReport.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using SIG_PSPEP.Context;
 using SIG_PSPEP.Services;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
           .AddEntityFrameworkStores<AppDbContext>()
           .AddDefaultTokenProviders();
-builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, FakeEmailSender>();
+
 // Registrar o serviço CompressaoImagem
 builder.Services.AddScoped<ImageCompressionService>();
 
@@ -46,6 +44,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
         options.SlidingExpiration = true;
     });
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -89,9 +89,10 @@ builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 builder.Services.AddScoped<ISeedUserClaimsInitial, SeedUserClaimsInitial>();
 builder.Services.AddScoped<ISeedAreaInitial, SeedAreaInitial>();
 builder.Services.AddScoped<ISeedPatenteInitial, SeedPatenteInitial>();
-builder.Services.AddScoped<ISeedOrgaoUnidadeInitial, SeedOrgaoUnidadeInitial>();
+builder.Services.AddScoped<ISeedInitial, SeedInitial>();
 builder.Services.AddScoped<ISeedSituacaoEfectivoInitial, SeedSituacaoEfectivoInitial>();
 builder.Services.AddScoped<ISeedFuncaoCargoInitial, SeedFuncaoCargoInitial>();
+builder.Services.AddScoped<ISeedEfectividadeTipoInitial, SeedEfectividadeTipoInitial>();
 builder.Services.AddScoped<ISeedProvinciaInitial, SeedProvinciaInitial>();
 builder.Services.AddScoped<LogsEventosService>();
 
@@ -113,12 +114,15 @@ using (var scope = app.Services.CreateScope())
     await seedAreaService.SeedAreasAsync();
     var seedPatenteService = services.GetRequiredService<ISeedPatenteInitial>();
     await seedPatenteService.SeedPatentesAsync();
-    var seedOrgaoUnidadeService = services.GetRequiredService<ISeedOrgaoUnidadeInitial>();
-    await seedOrgaoUnidadeService.SeedOrgaoUnidadesAsync();
+    var seedService = scope.ServiceProvider.GetRequiredService<ISeedInitial>();
+    await seedService.SeedOrgaoUnidadesAsync();
+    await seedService.SeedOrgUnidPnaMinintAsync();
     var seedSituacaoEfectivoService = services.GetRequiredService<ISeedSituacaoEfectivoInitial>();
     await seedSituacaoEfectivoService.SeedSituacoesEfectivoAsync();
     var seedFuncaoCargoService = services.GetRequiredService<ISeedFuncaoCargoInitial>();
     await seedFuncaoCargoService.SeedFuncoesCargosAsync();
+    var seedEfectividadeTipoService = services.GetRequiredService<ISeedEfectividadeTipoInitial>();
+    await seedEfectividadeTipoService.SeedEfectividadeTiposAsync();
     var seedProvinciaService = services.GetRequiredService<ISeedProvinciaInitial>();
     await seedProvinciaService.SeedProvinciaAsync();
 }

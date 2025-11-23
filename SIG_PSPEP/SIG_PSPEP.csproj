@@ -34,11 +34,23 @@
     <Folder Include="Areas\Dl\Data\" />
     <Folder Include="Areas\Dl\Models\" />
     <Folder Include="Areas\Dtti\Data\" />
-    <Folder Include="Areas\Dtti\Models\" />
     <Folder Include="Areas\Dpq\Data\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Migrations\" />
-    <Folder Include="Policies\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

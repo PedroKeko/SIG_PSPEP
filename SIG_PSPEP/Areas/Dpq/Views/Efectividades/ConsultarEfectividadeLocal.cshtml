@@ -1,0 +1,220 @@
+﻿@model SIG_PSPEP.Areas.Dpq.Models.CalendarMonthViewModel
+@{
+    ViewData["Title"] = "Calendário de Efetividades - Local";
+    int diasNoMes = DateTime.DaysInMonth(Model.Year, Model.Month);
+    var mesNome = new DateTime(Model.Year, Model.Month, 1).ToString("MMMM yyyy");
+
+    int mesAnterior = Model.Month == 1 ? 12 : Model.Month - 1;
+    int anoAnterior = Model.Month == 1 ? Model.Year - 1 : Model.Year;
+    int proximoMes = Model.Month == 12 ? 1 : Model.Month + 1;
+    int anoProximo = Model.Month == 12 ? Model.Year + 1 : Model.Year;
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+
+<style>
+
+    /* ================================
+           🔹 Tabela Super Compacta
+           ================================ */
+    #minhaTabela {
+        font-size: 10px !important;
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
+
+        #minhaTabela th,
+        #minhaTabela td {
+            padding: 2px !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            white-space: nowrap !important;
+        }
+
+        /* Altura do header */
+        #minhaTabela thead th {
+            height: 30px !important;
+            font-size: 11px !important;
+        }
+
+    .dataTables_wrapper table#minhaTabela > tbody > tr > td:nth-child(2),
+    .dataTables_wrapper table#minhaTabela > thead > tr > th:nth-child(2) {
+        min-width: 210px !important;
+        max-width: 210px !important;
+        width: 210px !important;
+        text-align: left !important;
+        padding-left: 6px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+    }
+
+        /* Última coluna estatística */
+        #minhaTabela th:last-child,
+        #minhaTabela td:last-child {
+            min-width: 100px !important;
+            max-width: 100px !important;
+        }
+
+        /* Colunas dos dias */
+        #minhaTabela th:not(:first-child):not(:last-child),
+        #minhaTabela td:not(:first-child):not(:last-child) {
+            max-width: 18px !important;
+            min-width: 18px !important;
+            padding: 0px !important;
+            font-weight: bold !important;
+        }
+
+    /* ================================
+           🔸 Cores dos Estados
+           ================================ */
+    .status-presente {
+        background-color: #2ecc71 !important;
+        color: white !important;
+    }
+
+    .status-ausente {
+        background-color: #e74c3c !important;
+        color: white !important;
+    }
+
+    .status-dispensado {
+        background-color: #f1c40f !important;
+        color: black !important;
+    }
+
+    .status-justificado {
+        background-color: #3498db !important;
+        color: white !important;
+    }
+
+</style>
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <a class="btn custom1-btn btn-1"
+                   href="@Url.Action("ConsultarEfectividadeLocal", new { month = mesAnterior, year = anoAnterior })">&laquo; Mês Anterior</a>
+
+                <h2 class="text-center">@mesNome.ToUpper()</h2>
+
+                <a class="btn custom1-btn btn-1"
+                   href="@Url.Action("ConsultarEfectividadeLocal", new { month = proximoMes, year = anoProximo })">Próximo Mês &raquo;</a>
+            </div>
+
+            <div class="table-responsive">
+                <table id="minhaTabela" class="table table-bordered table-striped display compact">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>NOME DO EFECTIVO</th>
+                            @for (int d = 1; d <= diasNoMes; d++)
+                            {
+                                <th>@d</th>
+                            }
+                            <th>ESTATÍSTICA</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            int contador = 1;
+                        }
+
+                        @foreach (var e in Model.Efectivos)
+                        {
+                            <tr>
+                                <td><strong>@contador</strong></td>
+
+                                <td>
+                                    <strong>@e.NomeCompleto</strong><br />
+                                    <small>@e.Patente - @e.NIP</small>
+                                </td>
+
+                                @for (int d = 1; d <= diasNoMes; d++)
+                                {
+                                    var status = e.StatusPorDia.ContainsKey(d) ? e.StatusPorDia[d] : "";
+                                    var cssClass = status switch
+                                    {
+                                        "Presente" => "status-presente",
+                                        "Ausente" => "status-ausente",
+                                        "Dispensado" => "status-dispensado",
+                                        "Justificado" => "status-justificado",
+                                        _ => ""
+                                    };
+
+                                    <td class="@cssClass">
+                                        @(!string.IsNullOrEmpty(status) ? status.Substring(0, 1) : "")
+                                    </td>
+                                }
+
+                                <td>
+                                    P:@e.QuantidadePresente |
+                                    A:@e.QuantidadeAusente |
+                                    D:@e.QuantidadeDispensado |
+                                    J:@e.QuantidadeJustificado
+                                </td>
+                            </tr>
+
+                            contador++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+
+
+
+<script>
+       $(document).ready(function () {
+        $('#minhaTabela').DataTable({
+             paging: true,
+            ordering: false,
+            info: true,
+            searching: true,
+            scrollX: false,
+            autoWidth: false,
+
+            columnDefs: [
+                { width: "18px", targets: "_all" }
+            ],
+            "language": {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "", /* Buscar esta nullo */
+                "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "loadingRecords": "Carregando...",
+                "processing": "Processando...",
+                "zeroRecords": "Nenhum registro encontrado",
+                "emptyTable": "Nenhum dado disponível na tabela",
+                "paginate": {
+                    "first": "Primeiro",
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "last": "Último"
+                },
+                "aria": {
+                    "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                    "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                }
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+            }
+        });
+    });
+</script>

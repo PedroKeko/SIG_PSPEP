@@ -1,0 +1,46 @@
+﻿@model SIG_PSPEP.Entidades.DispositivoModelo
+
+<form asp-action="Create" onsubmit="return submitForm(this)">
+	<div class="modal-header">
+		<h5 class="modal-title">Registro de Modelo do Dispositivo</h5>
+		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+	</div>
+	<div class="modal-body">
+		<div class="row justify-content-center">
+			<div class="col-md-9">
+				<!-- Limita o conteúdo a 8 colunas de 12 -->
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label class="control-label small-label">Marca de Dispositivo</label>
+					<select asp-for="DispositivoMarcaId"
+							class="form-control form-control-sm input-1 small-input"
+							asp-items="ViewBag.DispositivoMarcaId"
+							required
+							oninvalid="this.setCustomValidity('Por favor, selecione a Marca de Dispositivo!')"
+							oninput="setCustomValidity('')">
+						<option value="">-- Selecione a Marca --</option>
+					</select>
+					<span asp-validation-for="DispositivoMarcaId" class="text-danger"></span>
+				</div>
+
+                <div class="form-group">
+					<label class="control-label small-label">Modelo do Dispositivo</label>
+					<input asp-for="Modelo" class="form-control form-control-sm input-1 small-input" placeholder="Modelo do Dispositivo" required
+						   oninvalid="this.setCustomValidity('Por favor, preencha o Modelo do Dispositivo!')" oninput="setCustomValidity('')" />
+                    <span asp-validation-for="Modelo" class="text-danger"></span>
+                </div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="custom2-btn btn-2-success">Salvar</button>
+		<button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+	</div>
+</form>
+
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

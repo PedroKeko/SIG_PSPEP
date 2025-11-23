@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using System.Net.NetworkInformation;
-using System.Net;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SIG_PSPEP.Context;
 using SIG_PSPEP.Entidades;
 using SIG_PSPEP.Models;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Net;
+using System.Net.NetworkInformation;
 
 namespace SIG_PSPEP.Controllers
 {
@@ -18,16 +18,18 @@ namespace SIG_PSPEP.Controllers
         private readonly AppDbContext _context;
         private readonly IEmailSender _emailSender;
 
-        public ContaController(AppDbContext context, 
+        public ContaController(
+            AppDbContext context,
             UserManager<IdentityUser> userManager,
-         SignInManager<IdentityUser> signInManager,
-         IEmailSender emailSender)
+            SignInManager<IdentityUser> signInManager,
+            IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             _context = context;
             _emailSender = emailSender;
         }
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -335,86 +337,153 @@ namespace SIG_PSPEP.Controllers
             return View();
         }
 
-
-        // GET: /Account/ForgotPassword
         [HttpGet]
-        public IActionResult ForgotPassword()
+        [AllowAnonymous]
+        public IActionResult RecuperarSenha()
         {
-            return View();
+            return View("RecuperarSenha");
         }
 
-        // POST: /Account/ForgotPassword
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RecuperarSenha(string email)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var user = await userManager.FindByEmailAsync(model.Email);
-            if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
+            if (string.IsNullOrWhiteSpace(email))
             {
-                // Para segurança, não dizer que o email não existe
-                return RedirectToAction(nameof(ForgotPasswordConfirmation));
+                ModelState.AddModelError(string.Empty, "O e-mail é obrigatório.");
+                return View("RecuperarSenha");
             }
 
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var usuario = await userManager.FindByEmailAsync(email);
+            if (usuario == null || !(await userManager.IsEmailConfirmedAsync(usuario)))
+            {
+                // Não revela se o usuário existe
+                return Redirect("/conta/login");
+            }
 
-            var resetLink = Url.Action(nameof(ResetPassword), "Account", new { token, email = model.Email }, Request.Scheme);
+            var token = await userManager.GeneratePasswordResetTokenAsync(usuario);
+            var link = Url.Action(nameof(RedefinirSenha), "Conta", new { token, email = usuario.Email }, Request.Scheme);
 
-            var mensagem = $"Por favor redefina sua senha clicando <a href='{resetLink}'>aqui</a>.";
+            string html = $@"
+        <!DOCTYPE html>
+        <html lang='pt'>
+        <head>
+          <meta charset='UTF-8' />
+          <title>Redefinição de Senha</title>
+          <style>
+            body {{
+              font-family: Arial, sans-serif;
+              background-color: #f4f6f8;
+              margin: 0;
+              padding: 0;
+            }}
+            .email-container {{
+              max-width: 600px;
+              margin: auto;
+              background-color: #ffffff;
+              border: 1px solid #dcdcdc;
+              border-radius: 8px;
+              overflow: hidden;
+            }}
+            .header {{
+              background-color: #00264d;
+              color: white;
+              padding: 20px;
+              text-align: center;
+            }}
+            .header h1 {{
+              margin: 0;
+              font-size: 20px;
+            }}
+            .content {{
+              padding: 30px 20px;
+              color: #333;
+            }}
+            .content h2 {{
+              color: #00264d;
+            }}
+            .btn {{
+              display: inline-block;
+              background-color: #ffc107;
+              color: #00264d;
+              padding: 10px 20px;
+              text-decoration: none;
+              border-radius: 5px;
+              margin-top: 20px;
+            }}
+            .footer {{
+              background-color: #f2f2f2;
+              padding: 10px 20px;
+              font-size: 12px;
+              color: #555;
+              text-align: center;
+            }}
+          </style>
+        </head>
+        <body>
+          <div class='email-container'>
+            <div class='header'>
+              <h1>SIG PSPEP - Redefinição de Senha</h1>
+            </div>
+            <div class='content'>
+              <h2>Olá, efetivo!</h2>
+              <p>Recebemos uma solicitação para redefinir sua senha.</p>
+              <p>Para continuar, clique no botão abaixo:</p>
+              <a href='{link}' class='btn'>Redefinir Senha</a>
+              <p>Se você não solicitou essa alteração, ignore este e-mail.</p>
+            </div>
+            <div class='footer'>
+              Este e-mail foi enviado automaticamente pelo SIG-PSPEP<br>
+              Departamento de Telecomunicações e Tecnologia de Informação<br>
+              Polícia de Segurança Pessoal e de Entidades Protocolares<br>
+              Polícia Nacional de Angola<br>
+              Ministério do Interior
+            </div>
+          </div>
+        </body>
+        </html>";
 
-            await _emailSender.SendEmailAsync(model.Email, "Redefinir senha", mensagem);
+            await _emailSender.SendEmailAsync(
+                usuario.Email,
+                "Redefinição de Senha",
+                html
+            );
 
-            return RedirectToAction(nameof(ForgotPasswordConfirmation));
+            return Redirect("/conta/login");
         }
 
-        public IActionResult ForgotPasswordConfirmation()
-        {
-            return View();
-        }
-
-        // GET: /Account/ResetPassword
         [HttpGet]
-        public IActionResult ResetPassword(string token, string email)
+        [AllowAnonymous]
+        public IActionResult RedefinirSenha(string token, string email)
         {
             if (token == null || email == null)
-                return BadRequest("Token ou email inválido.");
+                return RedirectToAction("Login");
 
-            var model = new ResetPasswordViewModel { Token = token, Email = email };
-            return View(model);
+            var modelo = new RedefinirSenhaViewModel { Token = token, Email = email };
+            return View("RedefinirSenha", modelo);
         }
 
-        // POST: /Account/ResetPassword
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RedefinirSenha(RedefinirSenhaViewModel modelo)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return View("RedefinirSenha", modelo);
 
-            var user = await userManager.FindByEmailAsync(model.Email);
-            if (user == null)
-            {
-                // Não revelar que o usuário não existe
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
-            }
+            var usuario = await userManager.FindByEmailAsync(modelo.Email);
+            if (usuario == null)
+                return Redirect("/conta/login");
 
-            var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
-            }
+            var resultado = await userManager.ResetPasswordAsync(usuario, modelo.Token, modelo.NovaSenha);
+            if (resultado.Succeeded)
+                return Redirect("/conta/login");
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+            foreach (var erro in resultado.Errors)
+                ModelState.AddModelError(string.Empty, erro.Description);
 
-            return View(model);
-        }
-
-        public IActionResult ResetPasswordConfirmation()
-        {
-            return View();
+            return View("RedefinirSenha", modelo);
         }
     }
 }

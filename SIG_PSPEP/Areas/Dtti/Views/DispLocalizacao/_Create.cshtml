@@ -1,0 +1,71 @@
+﻿@model SIG_PSPEP.Entidades.DispositivoLocalizacao
+
+<form method="post" asp-action="Create" asp-controller="DispLocalizacao" asp-area="Dtti" onsubmit="return submitForm(this)">
+    <div class="modal-header">
+        <h5 class="modal-title">Adicionar Localização do Dispositivo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+
+    <div class="modal-body">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Apenas exibir o dispositivo -->
+                <input type="hidden" asp-for="DispositivoId" />
+                <input type="text" class="form-control" value="@Model?.Dispositivo?.Cod_Dispositivo ?? " —"" readonly />
+
+                <!-- Unidade Orgânica -->
+                <div class="form-group">
+                    <label class="control-label small-label">Unidade Orgânica</label>
+                    <select asp-for="OrgUnidPnaMinintId" class="form-control"
+                            asp-items="@(ViewData["OrgUnidPnaMinintId"] as SelectList)" required>
+                        <option value="">-- Selecione a Unidade --</option>
+                    </select>
+                    <span asp-validation-for="OrgUnidPnaMinintId" class="text-danger"></span>
+                </div>
+
+                <!-- Estado Técnico -->
+                <div class="form-group">
+                    <label class="control-label small-label">Estado Técnico</label>
+                    <select asp-for="EstadoTecnico" class="form-control" asp-items="ViewBag.EstadoTecnicoList" required>
+                        <option value="">-- Selecione o Estado --</option>
+                    </select>
+                    <span asp-validation-for="EstadoTecnico" class="text-danger"></span>
+                </div>
+
+                <!-- Observações -->
+                <div class="form-group">
+                    <label class="control-label small-label">Descrição da Localização</label>
+                    <input asp-for="Obs" class="form-control" placeholder="Observação" />
+                    <span asp-validation-for="Obs" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="custom2-btn btn-2-success">Salvar</button>
+        <button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function submitForm(form) {
+            $.post(form.action, $(form).serialize(), function (result) {
+                if (result.success) {
+                    toastr.success(result.message || "Localização adicionada com sucesso!");
+                    setTimeout(() => location.reload(), 1200);
+                } else if (result.message) {
+                    toastr.warning(result.message);
+                } else {
+                    $('#modalContent').html(result);
+                }
+            }).fail(function () {
+                toastr.error("Ocorreu um erro ao processar a solicitação.");
+            });
+            return false;
+        }
+    </script>
+}

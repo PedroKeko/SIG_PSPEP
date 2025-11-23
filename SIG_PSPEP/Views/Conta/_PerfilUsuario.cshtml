@@ -18,7 +18,7 @@
 <div class="modal-body">
     <div class="card mb-4 shadow-sm">
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#alterarSenhaModal">
+            <button type="button" class="custom2-btn btn-2-red" data-bs-toggle="modal" data-bs-target="#alterarSenhaModal">
                 Alterar Senha
             </button>
         </div>
@@ -86,25 +86,29 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label asp-for="CurrentPassword" class="form-label"></label>
-                        <input asp-for="CurrentPassword" class="form-control" />
-                        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="NewPassword" class="form-label"></label>
-                        <input asp-for="NewPassword" class="form-control" />
-                        <span asp-validation-for="NewPassword" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="ConfirmNewPassword" class="form-label"></label>
-                        <input asp-for="ConfirmNewPassword" class="form-control" />
-                        <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                    <div class="row justify-content-center">
+                        <div class="col-md-9">
+                            <div class="mb-3">
+                                <label class="control-label small-label">Senha Actual</label>
+                                <input asp-for="CurrentPassword" class="form-control form-control-sm input-1 small-input" />
+                                <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="control-label small-label">Nova Senha</label>
+                                <input asp-for="NewPassword" class="form-control form-control-sm input-1 small-input" />
+                                <span asp-validation-for="NewPassword" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="control-label small-label">Confirmar Nova Senha</label>
+                                <input asp-for="ConfirmNewPassword" class="form-control form-control-sm input-1 small-input" />
+                                <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Atualizar Senha</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="custom2-btn btn-2-success">Atualizar</button>
+                    <button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </form>
         </div>
@@ -115,71 +119,90 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="~/dist/js/sweetalert2@11.js"></script>
-    <script>
-        $(document).ready(function () {
-            const senhaInvalida = '@ViewData["SenhaInvalida"]';
-            if (senhaInvalida === 'true') {
-                var alterarModal = new bootstrap.Modal(document.getElementById('alterarSenhaModal'));
-                alterarModal.show();
+}
+
+<script src="~/dist/js/sweetalert2@11.js"></script>
+
+<script>
+
+    // Abrir modal quando a senha atual estiver inválida
+    $(document).ready(function () {
+        const senhaInvalida = '@ViewData["SenhaInvalida"]';
+        if (senhaInvalida === 'true') {
+            var alterarModal = new bootstrap.Modal(document.getElementById('alterarSenhaModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            alterarModal.show();
+        }
+    });
+
+    // Instância padrão do Toast
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        customClass: {
+            popup: 'colored-toast'
+        },
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    $(document).ready(function () {
+
+        // 🔥 NECESSÁRIO: Enviar AntiForgeryToken no header
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $.ajaxSetup({
+            headers: {
+                "RequestVerificationToken": token
             }
         });
 
-         // Instância padrão do Toast
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            customClass: {
-                popup: 'colored-toast'
-            },
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        });
+        // Submeter form via AJAX
+        $("#formAlterarSenha").on("submit", function (e) {
+            e.preventDefault();
 
-        $(document).ready(function () {
-            $("#formAlterarSenha").on("submit", function (e) {
-                e.preventDefault();
+            const form = $(this);
+            const url = form.attr("action");
+            const data = form.serialize();
 
-                const form = $(this);
-                const url = form.attr("action");
-                const data = form.serialize();
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                success: function (response) {
 
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: data,
-                    success: function (response) {
-                        if (response.success) {
-                            Toast.fire({
-                                icon: 'success',
-                                title: response.message
-                            });
+                    if (response.success) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: response.message
+                        });
 
-                            // Aguarda um tempo e redireciona ao login
-                            setTimeout(function () {
-                                window.location.href = '/Conta/Login';
-                            }, 1600); // espera o Toast desaparecer
-                        } else if (response.errors) {
-                            Toast.fire({
-                                icon: 'error',
-                                title: response.errors.join("<br>")
-                            });
-                        }
-                    },
-                    error: function () {
+                        // Redireciona após o toast
+                        setTimeout(function () {
+                            window.location.href = '/Conta/Login';
+                        }, 1600);
+                    }
+                    else if (response.errors) {
                         Toast.fire({
                             icon: 'error',
-                            title: 'Erro ao processar a solicitação.'
+                            title: response.errors.join("<br>")
                         });
                     }
-                });
+                },
+                error: function () {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Erro ao processar a solicitação.'
+                    });
+                }
             });
         });
-    </script>
+    });
 
-}
+</script>

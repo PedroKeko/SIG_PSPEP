@@ -4,36 +4,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SIG_PSPEP.Areas.Admin.Models;
 using SIG_PSPEP.Context;
-using SIG_PSPEP.Entidade;
 using SIG_PSPEP.Entidades;
+using SIG_PSPEP.Services;
 
 namespace SIG_PSPEP.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Administrador")]
-public class HomeController : Controller
-{
-    private readonly ILogger<HomeController> _logger;
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly AppDbContext _context;
-
-    public HomeController(
-        ILogger<HomeController> logger,
-        UserManager<IdentityUser> userManager,
-        RoleManager<IdentityRole> roleManager,
+    public class HomeController(
+        IWebHostEnvironment _hostingEnvironment,
+        AppDbContext context,
+        UserManager<IdentityUser> _userManager,
+        RoleManager<IdentityRole> _roleManager,
+        ImageCompressionService _imageCompressionService,
         SignInManager<IdentityUser> signInManager,
-        AppDbContext context)
+        ILogger<HomeController> logger // Corrigido aqui o nome
+    ) : BaseController(context)
     {
-        _userManager = userManager;
-        _roleManager = roleManager;
-        _signInManager = signInManager;
-        _context = context;
-        _logger = logger;
-    }
 
-    public IActionResult Index()
+        public IActionResult Index()
     {
         return View();
     }

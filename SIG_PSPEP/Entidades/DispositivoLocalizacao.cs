@@ -7,11 +7,12 @@ namespace SIG_PSPEP.Entidades
     public class DispositivoLocalizacao : EntidadeBase
     {
         public int DispositivoId { get; set; }
-        public int OrgaoUnidadeId { get; set; }
+        public int OrgUnidPnaMinintId { get; set; }
 
         [StringLength(500)]
         public string? Obs { get; set; }
+        public string? EstadoTecnico { get; set; }
         public Dispositivo? Dispositivo { get; set; }
-        public OrgaoUnidade? OrgaoUnidades { get; set; }
+        public OrgUnidPnaMinint? OrgUnidPnaMinint { get; set; }
     }
 }

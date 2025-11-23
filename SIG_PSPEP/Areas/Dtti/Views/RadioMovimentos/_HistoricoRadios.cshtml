@@ -1,0 +1,161 @@
+﻿@model IEnumerable<SIG_PSPEP.Entidades.RadioMovimento>
+
+<style>
+    th {
+        text-transform: uppercase;
+    }
+</style>
+<div class="container-fluid">
+    <div class="">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="minhaTabela1" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                    <thead class="">
+                        <tr>
+                            <th>Nº de Guia</th>
+                            <th>Data</th>
+                            <th>Orgão/Unidade</th>
+                            <th>Responsável</th>
+                            <th>Movimento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var mov in Model)
+                        {
+                            <tr>
+                                <td>@(mov.RadioGuia?.NumGuia ?? "—")</td>
+                                <td>@mov.DataRegisto.ToString("dd/MM/yyyy")</td>
+                                <td>@(mov.OrgUnidPnaMinint?.Sigla ?? "—")</td>
+                                <td>@(mov.User?.UserName ?? "—")</td>
+                                <td>@(mov.TipoMovimento ?? "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card shadow-sm mt-3">
+                <div class="card-body">
+                    <h6 class="card-title text-center mb-3">📊 Tempo de Permanência por Área</h6>
+                    <canvas id="graficoAreas" height="140"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+       $(document).ready(function () {
+        $('#minhaTabela1').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "", /* Buscar esta nullo */
+                "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "loadingRecords": "Carregando...",
+                "processing": "Processando...",
+                "zeroRecords": "Nenhum registro encontrado",
+                "emptyTable": "Nenhum dado disponível na tabela",
+                "paginate": {
+                    "first": "Primeiro",
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "last": "Último"
+                },
+                "aria": {
+                    "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                    "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                }
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+            }
+        });
+    });
+</script>
+<script>
+    // Recebe dados do ViewBag
+    const analise = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Analise));
+
+    // Montar dados
+    const labels = analise.map(a => a.Unidade);
+    const dias = analise.map(a => a.Dias);
+    const tipos = analise.map(a => a.TipoMovimento);
+
+    // Criar o gráfico
+    const ctx = document.getElementById("graficoAreas");
+    if (ctx) {
+        if (window.meuGrafico) window.meuGrafico.destroy();
+
+        // Definir cores baseadas no tipo de movimento
+        const cores = dias.map((_, i) => {
+            const tipo = (tipos[i] || "").toLowerCase();
+            if (tipo.includes("entrada")) return "rgba(75, 192, 192, 1)";
+            if (tipo.includes("transfer")) return "rgba(255, 206, 86, 1)";
+            if (tipo.includes("saida")) return "rgba(255, 99, 132, 1)";
+            return "rgba(54, 162, 235, 1)";
+        });
+
+        window.meuGrafico = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Dias de Permanência',
+                    data: dias,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    pointBackgroundColor: cores,
+                    pointBorderColor: cores,
+                    pointRadius: 5,
+                    tension: 0.4, // suaviza as linhas
+                    fill: true // cria o efeito de área colorida
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: { size: 12 },
+                            color: '#333'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                const a = analise[ctx.dataIndex];
+                                return `${a.Unidade}: ${a.Dias} dias (${a.DataInicio} → ${a.DataFim})`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Áreas (Orgão/Unidade)',
+                            color: '#333',
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Dias de Permanência',
+                            color: '#333',
+                            font: { weight: 'bold' }
+                        },
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+    }
+</script>

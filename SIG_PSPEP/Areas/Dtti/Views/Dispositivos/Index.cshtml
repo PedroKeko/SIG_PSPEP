@@ -1,0 +1,419 @@
+﻿@model IEnumerable<SIG_PSPEP.Entidades.Dispositivo>
+
+@{
+    ViewData["Title"] = "Registo de Equipamentos";
+}
+
+<link href="~/dist/css/mystyle.css" rel="stylesheet" />
+<link href="~/dist/css/form-step.css" rel="stylesheet" />
+<link href="~/dist/css/botoes.css" rel="stylesheet" />
+<link href="~/dist/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/dist/css/buttons.datatables.min.css" rel="stylesheet" />
+<style>
+    th {
+        text-transform: uppercase;
+    }
+</style>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <button class="custom2-btn btn-1" onclick="openModal('/Dtti/Dispositivos/Create')">Criar Novo</button>
+                <button class="custom2-btn btn-1" onclick="openModalPrint('/Dtti/Relatorio/VisualizarPDF')">Visualizar Relatório</button>
+            </div>
+            <div class="table-responsive">
+                <table id="minhaTabela" class="DataTable table table-striped table-scroll table-bordered table-compact display">
+                    <thead class="text-center">
+                        <tr>
+                            <th class="w-5">
+                                #
+                            </th>
+                            <th>
+                                Código
+                            </th>
+                            <th>
+                                Dispositivo
+                            </th>
+                            <th>
+                                Marca
+                            </th>
+                            <th>
+                                Modelo
+                            </th>
+                            <th>
+                                MAC Address
+                            </th>
+                            <th class="w-10">Acções</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        @{
+                            int index = 1;
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">@index</td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Cod_Dispositivo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DispositivoTipo.TiposDispositivo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DispositivoMarca.MarcasDispositivo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DispositivoModelo.Modelo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.MAC)
+                                    </td>
+                                    <td class="text-center w-10">
+                                        <a href="javascript:void(0)" onclick="openModal('@Url.Action("Edit", "Dispositivos", new { area = "Dtti", id = item.Id })')">
+                                            <i class="fas fa-pencil-alt" style="color: #007BFF;"></i>
+                                        </a>
+                                        <a href="javascript:void(0)"
+                                           onclick="openModal1('@Url.Action("Details", "Dispositivos", new { area = "Dtti", id = item.Id })')">
+                                            <i class="fas fa-eye" style="color: #28A745;"></i>
+                                        </a>
+                                        <a href="javascript:void(0)"
+                                           onclick="openModalLocation('@Url.Action("Create", "DispLocalizacao", new { area = "Dtti", id = item.Id })')">
+                                            <i class="fas fa-cog" style="color: #003366;"></i>
+                                        </a>
+                                        <a id="openDeleteModal_@item.Id" href="javascript:void(0)" onclick="deleteItem(@item.Id)">
+                                            <i class="fas fa-trash-alt" style="color: #DC3545;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Insersão -->
+<div class="modal fade" id="modalForm" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContent">
+            <!-- Modal Header -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição -->
+<div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog  modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalContent1">
+            <!-- Modal Header -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja excluir este Registro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom2-btn btn-2-red" id="confirmDeleteBtn">Excluir</button>
+                <button type="button" class="custom2-btn btn-2-dark-blue" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Visualização de Documento -->
+<div class="modal fade" id="modalPrint" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalContentPrint"></div>
+    </div>
+</div>
+
+<!-- Modal vazio -->
+<div class="modal fade" id="modalLocation" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+</div>
+
+<script src="~/dist/css/backend-bundle.min.js"></script>
+<script src="~/dist/js/jquery.datatables.min.js"></script>
+<script src="~/dist/js/datatables.buttons.min.js"></script>
+<script src="~/dist/js/sweetalert2@11.js"></script>
+
+
+<script>
+       $(document).ready(function () {
+        $('#minhaTabela').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",
+                "search": "", /* Buscar esta nullo */
+                "lengthMenu": "_MENU_ Registros por página", /* Buscar esta nullo (Mostrar _MENU_ registros por página)*/
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "loadingRecords": "Carregando...",
+                "processing": "Processando...",
+                "zeroRecords": "Nenhum registro encontrado",
+                "emptyTable": "Nenhum dado disponível na tabela",
+                "paginate": {
+                    "first": "Primeiro",
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "last": "Último"
+                },
+                "aria": {
+                    "sortAscending": ": ativar para ordenar a coluna em ordem crescente",
+                    "sortDescending": ": ativar para ordenar a coluna em ordem decrescente"
+                }
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').attr('placeholder', 'Digite para buscar...');
+            }
+        });
+    });
+</script>
+
+@section Scripts {
+    <script>
+        function openModal(url) {
+            $.get(url, function (data) {
+                $('#modalContent').html(data);
+                let modal = new bootstrap.Modal(document.getElementById('modalForm'));
+                modal.show();
+            });
+        }
+       
+         // Recarrega a página quando o modal for fechado
+                const modalElement = document.getElementById('modalForm');
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            location.reload();
+        });
+
+        function submitForm(form) {
+            $.post(form.action, $(form).serialize(), function (result) {
+                if (result.success) {
+                    location.reload();
+                } else {
+                    $('#modalContent').html(result); // reexibir erros no modal
+                }
+            });
+            return false;
+        }
+
+                // Exibir modal de detalhes
+        function openModal1(url) {
+            $.get(url, function (data) {
+                // Caso o controller retorne JSON de erro
+                if (typeof data === "object" && data.success === false) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção!',
+                        text: data.message,
+                        confirmButtonText: 'Entendi',
+                        confirmButtonColor: '#ffc107'
+                    });
+                    return;
+                }
+
+                // Caso retorne o HTML parcial
+                $('#modalContent1').html(data);
+                let modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+                modal.show();
+            }).fail(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: 'Ocorreu um problema ao carregar os detalhes.',
+                    confirmButtonColor: '#d33'
+                });
+            });
+        }
+
+    </script>
+
+    <script>
+        function deleteItem(id) {
+            Swal.fire({
+                title: "Tens a certeza?",
+                text: "Esta acção não pode ser desfeita!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Pega o token do antiforgery (certifique-se de ter este input em seu layout ou modal)
+                    var token = $('input[name="__RequestVerificationToken"]').val();
+
+                    $.ajax({
+                        url: `/Dtti/Dispositivos/Delete/${id}`,
+                        type: 'POST',
+                        headers: {
+                            'RequestVerificationToken': token
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: response.message || 'Registo eliminado com sucesso!',
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    if (response.redirectUrl)
+                                        window.location.href = response.redirectUrl;
+                                    else
+                                        location.reload();
+                                });
+                            } else {
+                                showErrorAlert(response.message || 'Não foi possível eliminar o registo.');
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error("Erro ao eliminar:", xhr);
+                            showErrorAlert("Ocorreu um erro ao tentar eliminar o registo.");
+                        }
+                    });
+                }
+            });
+        }
+
+        function showErrorAlert(message) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção!',
+                text: message,
+                confirmButtonText: 'Entendi',
+                customClass: {
+                    confirmButton: 'btn btn-warning'
+                },
+                buttonsStyling: false
+            });
+        }
+    </script>
+
+    <script>
+        function configurarToolbarFastReport() {
+            const iframe = document.querySelector('#modalContentPrint iframe');
+
+            if (!iframe) {
+                console.warn('iframe do relatório não encontrado.');
+                return;
+            }
+
+            // Espera o carregamento completo do iframe
+            iframe.onload = () => {
+                const tentativa = setInterval(() => {
+                    const toolbar = iframe.contentDocument?.querySelector('.fr-toolbar');
+
+                    if (toolbar) {
+                        clearInterval(tentativa); // Para a verificação após encontrar
+
+                        // Evita adicionar o botão várias vezes
+                        if (toolbar.querySelector('.botao-pdf-custom')) return;
+
+                        // Esconde o botão padrão de exportação
+                        toolbar.querySelectorAll('button').forEach(btn => {
+                            const title = btn.getAttribute('title')?.toLowerCase();
+                            if (title?.includes('save') || title?.includes('salvar') || title?.includes('export')) {
+                                btn.style.display = 'none';
+                            }
+                        });
+
+                        // Cria botão personalizado
+                        const novoBotao = document.createElement('button');
+                        novoBotao.className = 'botao-pdf-custom';
+                        novoBotao.title = 'Exportar em PDF';
+                        novoBotao.setAttribute('aria-label', 'Exportar em PDF');
+
+                        novoBotao.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" fill="none">
+                                <path d="M0.5 10a0.5 0.5 0 0 1 0.5 0.5v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3a0.5 0.5 0 0 1 1 0v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-3a0.5 0.5 0 0 1 0.5-0.5z"
+                                    stroke="#000" stroke-width="1.3" fill="#000"/>
+                                <path d="M7.646 10.854a0.5 0.5 0 0 0 0.708 0l3-3a0.5 0.5 0 0 0-0.708-0.708L8.5 9.293V1.5a0.5 0.5 0 0 0-1 0v7.793L5.354 7.146a0.5 0.5 0 1 0-0.708 0.708l3 3z"
+                                    stroke="#000" stroke-width="1.5" fill="#000"/>
+                            </svg>
+                        `;
+
+                        Object.assign(novoBotao.style, {
+                            marginLeft: '10px',
+                            padding: '6px 10px',
+                            backgroundColor: '#f0f0f0',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            transition: 'all 0.2s ease-in-out'
+                        });
+
+                        novoBotao.onclick = function () {
+                            window.open('/Dtti/Relatorio/ExportarPDF', '_blank');
+                        };
+
+                        toolbar.appendChild(novoBotao);
+                    }
+                }, 300); // Verifica a cada 300ms até encontrar a toolbar (ou timeout após alguns segundos)
+            };
+        }
+
+        function openModalPrint(url) {
+            $.get(url, function (data) {
+                $('#modalContentPrint').html(data);
+                let modal = new bootstrap.Modal(document.getElementById('modalPrint'));
+                modal.show();
+
+                configurarToolbarFastReport();
+            });
+        }
+    </script>
+}
+
+<script>
+    // Função para abrir o modal e carregar o formulário
+    function openModalLocation(url) {
+        $('#modalContent').html('<div class="text-center p-4"><i class="fas fa-spinner fa-spin"></i> A carregar...</div>');
+        let modal = new bootstrap.Modal(document.getElementById('modalLocation'));
+        modal.show();
+
+        $.get(url, function (data) {
+            $('#modalContent').html(data);
+        }).fail(function () {
+            toastr.error("Erro ao carregar o formulário de localização.");
+        });
+    }
+
+    // Função global para submissão AJAX
+    function submitForm(form) {
+        $.post(form.action, $(form).serialize(), function (result) {
+            if (result.success) {
+                toastr.success(result.message || "Localização adicionada com sucesso!");
+                setTimeout(() => location.reload(), 1200);
+            } else if (result.message) {
+                toastr.warning(result.message);
+            } else {
+                $('#modalContent').html(result);
+            }
+        }).fail(function () {
+            toastr.error("Ocorreu um erro ao processar a solicitação.");
+        });
+        return false;
+    }
+</script>
